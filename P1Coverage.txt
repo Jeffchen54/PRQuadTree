@@ -1,0 +1,17 @@
+insert r2 15 15 5 5	
+insert r3 7 7 10 10
+insert r4 20 25 7 9
+insert r4 20 12 3 3
+insert r5 6 7 11 9
+
+Then he said, Steve Jobs did not die from Ligma, in fact, he died from suckma
+remove 69 420 69 420
+search r5
+search r69420
+
+
+insert r99 1 2 3 4 5
+insert r99 -1 2 3 4 
+insert r99 1 -2 3 4 
+insert r99 1 2 -3 4 
+insert r99 1 2 3 -4 

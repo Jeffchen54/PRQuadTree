@@ -1,0 +1,10 @@
+regionsearch -2147483644 -2147483644 2147483647 2147483647
+insert r_r 	    -1 -20 3 4
+ regionsearch   11 11                 0 0
+dump
+
+	remove r4
+	dump
+	remove 6 7 11 9
+	remove r5
+	dump
