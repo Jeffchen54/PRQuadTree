@@ -206,7 +206,6 @@ public class SkipListTest extends TestCase {
         list.insert("r4", new Dimensions(new int[] { 10, 10, 5, 5 }));
         list.insert("r5", new Dimensions(new int[] { 6, 7, 11, 9 }));
         Dimensions arr = new Dimensions(new int[] { 1, 2, 3, 4 });
-        System.out.println(arr.toString());
 
         assertNotNull(list.remove(new Dimensions(new int[] { 6, 7, 11, 9 })));
         assertNull(list.remove("r5"));
