@@ -206,18 +206,8 @@ public class RectangleController {
     private void regionSearch(int[] dimensions) {
 
         if (validLengthWidth(dimensions)) {
-            Iterator<SkipNode<String, Dimensions>> iter = list.getIterator();
             System.out.print("Rectangles intersecting region: ");
-            printIntArr(dimensions);
             System.out.println("");
-
-            while (iter.hasNext()) {
-                KVPair<String, Dimensions> data = iter.next().getData();
-                if (collide(data.getValue().getArr(), dimensions)) {
-                    System.out.println("(" + shapeInfo(data.getKey(), data
-                        .getValue().getArr()) + ")");
-                }
-            }
         }
         else {
             System.out.print("Rectangle rejected: ");
