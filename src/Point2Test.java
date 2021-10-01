@@ -23,12 +23,12 @@ import student.TestCase;
 
 // Java Doc -------------------------------------------------------------------
 /**
- * JUnit for Rectangle1
+ * JUnit for Point2
  * 
  * @author Jeff Chen (chenjeff4840)
  * @version 9/18/2021
  */
-public class Rectangle1Test extends TestCase {
+public class Point2Test extends TestCase {
     // Setup -------------------------------------------------------------------
 
     /**
@@ -48,14 +48,14 @@ public class Rectangle1Test extends TestCase {
      */
     public void testMain() throws FileNotFoundException {
         // Empty invocation
-        Rectangle1.main(new String[] {});
-        assertFuzzyEquals("Invocation: java Rectangle1 {commandFile}\n",
+        Point2.main(new String[] {});
+        assertFuzzyEquals("Invocation: java Point2 {commandFile}\n",
             systemOut().getHistory());
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
 
         // Invocation with P1Test2 without
-        Rectangle1.main(new String[] { "P1test2.txt" });
+        Point2.main(new String[] { "P1test2.txt" });
         assertFuzzyEquals("Rectangle rejected: (inExist_Rec0, 1, 1, 0, 10)\r\n"
             + "Rectangle rejected: (inExist_Rec1, 1, 1, 7, -10)\r\n"
             + "Rectangle rejected: (inExist_Rec2, 0, 0, 0, 0)\r\n"

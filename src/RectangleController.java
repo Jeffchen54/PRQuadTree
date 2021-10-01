@@ -30,7 +30,7 @@ import java.util.Iterator;
  * @author Jeff Chen (chenjeff4840)
  * @version 9/02/2021
  */
-public class RectangleSkipListController {
+public class RectangleController {
     // Fields ----------------------------------------------------------------
     private CommandParser parser;
     private SkipList<String, Dimensions> list;
@@ -38,14 +38,14 @@ public class RectangleSkipListController {
     // Constructor -----------------------------------------------------------
 
     /**
-     * Constructs RectangleSkipListController with SkipList of maximum level 7
+     * Constructs RectangleController with SkipList of maximum level 7
      * 
      * @param commands
      *            File containing commands to run
      * @throws FileNotFoundException
      *             if file does not exists.
      */
-    public RectangleSkipListController(File commands)
+    public RectangleController(File commands)
         throws FileNotFoundException {
         parser = new CommandParser(commands);
         list = new SkipList<String, Dimensions>();

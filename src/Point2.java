@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
  * @author Jeff Chen (chenjeff4840)
  * @version 9/12/2021
  */
-public class Rectangle1 {
+public class Point2 {
 
     /**
      * Runs program using command line input
@@ -41,13 +41,13 @@ public class Rectangle1 {
     public static void main(String[] args) throws FileNotFoundException {
 
         if (args.length > 0) {
-            RectangleSkipListController controller =
-                new RectangleSkipListController(new File(args[0]));
+            RectangleController controller =
+                new RectangleController(new File(args[0]));
             controller.runAll();
             controller.close();
         }
         else {
-            System.out.println("Invocation: java Rectangle1 {commandFile}");
+            System.out.println("Invocation: java Point2 {commandFile}");
         }
     }
 }

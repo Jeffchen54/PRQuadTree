@@ -24,15 +24,15 @@ import student.TestCase;
 
 // Java Doc -------------------------------------------------------------------
 /**
- * JUnit for RectangleSkipListController
+ * JUnit for RectangleController
  * 
  * @author Jeff Chen (chenjeff4840)
  * @version 9/12/2021
  */
-public class RectangleSkipListControllerTest extends TestCase {
+public class RectangleControllerTest extends TestCase {
 
     // Fields -----------------------------------------------------------------
-    private RectangleSkipListController controller;
+    private RectangleController controller;
 
     // Set up -----------------------------------------------------------------
 
@@ -40,7 +40,7 @@ public class RectangleSkipListControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-        controller = new RectangleSkipListController(new File("P1test1.txt"));
+        controller = new RectangleController(new File("P1test1.txt"));
     }
 
     // Tests ------------------------------------------------------------------
@@ -100,7 +100,7 @@ public class RectangleSkipListControllerTest extends TestCase {
                 .getHistory());
         controller.close();
 
-        controller = new RectangleSkipListController(new File("P1test2.txt"));
+        controller = new RectangleController(new File("P1test2.txt"));
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
         controller.runAll();
@@ -203,7 +203,7 @@ public class RectangleSkipListControllerTest extends TestCase {
      */
     public void testFileNotFoundException() {
         try {
-            controller = new RectangleSkipListController(new File("fake"));
+            controller = new RectangleController(new File("fake"));
         }
         catch (FileNotFoundException e) {
             assertNotNull(e);
@@ -222,7 +222,7 @@ public class RectangleSkipListControllerTest extends TestCase {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
 
-        controller = new RectangleSkipListController(new File(
+        controller = new RectangleController(new File(
             "P1Coverage.txt"));
         controller.runAll();
         controller.close();
@@ -246,7 +246,7 @@ public class RectangleSkipListControllerTest extends TestCase {
         // Tests dump
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
 
-        controller = new RectangleSkipListController(new File("P1Dump.txt"));
+        controller = new RectangleController(new File("P1Dump.txt"));
         System.out.println(
             "Should have empty dump, 5 definite inserts, then a dump");
         controller.runAll();
