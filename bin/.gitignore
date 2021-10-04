@@ -1,4 +1,15 @@
+/CommandParser.class
+/CommandParserTest.class
+/Dimensions.class
+/DimensionsTest.class
+/KVPair.class
+/KVPairTest.class
 /Point2.class
 /Point2Test.class
 /RectangleController.class
 /RectangleControllerTest.class
+/SkipList$SkipListIterator.class
+/SkipList.class
+/SkipListTest.class
+/SkipNode.class
+/SkipNodeTest.class
