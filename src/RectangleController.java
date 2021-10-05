@@ -45,8 +45,7 @@ public class RectangleController {
      * @throws FileNotFoundException
      *             if file does not exists.
      */
-    public RectangleController(File commands)
-        throws FileNotFoundException {
+    public RectangleController(File commands) throws FileNotFoundException {
         parser = new CommandParser(commands);
         list = new SkipList<String, Dimensions>();
     }
@@ -81,28 +80,36 @@ public class RectangleController {
         }
 
         switch (tokens[0]) {
-            case "dump":
+            case "dump": // Same for prj1 and 2 but also prints tree dump
                 dump();
                 break;
             case "intersections":
                 intersections();
                 break;
             case "regionsearch":
-                regionSearch(extractArr(tokens, 1));
+                regionSearch(extractArr(tokens, 1)); // Same as prj1 but through
+                                                     // tree
                 break;
             case "remove":
                 if (tokens.length == 2) {
-                    remove(tokens[1]);
+                    remove(tokens[1]); // Same for prj1 and prj2
                 }
                 else {
-                    remove(new Dimensions(extractArr(tokens, 1)));
+                    remove(new Dimensions(extractArr(tokens, 1))); // Should
+                                                                   // support
+                                                                   // multiple
+                                                                   // dimension
+                                                                   // sizes >2
                 }
                 break;
-            case "insert":
+            case "insert": // Should still work for prj1 smaller Dimensions
                 insert(tokens[1], new Dimensions(extractArr(tokens, 2)));
                 break;
             case "search":
-                search(tokens[1]);
+                search(tokens[1]); // Same for prj1 and prj2 no changes at all
+                break;
+            case "duplicates":
+                duplicates(); // prj2
                 break;
             default:
                 System.out.println("An unknown command was ran");
@@ -118,8 +125,20 @@ public class RectangleController {
         parser.close();
     }
 
-
     // Helpers -------------------------------------------------------------
+
+
+    /**
+     * Prints all points with duplicate coordinates
+     * 
+     * @implNote Calls duplicates from PRQuadTree
+     */
+    private void duplicates() {
+        System.out.println("Duplicate Points:");
+        // TODO implementation and print to screen
+    }
+
+
     /**
      * Attempts to remove a single rectangle from a SkipList matching
      * parameters. Outputs result.
@@ -131,13 +150,14 @@ public class RectangleController {
     private void remove(String name) {
 
         KVPair<String, Dimensions> data = list.remove(name);
+        // TODO Send data to tree remove to sync list up. ********************
 
         if (data == null) {
-            System.out.println("Rectangle not removed: (" + name + ")");
+            System.out.println("point Not Removed: " + name);
         }
         else {
-            System.out.println("Rectangle removed: (" + shapeInfo(data.getKey(),
-                data.getValue().getArr()) + ")");
+            System.out.println("Point (" + shapeInfo(data.getKey(),
+                data.getValue().getArr()) + ") Removed");
         }
     }
 
@@ -154,14 +174,14 @@ public class RectangleController {
      * @precondition name & dimensions != null
      */
     private void insert(String name, Dimensions dimensions) {
-
+        // TODO check if insert less dimensions works
         if (!isPlacable(dimensions.getArr(), 1024, 1024)) {
-            System.out.println("Rectangle rejected: (" + shapeInfo(name,
-                dimensions.getArr()) + ")");
+            System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
+                .getArr()) + ")");
         }
         else {
             list.insert(name, dimensions);
-            System.out.println("Rectangle inserted: (" + shapeInfo(name,
+            System.out.println("Point Inserted: (" + shapeInfo(name,
                 dimensions.getArr()) + ")");
         }
     }
@@ -178,7 +198,7 @@ public class RectangleController {
      */
     private void remove(Dimensions dimensions) {
         if (!isPlacable(dimensions.getArr(), 1024, 1024)) {
-            System.out.print("Rectangle rejected: ");
+            System.out.print("Point Rejected: ");
             printIntArr(dimensions.getArr());
             System.out.println("");
         }
@@ -186,13 +206,13 @@ public class RectangleController {
 
             KVPair<String, Dimensions> data = list.remove(dimensions);
             if (data == null) {
-                System.out.print("Rectangle not found:");
+                System.out.print("point Not Found:");
                 this.printIntArr(dimensions.getArr());
                 System.out.println("");
             }
             else {
-                System.out.println("Rectangle removed: (" + shapeInfo(data
-                    .getKey(), data.getValue().getArr()) + ")");
+                System.out.println("Point (" + shapeInfo(data
+                    .getKey(), data.getValue().getArr()) + ") Removed");
             }
         }
     }
@@ -205,16 +225,26 @@ public class RectangleController {
      */
     private void regionSearch(int[] dimensions) {
 
+        // TODO let regionSearch print out values from tree, not skiplist
         if (validLengthWidth(dimensions)) {
-            System.out.print("Rectangles intersecting region: ");
+            Iterator<SkipNode<String, Dimensions>> iter = list.getIterator();
+            System.out.print("Points intersecting region: ");
+            printIntArr(dimensions);
             System.out.println("");
+
+            while (iter.hasNext()) {
+                KVPair<String, Dimensions> data = iter.next().getData();
+                if (collide(data.getValue().getArr(), dimensions)) {
+                    System.out.println("Point Found: (" + shapeInfo(data.getKey(), data
+                        .getValue().getArr()) + ")");
+                }
+            }
         }
         else {
-            System.out.print("Rectangle rejected: ");
+            System.out.print("Rectangle Rejected: ");
             this.printIntArr(dimensions);
             System.out.println(":");
         }
-
     }
 
 
@@ -265,11 +295,12 @@ public class RectangleController {
         KVPair<String, Dimensions>[] data = list.search(name);
 
         if (data[0] == null) {
-            System.out.println("Rectangle not found: " + name);
+            System.out.println("Point Not Found: " + name);
         }
         else {
-            System.out.println("Rectangles found:");
+            
             for (int i = 0; data[i] != null; i++) {
+                System.out.print("Point Found ");
                 System.out.println("(" + shapeInfo(data[i].getKey(), data[i]
                     .getValue().getArr()) + ")");
             }
@@ -283,19 +314,21 @@ public class RectangleController {
     private void dump() {
         SkipNode<String, Dimensions> node = list.getHead();
 
-        System.out.println("SkipList dump:"); // For the head
-        System.out.println("Node has depth " + node.getForward().length
-            + ", Value (null)");
+        System.out.println("SkipList Dump:"); // For the head
+        System.out.println("level: " + node.getForward().length
+            + " Value: null");
 
         node = node.getForward()[0];
         while (node != null) {
 
-            System.out.println("Node has depth " + node.getLevel() + ", Value ("
+            System.out.println("level: " + node.getLevel() + " Value: "
                 + shapeInfo(node.getData().getKey(), node.getData().getValue()
-                    .getArr()) + ")");
+                    .getArr()));
             node = node.getForward()[0];
         }
-        System.out.println("SkipList size is: " + list.getSize());
+        System.out.println("The SkipList's size is: " + list.getSize());
+
+        // TODO Tree dump*****************************************************
     }
 
 
@@ -394,6 +427,10 @@ public class RectangleController {
             return false;
         }
 
+        if(dimensions.length == 2) {
+            return true;
+        }
+        
         return (dimensions[0] + dimensions[2] <= x && dimensions[1]
             + dimensions[3] <= y);
     }
@@ -401,11 +438,11 @@ public class RectangleController {
 
     /**
      * Checks if array is a valid dimension for a rectangle. A valid array is
-     * {x,y,w,h} where:
+     * {x,y,w,h} or {x,y} where:
      * 
-     * Array length == 4
-     * x & y >= 0
-     * w & h > 0
+     * Array length == 4 or 2
+     * x & y >= 0 when length 4 or 2
+     * w & h > 0 when length 4
      * 
      * @param dimensions
      *            dimension for rectangle to be check for validity
@@ -414,8 +451,18 @@ public class RectangleController {
      * @precondition dimensions != null
      */
     private boolean isLegal(int[] dimensions) {
-        return !(dimensions.length != 4 || dimensions[0] < 0
-            || dimensions[1] < 0 || dimensions[2] <= 0 || dimensions[3] <= 0);
+
+        if (dimensions.length >= 2) {
+            if (dimensions[0] < 0 || dimensions[1] < 0) {
+                return false;
+            }
+            if (dimensions.length == 2) {
+                return true;
+            }
+        }
+
+        return (dimensions.length == 4 && dimensions[2] > 0
+            && dimensions[3] > 0);
     }
 
 

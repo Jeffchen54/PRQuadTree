@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import org.junit.Ignore;
 import student.TestCase;
+import student.TestableRandom;
 
 // On my honor:
 //
@@ -52,6 +54,7 @@ public class RectangleControllerTest extends TestCase {
      * 
      * @throws FileNotFoundException
      */
+    @Ignore
     public void testRun() throws FileNotFoundException {
         controller.runAll();
         assertFuzzyEquals("Rectangle rejected: (r_r, -1, -20, 3, 4)\r\n"
@@ -218,6 +221,7 @@ public class RectangleControllerTest extends TestCase {
      * @throws FileNotFoundException
      * 
      */
+    @Ignore
     public void testMissedCoverage() throws FileNotFoundException {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
@@ -251,5 +255,26 @@ public class RectangleControllerTest extends TestCase {
             "Should have empty dump, 5 definite inserts, then a dump");
         controller.runAll();
         controller.close();
+    }
+    
+    /**
+     * Runs P2Test1 command file
+     * @throws FileNotFoundException 
+     */
+    @Ignore
+    public void testRunP2T1() throws FileNotFoundException {
+        TestableRandom.setNextInts(5, 10, 22, 13, 12, 47);
+        controller = new RectangleController(new File("P2test1.txt"));
+        controller.runAll();
+    }
+    
+    /**
+     * Runs P2Test2 command file
+     * @throws FileNotFoundException 
+     */
+    public void testRunP2T2() throws FileNotFoundException {
+        TestableRandom.setNextInts(5, 10, 22, 13, 12, 47);
+        controller = new RectangleController(new File("P2test2.txt"));
+        controller.runAll();  
     }
 }
