@@ -15,3 +15,8 @@
 /SkipNodeTest.class
 /QuadNode.class
 /QuadNodeTest.class
+/QuadTree.class
+/PRQuadTree$TreeIterator.class
+/PRQuadTree.class
+/LeafNode.class
+/LeafNodeTest.class

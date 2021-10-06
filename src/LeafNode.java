@@ -17,20 +17,20 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-public class QuadNode<K, V> {
+public class LeafNode<K, V> {
 
     private KVPair<K, V> data;
-    private QuadNode<K, V> NW;
-    private QuadNode<K, V> NE;
-    private QuadNode<K, V> SW;
-    private QuadNode<K, V> SE;
+    private LeafNode<K, V> NW;
+    private LeafNode<K, V> NE;
+    private LeafNode<K, V> SW;
+    private LeafNode<K, V> SE;
 
 
     /**
      * this is the constructor of a quadNode
      * @param pair is the parameter
      */
-    public QuadNode(KVPair<K, V> pair) {
+    public LeafNode(KVPair<K, V> pair) {
         this.data = pair;
 
     }
@@ -49,7 +49,7 @@ public class QuadNode<K, V> {
      * of quadrant
      * @return a node
      */
-    public QuadNode<K, V> getNW(){
+    public LeafNode<K, V> getNW(){
         return NW;
     }
 
@@ -58,7 +58,7 @@ public class QuadNode<K, V> {
      * of quadrant
      * @return a node
      */
-    public QuadNode<K, V> getNE(){
+    public LeafNode<K, V> getNE(){
         return NE;
     }
 
@@ -67,7 +67,7 @@ public class QuadNode<K, V> {
      * of quadrant
      * @return a node
      */
-    public QuadNode<K, V> getSW(){
+    public LeafNode<K, V> getSW(){
         return SW;
     }
 
@@ -76,7 +76,7 @@ public class QuadNode<K, V> {
      * of quadrant
      * @return a node
      */
-    public QuadNode<K, V> getSE(){
+    public LeafNode<K, V> getSE(){
         return SE;
     }
     
@@ -94,7 +94,7 @@ public class QuadNode<K, V> {
      * each quadrant
      * @param node the parameter
      */
-    public void setNW(QuadNode<K, V> node) {
+    public void setNW(LeafNode<K, V> node) {
         NW = node;
     }
     
@@ -103,7 +103,7 @@ public class QuadNode<K, V> {
      * each quadrant
      * @param node the parameter
      */
-    public void setNE(QuadNode<K, V> node) {
+    public void setNE(LeafNode<K, V> node) {
         NE = node;
     }
     
@@ -112,7 +112,7 @@ public class QuadNode<K, V> {
      * each quadrant
      * @param node the parameter
      */
-    public void setSW(QuadNode<K, V> node) {
+    public void setSW(LeafNode<K, V> node) {
         SW = node;
     }
     
@@ -121,7 +121,7 @@ public class QuadNode<K, V> {
      * each quadrant
      * @param node the parameter
      */
-    public void setSE(QuadNode<K, V> node) {
+    public void setSE(LeafNode<K, V> node) {
         SE = node;
     }
 }

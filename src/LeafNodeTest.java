@@ -19,17 +19,17 @@
 // letter of this restriction. - JC & XC
 import student.TestCase;
 
-public class QuadNodeTest extends TestCase {
+public class LeafNodeTest extends TestCase {
 
     private KVPair<String, Integer> pair;
-    private QuadNode<String, Integer> node;
+    private LeafNode<String, Integer> node;
     
     /**
      * this is set up
      */
     public void setUp() {
         pair = new KVPair<>("a", 2);
-        node = new QuadNode<>(pair);
+        node = new LeafNode<>(pair);
     }
     
     /**
