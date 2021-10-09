@@ -59,11 +59,17 @@ public class PRQuadTree<K, V extends Comparable<V>> {
      * - another point with the same key and value exists
      * - key or value is null
      * 
-     * @return KVPair of inserted element, false if rejected.
+     * @param key
+     *            Key of point to insert
+     * @param value
+     *            Value of key to insert
+     * @return KVPair of inserted element, null if rejected.
      * @implNote key must start with a letter, do this in the controller
      * @implNote check if contains negative cords or out of world box in
      *           controller
      * @implNote send output to skiplist
+     * @implNote Check size of list, if it is the same, return null, else return
+     *           KVPair
      */
     public KVPair<K, V> insert(K key, V[] value) {
         // TODO implementation
@@ -72,8 +78,10 @@ public class PRQuadTree<K, V extends Comparable<V>> {
 
 
     /**
-     * Removes selected KVPair from the tree.
+     * Removes selected KVPair from the tree. Does nothing if not in tree.
      * 
+     * @param data
+     *            Exact point record to remove
      * @implNote for remove {name} done in SkipList
      */
     public void remove(KVPair<K, V> data) {
@@ -84,8 +92,14 @@ public class PRQuadTree<K, V extends Comparable<V>> {
     /**
      * Removes a single point from tree matching values.
      * 
+     * @param values
+     *            Point of record to remove
      * @return returns KVPair removed from tree, null otherwise
      * @implNote Send this output to SkipList remove
+     * @implNote How to return entire KVPair from recursive function? Have
+     *           special object containing node and removed KVPair? Or even a
+     *           private KVPAir
+     *           variable which will point to the removed entry?
      */
     public KVPair<K, V> remove(V[] values) {
         // TODO implementation
@@ -96,7 +110,8 @@ public class PRQuadTree<K, V extends Comparable<V>> {
     /**
      * Returns all points that are contained in the query values
      * 
-     * @return linked chain of nodes containing all points matching query values
+     * @return Data structure containing all points matching query values
+     *         also containing meta data on # of nodes visited
      * @implNote Reject illegal values in Controller
      * @implNote Copy data over to a chain of nodes then return
      * @implNote Port regionsearch to Dimensions class
@@ -110,11 +125,13 @@ public class PRQuadTree<K, V extends Comparable<V>> {
     /**
      * Returns chain of nodes containing all points with duplicate values
      * 
-     * @return linked chain of nodes containing all dupe points
+     * @return 2D array with row corresponding to a point and column
+     *         representing
+     *         a value from that point.
      * @implNote Explore each branch separetly and pick out all dupes.
      * @implNote same return type and method as regionSearch()
      */
-    public Object duplicates() {
+    public Object[][] duplicates() {
         // TODO implementation and change return type
         return null;
     }
@@ -123,11 +140,84 @@ public class PRQuadTree<K, V extends Comparable<V>> {
     /**
      * Returns an TreeIterator of the tree acquired from preorder traversal
      * 
+     * @implNote Basically the dump function
      * @return TreeIterator of nodes from preorder traversal
      * @implNote call tree Iterator constructor
      */
     public TreeIterator getIterator() {
         return null;
+    }
+
+    // Helpers ----------------------------------------------------------------
+
+
+    /**
+     * Recursively inserts a point.
+     */
+    private Object insert(K key, V[] value, V max, V min) {
+        return null;
+    }
+
+
+    /**
+     * Recursively removes a point
+     */
+    private Object remove(K key, V[] value) {
+        return null;
+    }
+
+
+    /**
+     * Applies decomposition rule to a leafnode
+     * 
+     * @param leaf
+     *            Leafnode to apply decompositionRule to
+     * @return leaf after decompositionRule has been applied
+     */
+    private Object decompositionRule(Object leaf) {
+        return null;
+    }
+
+
+    /**
+     * Checks if a leaf node should be turned into a flyweight node
+     * 
+     * @param leaf
+     *            Leafnode to check for decomposition
+     * @return leaf node or flyweight node
+     */
+    private Object refactor(Object leaf) {
+
+        return null;
+    }
+
+
+    /**
+     * Calculates midpoint given a set of bounds
+     * 
+     * @param bounds
+     *            [0][] = lower bound
+     *            [1][] = upper bound
+     * @return midpoint calculated from the 2 points
+     */
+    private V[] midpoint(V[][] bounds) {
+        return null;
+    }
+
+
+    /**
+     * Calculates which direction to go in the tree
+     * 
+     * @param dest
+     *            Destination
+     * @param lower
+     *            Lower bound of current quadrant
+     * @param upper
+     *            Upperbound of current quadant
+     * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
+     */
+    private int wayfindinder(V[] dest, V[] lower, V[] upper) {
+        return -1;
     }
 
     // Iterator ---------------------------------------------------------------
@@ -149,8 +239,7 @@ public class PRQuadTree<K, V extends Comparable<V>> {
          * after head.
          */
         public TreeIterator() {
-            // TODO do preorder traversal with cursor at first node
-            // cursor = head.getForward()[0]; // Advances past head
+            // TODO do preorderTraversal
         }
 
         // Functions --------------------------------------------------------
@@ -182,10 +271,10 @@ public class PRQuadTree<K, V extends Comparable<V>> {
 
 
         /**
-         * Returns a chain of nodes from the tree in preorderTraversal
+         * Performs a single step in preorder traversal.
          * 
-         * @return chain of nodes from tree in preorderTraversal
-         * @implNote Return value sent to constructor.
+         * @return node after taking a step
+         * @implNote Set as cursor in next
          */
         private Object preorderTraversal() {
             // TODO implementation and change return type
