@@ -34,20 +34,25 @@ import java.util.Iterator;
  * @author chenj (chenjeff4840)
  * @version 10.5.2021
  */
-public class PRQuadTree<K, V extends Comparable<V>> {
+public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
 
     // Data ------------------------------------------------------------------
-    // TODO implementation
+    private V[] min;
+    private V[] max;
+    private BaseNode<K, V> rt;
+    private FlyweightNode<K, V> empty;
 
     // Constructor ------------------------------------------------------------
 
     /**
-     * Creates an empty PRQuadTree
-     * 
-     * @implNote Creates root node, initialize data fields
+     * Creates an empty PRQuadTree. Initializes fields
      */
-    public PRQuadTree() {
-        // TODO implementation
+    public PRQuadTree(V[] min, V[] max) {
+        this.min = min;
+        this.max = max;
+        empty = new FlyweightNode<K, V>();
+        rt = empty;
+        
     }
 
 
