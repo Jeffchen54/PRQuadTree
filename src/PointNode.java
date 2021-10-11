@@ -32,11 +32,11 @@ public class PointNode<K, V> {
 
     // Fields ----------------------------------------------------------------
     private K key;
-    private V value;
+    private V[] value;
     private PointNode<K, V> next;
 
     // Constructor -------------------------------------------------------------
-    public PointNode(K key, V value) {
+    public PointNode(K key, V[] value) {
         this.key = key;
         this.value = value;
         this.next = null;
@@ -60,7 +60,7 @@ public class PointNode<K, V> {
      * 
      * @return value
      */
-    public V getValue() {
+    public V[] getValue() {
         return value;
     }
 

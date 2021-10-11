@@ -85,7 +85,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      *            value to add
      * @precondition key or value != null
      */
-    public void addPoint(K key, V value) {
+    public void addPoint(K key, V[] value) {
         if (!this.exists(key, value)) {
             if (!this.exists(value)) {
                 size++;
@@ -103,7 +103,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * @precondition value not null
      * @return entry removed
      */
-    public PointNode<K, V> removePoint(V value) {
+    public PointNode<K, V> removePoint(V[] value) {
 
         PointNode<K, V> temp = points.removeValue(value);
         if (temp != null && !exists(temp.getValue())) {
@@ -122,7 +122,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      *            Value to remove
      * @precondition key or value != null
      */
-    public PointNode<K, V> removeEntry(K key, V value) {
+    public PointNode<K, V> removeEntry(K key, V[] value) {
         PointNode<K, V> temp = points.removePair(key, value);
         if (temp != null && !exists(temp.getValue())) {
             size--;
@@ -149,7 +149,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * @return true if exists, false if not
      * @precondition value != null
      */
-    public boolean exists(V value) {
+    public boolean exists(V[] value) {
         return (points.findValue(value) != null);
     }
 
@@ -164,7 +164,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * @return true if exists, false if not
      * @precondition key or value != null
      */
-    public boolean exists(K key, V value) {
+    public boolean exists(K key, V[] value) {
         return (points.findEntry(key, value));
     }
 

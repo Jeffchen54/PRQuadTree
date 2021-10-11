@@ -69,7 +69,7 @@ public class ParentNodeTest extends TestCase {
         LeafNode<String, Integer> leaf;
         for (int i = 0; i < 4; i++) {
             leaf = new LeafNode<String, Integer>();
-            leaf.addPoint("Earth 200" + Integer.toString(i), i);
+            leaf.addPoint("Earth 200" + Integer.toString(i), new Integer[] {1,2,3});
            node.setChild(leaf, i);
            assertEquals(leaf, node.getChild(i));
         }

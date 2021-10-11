@@ -77,7 +77,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *           KVPair
      */
     public KVPair<K, V> insert(K key, V[] value) {
-        rt = insert(key, value, min, max);
+        rt = insert(rt, key, value, min, max);
         return null;
     }
 
@@ -159,8 +159,20 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
     /**
      * Recursively inserts a point.
      */
-    private BaseNode<K, V> insert(K key, V[] value, V[] min, V[] max) {
-        return null;
+    private BaseNode<K, V> insert(BaseNode<K,V> curr, K key, V[] value, V[] min, V[] max) {
+        // Base case, reached destination
+        if(curr.getNodeClass() != NodeClassification.ParentNode) {
+            
+            // For flyweight
+            if(curr.getNodeClass() == NodeClassification.FlyweightNode) {
+                LeafNode<K,V> leaf = new LeafNode<K, V>();
+                leaf.addPoint(key, value);
+            }
+            
+            // For leaf
+        }
+        return curr;
+        
     }
 
 
@@ -221,7 +233,23 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Upperbound of current quadant
      * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
      */
-    private int wayfindinder(V[] dest, V[] lower, V[] upper) {
+    private int wayfinder(V[] dest, V[] lower, V[] upper) {
+        return -1;
+    }
+
+
+    /**
+     * Calculates which direction to go in the tree
+     * 
+     * @param dest
+     *            Destination
+     * @param lower
+     *            Lower bound of current quadrant
+     * @param upper
+     *            Upperbound of current quadant
+     * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
+     */
+    private int wayfindder(V[] dest, V[] lower, V[] upper) {
         return -1;
     }
 

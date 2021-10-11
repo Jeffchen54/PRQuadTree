@@ -35,7 +35,7 @@ public class PointNodeTest extends TestCase{
      * Sets up the PointNode
      */
     public void setUp() {
-        node = new PointNode<String, Integer>("Earth", 360);
+        node = new PointNode<String, Integer>("Earth", new Integer[]{0,180, 360});
     }
     
     // Tests -------------------------------------------------------------
@@ -45,12 +45,50 @@ public class PointNodeTest extends TestCase{
      */
     public void testGetters() {
         assertEquals("Earth", node.getKey());
-        assertEquals(360, node.getValue(), 0.1);
+        assertTrue(valueEquals(node.getValue(), new Integer[]{0,180,360}));
         assertNull(node.getNext());
         
-        PointNode<String, Integer> other = new PointNode<>("Mars", 420);
+        PointNode<String, Integer> other = new PointNode<>("Mars", new Integer[]{20,200,480});
         node.setNext(other);
         assertEquals(other, node.getNext());
         
+    }
+    
+    /**
+     * Checks if two objects are equal
+     * 
+     * @param value
+     *            V[] object to compare to obj
+     * @param obj
+     *            Object to compare to V[] value
+     * @return true if data values of 2 objects are identical
+     */
+    @SuppressWarnings("unchecked")
+    private boolean valueEquals(Integer[] value, Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == value) {
+            return true;
+        }
+
+        if (value.getClass() == obj.getClass()) {
+            Integer[] other = (Integer[])(obj);
+
+            if (other.length != value.length) {
+                return false;
+            }
+
+            for (int i = 0; i < value.length; i++) {
+                if (value[i].compareTo(other[i]) != 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+
     }
 }

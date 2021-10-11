@@ -59,7 +59,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      *            Value to insert
      * @precondition key or value != null
      */
-    public void insert(K key, V value) {
+    public void insert(K key, V[] value) {
         PointNode<K, V> temp = head;
         head = new PointNode<K, V>(key, value);
         head.setNext(temp);
@@ -107,12 +107,12 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return entry removed or null if not found
      * @precondition value != null
      */
-    public PointNode<K, V> removeValue(V value) {
+    public PointNode<K, V> removeValue(V[] value) {
         PointNode<K, V> temp = head;
         PointNode<K, V> prev = null;
 
         for (int i = 0; i < size; i++) {
-            if (temp.getValue().compareTo(value) == 0) {
+            if (this.valueEquals(temp.getValue(), value)) {
                 if (temp == head) {
                     head = head.getNext();
                 }
@@ -140,13 +140,13 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return entry removed or null if not found
      * @precondition key or value != null
      */
-    public PointNode<K, V> removePair(K key, V value) {
+    public PointNode<K, V> removePair(K key, V[] value) {
         PointNode<K, V> temp = head;
         PointNode<K, V> prev = null;
 
         for (int i = 0; i < size; i++) {
-            if (temp.getKey().compareTo(key) == 0 && temp.getValue().compareTo(
-                value) == 0) {
+            if (temp.getKey().compareTo(key) == 0 && this.valueEquals(temp
+                .getValue(), value)) {
                 if (temp == head) {
                     head = head.getNext();
                 }
@@ -194,11 +194,11 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return first entry matching value
      * @precondition value != null
      */
-    public PointNode<K, V> findValue(V value) {
+    public PointNode<K, V> findValue(V[] value) {
         PointNode<K, V> temp = head;
 
         for (int i = 0; i < size; i++) {
-            if (temp.getValue().compareTo(value) == 0) {
+            if (this.valueEquals(temp.getValue(), value)) {
                 return temp;
             }
             temp = temp.getNext();
@@ -218,12 +218,12 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return true if found, false if not found
      * @precondition key or value != null
      */
-    public boolean findEntry(K key, V value) {
+    public boolean findEntry(K key, V[] value) {
         PointNode<K, V> temp = head;
 
         for (int i = 0; i < size; i++) {
-            if (temp.getKey().compareTo(key) == 0 && temp.getValue().compareTo(
-                value) == 0) {
+            if (temp.getKey().compareTo(key) == 0 && this.valueEquals(temp
+                .getValue(), value)) {
                 return true;
             }
             temp = temp.getNext();
@@ -241,7 +241,8 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
     public int getSize() {
         return size;
     }
-    
+
+
     /**
      * Returns an iterator of the whole list
      * 
@@ -250,7 +251,45 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
     public PointIterator getIterator() {
         return new PointIterator();
     }
-    
+
+
+    /**
+     * Checks if two objects are equal
+     * 
+     * @param value
+     *            V[] object to compare to obj
+     * @param obj
+     *            Object to compare to V[] value
+     * @return true if data values of 2 objects are identical
+     */
+    @SuppressWarnings("unchecked")
+    private boolean valueEquals(V[] value, Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == value) {
+            return true;
+        }
+
+        if (value.getClass() == obj.getClass()) {
+            V[] other = (V[])(obj);
+
+            if (other.length != value.length) {
+                return false;
+            }
+
+            for (int i = 0; i < value.length; i++) {
+                if (value[i].compareTo(other[i]) != 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+
+    }
 
     // Iterator --------------------------------------------------------------
     // Java Doc ---------------------------------------------------------------
