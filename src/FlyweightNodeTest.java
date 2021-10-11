@@ -1,3 +1,4 @@
+import student.TestCase;
 // On my honor:
 //
 // - I have not used source code obtained from another student,
@@ -17,13 +18,30 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-public class FlyweightNodeTest extends student.TestCase {
 
+// JavaDoc --------------------------------------------------------------
+/**
+ * Tests the FlyweightNode
+ */
+public class FlyweightNodeTest extends TestCase {
+
+    // SetUp -------------------------------------------------------------
+
+    /**
+     * Intentionally left empty
+     */
+    public void setUp() {
+        // Intentionally left empty due to single test case
+    }
+
+
+    // Tests ------------------------------------------------------------
     /**
      * this is test for getNodeClass function
      */
+    @SuppressWarnings("rawtypes")
     public void testGetNodeClass() {
         FlyweightNode fn = new FlyweightNode();
-        assertEquals("FlyweightNode", fn.getNodeClass());
+        assertEquals(NodeClassification.FlyweightNode, fn.getNodeClass());
     }
 }

@@ -1,3 +1,5 @@
+import student.TestCase;
+
 // On my honor:
 //
 // - I have not used source code obtained from another student,
@@ -17,74 +19,60 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-import student.TestCase;
 
+// Java Doc -----------------------------------------------------------------
+/**
+ * Tests ParentNode
+ * 
+ * @author chenj (chenjeff4840), XC
+ * @version 10.11.2021
+ */
 public class ParentNodeTest extends TestCase {
 
-    private ParentNode node;
+    // Fields -------------------------------------------------------------
+    private ParentNode<String, Integer> node;
+    private FlyweightNode<String, Integer> empty;
     
-    
+    // Set up -------------------------------------------------------------
     /**
      * this is set up
      */
     public void setUp() {
-        node = new ParentNode();
+        empty = new FlyweightNode<String, Integer>();
+        node = new ParentNode<String, Integer>(empty);
     }
     
+    // Tests -------------------------------------------------------------
     /**
      * this is test for getNodeClass function
      */
     public void testGetNodeClass() {
-        assertEquals("ParentNode", node.getNodeClass());
+        assertEquals(NodeClassification.ParentNode, node.getNodeClass());
     }
     
-//    /**
-//     * this is test for getData
-//     */
-//    public void testGetData() {
-//        assertEquals("a", node.getData().getKey());
-//    }
-//    
-//    /**
-//     * this is test for getter and setter
-//     */
-//    public void testGetNW() {
-//        assertNull(node.getNE());
-//        node.setNW(node);
-//        assertEquals("a", node.getNW().getData().getKey());
-//    }
-//    
-//    /**
-//     * this is test for getter and setter
-//     */
-//    public void testGetNE() {
-//        node.setNE(node);
-//        assertEquals("a", node.getNE().getData().getKey());
-//    }
-//    
-//    /**
-//     * this is test for getter and setter
-//     */
-//    public void testGetSW() {
-//        node.setSW(node);
-//        assertEquals("a", node.getSW().getData().getKey());
-//    }
-//    
-//    /**
-//     * this is test for getter and setter
-//     */
-//    public void testGetSE() {
-//        node.setSE(node);
-//        assertEquals("a", node.getSE().getData().getKey());
-//    }
-//    
-//    /**
-//     * this is test for set data to current node
-//     */
-//    public void testSetData() {
-//        KVPair<String, Integer> pair1 = new KVPair<String, Integer>("7", 4);
-//        node.setData(pair1);
-//        assertEquals("7", node.getData().getKey());
-//    }
+    /**
+     * Tests setting and getting children
+     */
+    public void testChildren() {
+        // Checking if all children are flyweights
+        for (int i = 0; i < 4; i++) {
+            assertEquals(empty, node.getChild(i));
+        }
+        
+        // Invalid directions
+        assertNull(node.getChild(-1));
+        assertNull(node.getChild(4));
+        node.setChild(empty, -1);
+        node.setChild(empty, 4);
+        
+        // setting and getting children at directions
+        LeafNode<String, Integer> leaf;
+        for (int i = 0; i < 4; i++) {
+            leaf = new LeafNode<String, Integer>();
+            leaf.addPoint("Earth 200" + Integer.toString(i), i);
+           node.setChild(leaf, i);
+           assertEquals(leaf, node.getChild(i));
+        }
+    }
     
 }

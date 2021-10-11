@@ -17,20 +17,42 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-public class FlyweightNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
 
+// Java Doc ------------------------------------------------------------------
+/**
+ * Flyweight node that contains no data. To be used instead of null pointing
+ * leaf nodes.
+ * 
+ * @author chenj (chenjeff4840), XC
+ * @version 10.11.2021
+ * @param <K>
+ *            Key
+ * @param <V>
+ *            Value
+ */
+public class FlyweightNode<K, V extends Comparable<V>>
+    implements BaseNode<K, V> {
+
+    // Fields -----------------------------------------------------------------
+
+    // Classification of node, cannot change.
+    private static final NodeClassification CLASSIFICATION =
+        NodeClassification.FlyweightNode;
+
+    // Constructor -----------------------------------------------------------
     /**
-     * this is the constructor
+     * Constructs an empty FlyweightNode
      */
     public FlyweightNode() {
-        // TODO stub
+        // is empty due to no initialization of fields needed
     }
-    
+
+
+    // Functions -------------------------------------------------------------
     /**
-     * this function return the name of the class
-     * @return a string
+     * {@inheritDoc}
      */
-    public String getNodeClass() {
-        return this.getClass().getName(); 
+    public NodeClassification getNodeClass() {
+        return CLASSIFICATION;
     }
 }

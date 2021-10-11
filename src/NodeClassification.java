@@ -17,43 +17,6 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-enum Node{
-        ParentNode, LeafNode, FlyweightNode;
-    }
-public class NodeClassification {
-    
-    Node node;
-    
-    public NodeClassification(Node node) {
-        this.node = node;
-    }
-    
-    public void tellNode() {
-        switch (node) {
-            case FlyweightNode:
-                System.out.println("FlyweightNode");
-                break;
-                    
-            case LeafNode:
-                System.out.println("LeafNode");
-                break;
-                         
-            case ParentNode:
-                System.out.println("ParentNode");
-                break;
-                        
-            default:
-                System.out.println("Can't recognize node");
-                break;
-        }
-    }
-    
-    public void find(String[] args) {
-        NodeClassification unknownNode = new NodeClassification(node.FlyweightNode);
-        unknownNode.tellNode();
-        NodeClassification unknownNode1 = new NodeClassification(node.LeafNode);
-        unknownNode1.tellNode();
-        NodeClassification unknownNode2 = new NodeClassification(node.ParentNode);
-        unknownNode2.tellNode();
-    }
+enum NodeClassification {
+    ParentNode, LeafNode, FlyweightNode;
 }
