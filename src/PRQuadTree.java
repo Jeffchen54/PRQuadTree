@@ -52,7 +52,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
         this.max = max;
         empty = new FlyweightNode<K, V>();
         rt = empty;
-        
+
     }
 
 
@@ -77,7 +77,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *           KVPair
      */
     public KVPair<K, V> insert(K key, V[] value) {
-        // TODO implementation
+        rt = insert(key, value, min, max);
         return null;
     }
 
@@ -136,7 +136,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      * @implNote Explore each branch separetly and pick out all dupes.
      * @implNote same return type and method as regionSearch()
      */
-    public Object[][] duplicates() {
+    public V[][] duplicates() {
         // TODO implementation and change return type
         return null;
     }
@@ -159,7 +159,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
     /**
      * Recursively inserts a point.
      */
-    private Object insert(K key, V[] value, V max, V min) {
+    private BaseNode<K, V> insert(K key, V[] value, V[] min, V[] max) {
         return null;
     }
 
@@ -167,7 +167,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
     /**
      * Recursively removes a point
      */
-    private Object remove(K key, V[] value) {
+    private BaseNode<K, V> remove(K key, V[] value) {
         return null;
     }
 
@@ -179,7 +179,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Leafnode to apply decompositionRule to
      * @return leaf after decompositionRule has been applied
      */
-    private Object decompositionRule(Object leaf) {
+    private BaseNode<K,V> decompositionRule(Object leaf) {
         return null;
     }
 
@@ -191,7 +191,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Leafnode to check for decomposition
      * @return leaf node or flyweight node
      */
-    private Object refactor(Object leaf) {
+    private BaseNode<K, V> refactor(Object leaf) {
 
         return null;
     }
@@ -261,7 +261,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
 
         /** {@inheritDoc} */
         @Override
-        public SkipNode<K, V> next() {
+        public BaseNode<K, V> next() {
             // TODO change return type
             if (!hasNext()) {
                 return null;
@@ -281,7 +281,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
          * @return node after taking a step
          * @implNote Set as cursor in next
          */
-        private Object preorderTraversal() {
+        private BaseNode<K, V> preorderTraversal() {
             // TODO implementation and change return type
             return null;
         }
