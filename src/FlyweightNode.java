@@ -17,22 +17,20 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-public class LeafNodeTest extends student.TestCase {
+public class FlyweightNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
 
-    private LeafNode node1;
-    private KVPair<String, String> pair;
-    
-    public void setUp() {
-        node1 = new LeafNode();
+    /**
+     * this is the constructor
+     */
+    public FlyweightNode() {
+        // TODO stub
     }
     
     /**
-     * this is test for getNodeClass function
+     * this function return the name of the class
+     * @return a string
      */
-    public void testGetNodeClass() {
-        assertEquals("LeafNode", node1.getNodeClass());
+    public String getNodeClass() {
+        return this.getClass().getName(); 
     }
-    
-    
-    
 }

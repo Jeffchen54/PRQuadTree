@@ -17,111 +17,71 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-public class LeafNode<K, V> {
+public class LeafNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
 
+    private KVPair<K, V>[] list;
     private KVPair<K, V> data;
-    private LeafNode<K, V> NW;
-    private LeafNode<K, V> NE;
-    private LeafNode<K, V> SW;
-    private LeafNode<K, V> SE;
+    private NodeClassification node;
+    private Node collection;
+    private int size;
 
-
-    /**
-     * this is the constructor of a quadNode
-     * @param pair is the parameter
-     */
-    public LeafNode(KVPair<K, V> pair) {
-        this.data = pair;
-
-    }
-
-    /**
-     * this is a getter method for
-     * parent node
-     * @return a KVPair
-     */
-    public KVPair<K, V> getData(){
-        return data;
-    }
-
-    /**
-     * this is getter method for one
-     * of quadrant
-     * @return a node
-     */
-    public LeafNode<K, V> getNW(){
-        return NW;
-    }
-
-    /**
-     * this is getter method for one
-     * of quadrant
-     * @return a node
-     */
-    public LeafNode<K, V> getNE(){
-        return NE;
-    }
-
-    /**
-     * this is getter method for one
-     * of quadrant
-     * @return a node
-     */
-    public LeafNode<K, V> getSW(){
-        return SW;
-    }
-
-    /**
-     * this is getter method for one
-     * of quadrant
-     * @return a node
-     */
-    public LeafNode<K, V> getSE(){
-        return SE;
+    @SuppressWarnings("unchecked")
+    public LeafNode() {
+        list = (KVPair<K, V>[]) new KVPair[3];
+        size = 0;
+        collection = new Node(null);
     }
     
     /**
-     * this is a setter method for parent
-     * node, set the data
-     * @param pair takes a KVPair as param
+     * return size for a leafNode
+     * @return
      */
-    public void setData(KVPair<K, V> pair) {
-        this.data = pair;
+    public int getSize() {
+        return size;
     }
     
     /**
-     * this is a setter method for
-     * each quadrant
-     * @param node the parameter
+     * get the name of the class
+     * @return
      */
-    public void setNW(LeafNode<K, V> node) {
-        NW = node;
+    public String getNodeClass() {
+        return this.getClass().getName(); 
     }
     
     /**
-     * this is a setter method for
-     * each quadrant
-     * @param node the parameter
+     * this is the node class for storing
+     * the duplicate point
+     * @author ben chen
+     *
      */
-    public void setNE(LeafNode<K, V> node) {
-        NE = node;
+    public class Node {
+        private KVPair<K, V> data;
+        private Node next;
+    
+        /**
+         * constructor takes a pair
+         * @param pair
+         */
+        public Node(KVPair<K, V> pair) {
+            this.data = pair;
+            next = null;
+        }
+        
+        public KVPair<K, V> add(KVPair<K, V> data){
+            Node temp = new Node(data);
+            this.next = temp;
+            return data;
+        }
+        
+        public Node getNext() {
+            return this.getNext();
+        }
+        
+        public KVPair<K, V> getData() {
+            return this.data;
+        }
+        
     }
     
-    /**
-     * this is a setter method for
-     * each quadrant
-     * @param node the parameter
-     */
-    public void setSW(LeafNode<K, V> node) {
-        SW = node;
-    }
     
-    /**
-     * this is a setter method for
-     * each quadrant
-     * @param node the parameter
-     */
-    public void setSE(LeafNode<K, V> node) {
-        SE = node;
-    }
 }

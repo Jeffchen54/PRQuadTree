@@ -17,22 +17,13 @@
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
-public class LeafNodeTest extends student.TestCase {
+public class FlyweightNodeTest extends student.TestCase {
 
-    private LeafNode node1;
-    private KVPair<String, String> pair;
-    
-    public void setUp() {
-        node1 = new LeafNode();
-    }
-    
     /**
      * this is test for getNodeClass function
      */
     public void testGetNodeClass() {
-        assertEquals("LeafNode", node1.getNodeClass());
+        FlyweightNode fn = new FlyweightNode();
+        assertEquals("FlyweightNode", fn.getNodeClass());
     }
-    
-    
-    
 }

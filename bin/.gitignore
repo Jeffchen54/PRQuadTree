@@ -20,3 +20,17 @@
 /PRQuadTree.class
 /LeafNode.class
 /LeafNodeTest.class
+/FlyweightNode.class
+/FlyweightNodeTest.class
+/Node.class
+/InternalNode.class
+/InternalNodeTest.class
+/QuadPoint.class
+/QuadNodeInterface.class
+/BaseNode.class
+/ParentNode.class
+/NodeClassification.class
+/NodeClassification$Node.class
+/LeafNode$Node.class
+/LeafNode$MyList.class
+/ParentNodeTest.class
