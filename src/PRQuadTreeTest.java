@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import org.junit.Ignore;
 import student.TestCase;
 
 // On my honor:
@@ -43,4 +44,36 @@ public class PRQuadTreeTest extends TestCase {
     }
 
     // Tests ----------------------------------------------------------------
+    @Ignore
+    public void testInsert() {
+        // Inserts onto empty list
+        tree.insert("Hello World", new Integer[]{0, 125});
+        tree.peek();
+        
+        // Insert same quadrant
+        tree.insert("IT WORKS???!!", new Integer[]{0,100});
+        tree.insert("IT WORKS???!!", new Integer[]{0,50});
+        tree.peek();
+        
+        // Split
+        tree.insert("IT WORKS???!!", new Integer[]{0,75});
+        tree.peek();
+        
+        // Putting values onto other quadrants
+        tree.insert("NE", new Integer[]{700, 200});
+        tree.insert("SW", new Integer[]{200, 700});
+        tree.insert("SE", new Integer[]{700, 700});
+        tree.peek();
+    }
+    
+    /**
+     * Tests commands from P2 input
+     */
+    public void testP2Input() {
+        tree.insert("p_p", new Integer[]{1, 20});
+        tree.insert("p", new Integer[]{10, 30});
+        tree.insert("p_42", new Integer[]{1, 20});
+        tree.insert("far_point", new Integer[]{200, 200});
+        tree.peek();
+    }
 }

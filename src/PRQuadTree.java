@@ -159,7 +159,6 @@ public class PRQuadTree {
     /**
      * Recursively inserts a point.
      */
-    @SuppressWarnings("unchecked")
     private BaseNode<String, Integer> insert(
         BaseNode<String, Integer> curr,
         String key,
@@ -182,39 +181,39 @@ public class PRQuadTree {
                 LeafNode<String, Integer> leaf =
                     (LeafNode<String, Integer>)curr;
                 leaf.addPoint(key, value);
-                return decompositionRule(leaf);
+                return decompositionRule(leaf, min, max);
 
             }
         }
 
         // For parent nodes
-        int direction = this.wayfinder(value, min, max);
-        Integer[] parentLocation = this.midpoint(min, max);
+        Integer[] mid = this.midpoint(min, max);
+        int direction = this.wayfinder(value, mid, min, max);
         ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
-        Integer[] lBounds = (Integer[])new Object[2];
-        Integer[] uBounds = (Integer[])new Object[2];
+        Integer[] lBounds = new Integer[2];
+        Integer[] uBounds = new Integer[2];
 
         switch (direction) {
             case 0:
                 parent.setChild(insert(parent.getChild(direction), key, value,
-                    min, parentLocation), direction);
+                    min, mid), direction);
                 break;
             case 1:
-                lBounds[0] = parentLocation[0];
+                lBounds[0] = mid[0];
                 lBounds[1] = min[1];
                 uBounds[0] = max[0];
-                uBounds[1] = parentLocation[1];
+                uBounds[1] = mid[1];
                 parent.setChild(insert(parent.getChild(direction), key, value,
                     lBounds, uBounds), direction);
                 break;
             case 2:
                 parent.setChild(insert(parent.getChild(direction), key, value,
-                    parentLocation, max), direction);
+                    mid, max), direction);
                 break;
             case 3:
                 lBounds[0] = min[0];
-                lBounds[1] = parentLocation[1];
-                uBounds[0] = parentLocation[0];
+                lBounds[1] = mid[1];
+                uBounds[0] = mid[0];
                 uBounds[1] = max[1];
                 parent.setChild(insert(parent.getChild(direction), key, value,
                     lBounds, uBounds), direction);
@@ -242,9 +241,21 @@ public class PRQuadTree {
      * @return leaf after decompositionRule has been applied
      */
     private BaseNode<String, Integer> decompositionRule(
-        LeafNode<String, Integer> leaf) {
+        LeafNode<String, Integer> leaf,
+        Integer[] min,
+        Integer[] max) {
+        if (leaf.getNumUniquePoints() > 1 && leaf.getTotalSize() > 3) {
+            ParentNode<String, Integer> parent = new ParentNode<>(empty);
+            Iterator<PointNode<String, Integer>> iter = leaf.getPoints();
 
-        return null;
+            while (iter.hasNext()) {
+                PointNode<String, Integer> next = iter.next();
+                this.insert(parent, next.getKey(), next.getValue(), min, max);
+            }
+            return parent;
+        }
+
+        return leaf;
     }
 
 
@@ -270,11 +281,9 @@ public class PRQuadTree {
      * @return midpoint calculated from the 2 points
      */
     private Integer[] midpoint(Integer[] lower, Integer[] upper) {
-        Integer[] mid = (Integer[])new Object[2];
-        int x = (Integer)lower[0] - (Integer)upper[0];
-        int y = ((Integer)lower[0] + x) >> 2;
-        mid[0] = (Integer)new Integer(y);
-        return mid;
+        int x = lower[0] + ((upper[0] - lower[0]) >> 1);
+        int y = lower[1] + ((upper[1] - lower[0]) >> 1);
+        return new Integer[] { x, y };
     }
 
 
@@ -289,8 +298,41 @@ public class PRQuadTree {
      *            Upperbound of current quadant
      * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
      */
-    private int wayfinder(Integer[] dest, Integer[] lower, Integer[] upper) {
+    private int wayfinder(
+        Integer[] dest,
+        Integer[] midpoint,
+        Integer[] lower,
+        Integer[] upper) {
+
+        int x = dest[0] - midpoint[0];
+        int y = dest[1] - midpoint[1];
+
+        if (x <= 0) {
+            if (y <= 0) {
+                return 0;
+            }
+            else {
+                return 3;
+            }
+        }
+
+        if (x >= 0) {
+            if (y >= 0) {
+                return 2;
+            }
+            else {
+                return 1;
+            }
+        }
+
         return -1;
+    }
+    
+    /**
+     * For peeking at tree for testing
+     */
+    public void peek() {
+        // TODO remove when dump is complete. 
     }
 
     // Iterator ---------------------------------------------------------------
