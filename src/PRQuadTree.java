@@ -25,32 +25,32 @@ import java.util.Iterator;
  * Generic PRQuadtree supporting insert, remove, regionSearch, duplicate,
  * and dump functionality.
  * 
- * Entries added to the tree dependent on V's compareTo(V)
+ * Entries added to the tree dependent on Integer's compareTo(Integer)
  * 
- * @param K
+ * @param String
  *            Key for KVPair
- * @param V
+ * @param Integer
  *            Value for KVPair
  * @author chenj (chenjeff4840)
  * @version 10.5.2021
  */
-public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
+public class PRQuadTree {
 
     // Data ------------------------------------------------------------------
-    private V[] min;
-    private V[] max;
-    private BaseNode<K, V> rt;
-    private FlyweightNode<K, V> empty;
+    private Integer[] min;
+    private Integer[] max;
+    private BaseNode<String, Integer> rt;
+    private FlyweightNode<String, Integer> empty;
 
     // Constructor ------------------------------------------------------------
 
     /**
      * Creates an empty PRQuadTree. Initializes fields
      */
-    public PRQuadTree(V[] min, V[] max) {
+    public PRQuadTree(Integer[] min, Integer[] max) {
         this.min = min;
         this.max = max;
-        empty = new FlyweightNode<K, V>();
+        empty = new FlyweightNode<String, Integer>();
         rt = empty;
 
     }
@@ -76,7 +76,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      * @implNote Check size of list, if it is the same, return null, else return
      *           KVPair
      */
-    public KVPair<K, V> insert(K key, V[] value) {
+    public KVPair<String, Integer> insert(String key, Integer[] value) {
         rt = insert(rt, key, value, min, max);
         return null;
     }
@@ -89,7 +89,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Exact point record to remove
      * @implNote for remove {name} done in SkipList
      */
-    public void remove(KVPair<K, V> data) {
+    public void remove(KVPair<String, Integer> data) {
         // TODO implementation
     }
 
@@ -106,7 +106,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *           private KVPAir
      *           variable which will point to the removed entry?
      */
-    public KVPair<K, V> remove(V[] values) {
+    public KVPair<String, Integer> remove(Integer[] values) {
         // TODO implementation
         return null;
     }
@@ -136,7 +136,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      * @implNote Explore each branch separetly and pick out all dupes.
      * @implNote same return type and method as regionSearch()
      */
-    public V[][] duplicates() {
+    public Integer[][] duplicates() {
         // TODO implementation and change return type
         return null;
     }
@@ -159,27 +159,77 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
     /**
      * Recursively inserts a point.
      */
-    private BaseNode<K, V> insert(BaseNode<K,V> curr, K key, V[] value, V[] min, V[] max) {
+    @SuppressWarnings("unchecked")
+    private BaseNode<String, Integer> insert(
+        BaseNode<String, Integer> curr,
+        String key,
+        Integer[] value,
+        Integer[] min,
+        Integer[] max) {
         // Base case, reached destination
-        if(curr.getNodeClass() != NodeClassification.ParentNode) {
-            
+        if (curr.getNodeClass() != NodeClassification.ParentNode) {
+
             // For flyweight
-            if(curr.getNodeClass() == NodeClassification.FlyweightNode) {
-                LeafNode<K,V> leaf = new LeafNode<K, V>();
+            if (curr.getNodeClass() == NodeClassification.FlyweightNode) {
+                LeafNode<String, Integer> leaf =
+                    new LeafNode<String, Integer>();
                 leaf.addPoint(key, value);
+                return leaf;
             }
-            
+
             // For leaf
+            else {
+                LeafNode<String, Integer> leaf =
+                    (LeafNode<String, Integer>)curr;
+                leaf.addPoint(key, value);
+                return decompositionRule(leaf);
+
+            }
         }
-        return curr;
-        
+
+        // For parent nodes
+        int direction = this.wayfinder(value, min, max);
+        Integer[] parentLocation = this.midpoint(min, max);
+        ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
+        Integer[] lBounds = (Integer[])new Object[2];
+        Integer[] uBounds = (Integer[])new Object[2];
+
+        switch (direction) {
+            case 0:
+                parent.setChild(insert(parent.getChild(direction), key, value,
+                    min, parentLocation), direction);
+                break;
+            case 1:
+                lBounds[0] = parentLocation[0];
+                lBounds[1] = min[1];
+                uBounds[0] = max[0];
+                uBounds[1] = parentLocation[1];
+                parent.setChild(insert(parent.getChild(direction), key, value,
+                    lBounds, uBounds), direction);
+                break;
+            case 2:
+                parent.setChild(insert(parent.getChild(direction), key, value,
+                    parentLocation, max), direction);
+                break;
+            case 3:
+                lBounds[0] = min[0];
+                lBounds[1] = parentLocation[1];
+                uBounds[0] = parentLocation[0];
+                uBounds[1] = max[1];
+                parent.setChild(insert(parent.getChild(direction), key, value,
+                    lBounds, uBounds), direction);
+                break;
+        }
+
+        return parent;
+
     }
 
 
     /**
      * Recursively removes a point
      */
-    private BaseNode<K, V> remove(K key, V[] value) {
+    private BaseNode<String, Integer> remove(String key, Integer[] value) {
         return null;
     }
 
@@ -191,7 +241,9 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Leafnode to apply decompositionRule to
      * @return leaf after decompositionRule has been applied
      */
-    private BaseNode<K,V> decompositionRule(Object leaf) {
+    private BaseNode<String, Integer> decompositionRule(
+        LeafNode<String, Integer> leaf) {
+
         return null;
     }
 
@@ -203,7 +255,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Leafnode to check for decomposition
      * @return leaf node or flyweight node
      */
-    private BaseNode<K, V> refactor(Object leaf) {
+    private BaseNode<String, Integer> refactor(Object leaf) {
 
         return null;
     }
@@ -217,8 +269,12 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            [1][] = upper bound
      * @return midpoint calculated from the 2 points
      */
-    private V[] midpoint(V[][] bounds) {
-        return null;
+    private Integer[] midpoint(Integer[] lower, Integer[] upper) {
+        Integer[] mid = (Integer[])new Object[2];
+        int x = (Integer)lower[0] - (Integer)upper[0];
+        int y = ((Integer)lower[0] + x) >> 2;
+        mid[0] = (Integer)new Integer(y);
+        return mid;
     }
 
 
@@ -233,23 +289,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
      *            Upperbound of current quadant
      * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
      */
-    private int wayfinder(V[] dest, V[] lower, V[] upper) {
-        return -1;
-    }
-
-
-    /**
-     * Calculates which direction to go in the tree
-     * 
-     * @param dest
-     *            Destination
-     * @param lower
-     *            Lower bound of current quadrant
-     * @param upper
-     *            Upperbound of current quadant
-     * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
-     */
-    private int wayfindder(V[] dest, V[] lower, V[] upper) {
+    private int wayfinder(Integer[] dest, Integer[] lower, Integer[] upper) {
         return -1;
     }
 
@@ -263,7 +303,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
         // TODO change Iterator type
 
         // Fields -----------------------------------------------------------
-        // private SkipNode<K, V> cursor;
+        // private SkipNode<String, Integer> cursor;
         // TODO change type
 
         // Constructor ------------------------------------------------------
@@ -289,14 +329,14 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
 
         /** {@inheritDoc} */
         @Override
-        public BaseNode<K, V> next() {
+        public BaseNode<String, Integer> next() {
             // TODO change return type
             if (!hasNext()) {
                 return null;
             }
 
             // TODO modify code
-            // SkipNode<K, V> temp = cursor;
+            // SkipNode<String, Integer> temp = cursor;
             // cursor = cursor.getForward()[0];
             // return temp;
             return null;
@@ -309,7 +349,7 @@ public class PRQuadTree<K extends Comparable<K>, V extends Comparable<V>> {
          * @return node after taking a step
          * @implNote Set as cursor in next
          */
-        private BaseNode<K, V> preorderTraversal() {
+        private BaseNode<String, Integer> preorderTraversal() {
             // TODO implementation and change return type
             return null;
         }

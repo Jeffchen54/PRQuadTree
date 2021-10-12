@@ -30,16 +30,17 @@ import student.TestCase;
  */
 public class PRQuadTreeTest extends TestCase {
     // Fields ---------------------------------------------------------------
-    private PRQuadTree<String, Integer> tree;
+    private PRQuadTree tree;
+    private Integer[] min;
+    private Integer[] max;
 
     // SetUp ----------------------------------------------------------------
     public void setUp() {
-        Integer[] min = { 0, 0 };
-        Integer[] max = { 1024, 1024 };
+        min = new Integer[] { 0, 0 };
+        max = new Integer[] { 1024, 1024 };
 
-        tree = new PRQuadTree<String, Integer>(min, max);
+        tree = new PRQuadTree(min, max);
     }
 
     // Tests ----------------------------------------------------------------
-
 }
