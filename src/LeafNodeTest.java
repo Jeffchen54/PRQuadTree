@@ -34,9 +34,9 @@ public class LeafNodeTest extends TestCase {
     private String s1;
     private String s2;
     private String s3;
-    private Integer i1;
-    private Integer i2;
-    private Integer i3;
+    private Integer[] i1;
+    private Integer[] i2;
+    private Integer[] i3;
 
     // Set Up --------------------------------------------------------------
     /**
@@ -47,9 +47,9 @@ public class LeafNodeTest extends TestCase {
         s1 = "Earth";
         s2 = "Mars";
         s3 = "Jupiter";
-        i1 = 360;
-        i2 = 420;
-        i3 = 980;
+        i1 = new Integer[] { 360, 0 };
+        i2 = new Integer[] { 420, 1 };
+        i3 = new Integer[] { 980, 2 };
     }
 
 
@@ -115,11 +115,11 @@ public class LeafNodeTest extends TestCase {
 
         node1.addPoint(s2, i2);
         assertEquals(2, node1.getSize());
-        
+
         // Dupe entry
         node1.addPoint(s1, i1);
         assertEquals(2, node1.getSize());
-        
+
         // Removing dupe values
         node1.addPoint(s1, i2);
         node1.addPoint(s3, i2);
@@ -152,10 +152,10 @@ public class LeafNodeTest extends TestCase {
 
         assertEquals(s1, node1.removeEntry(s1, i1).getKey());
         assertEquals(s1, node1.removePoint(i2).getKey());
-        
+
         // Trying to remove invalid addition
         assertNull(node1.removeEntry(s1, i1));
-        
+
     }
 
 }

@@ -63,7 +63,6 @@ public class PointNodeTest extends TestCase{
      *            Object to compare to V[] value
      * @return true if data values of 2 objects are identical
      */
-    @SuppressWarnings("unchecked")
     private boolean valueEquals(Integer[] value, Object obj) {
         if (obj == null) {
             return false;

@@ -262,8 +262,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      *            Object to compare to V[] value
      * @return true if data values of 2 objects are identical
      */
-    @SuppressWarnings("unchecked")
-    private boolean valueEquals(V[] value, Object obj) {
+    private boolean valueEquals(V[] value, V[] obj) {
         if (obj == null) {
             return false;
         }
@@ -272,22 +271,16 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
             return true;
         }
 
-        if (value.getClass() == obj.getClass()) {
-            V[] other = (V[])(obj);
-
-            if (other.length != value.length) {
-                return false;
-            }
-
-            for (int i = 0; i < value.length; i++) {
-                if (value[i].compareTo(other[i]) != 0) {
-                    return false;
-                }
-            }
-            return true;
+        if (obj.length != value.length) {
+            return false;
         }
 
-        return false;
+        for (int i = 0; i < value.length; i++) {
+            if (value[i].compareTo(obj[i]) != 0) {
+                return false;
+            }
+        }
+        return true;
 
     }
 
