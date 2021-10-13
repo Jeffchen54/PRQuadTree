@@ -1,4 +1,9 @@
 import java.util.Iterator;
+import java.util.LinkedList;
+import spacecolonies.BaseNode;
+import spacecolonies.LeafNode;
+import spacecolonies.ParentNode;
+import spacecolonies.PointNode;
 
 // On my honor:
 //
@@ -347,28 +352,34 @@ public class PRQuadTree {
         // Fields -----------------------------------------------------------
         // private SkipNode<String, Integer> cursor;
         // TODO change type
-
+        private LinkedList<BaseNode<String, Integer>> list;
+        private LinkedList<BaseNode<String, Integer>> parentList;
+        private BaseNode<String, Integer> head;
+        private int count;
         // Constructor ------------------------------------------------------
         /**
          * Initializes the iterator by setting the cursor to the first node
          * after head.
          */
         public TreeIterator() {
-            // TODO do preorderTraversal
+            list = new LinkedList<BaseNode<String, Integer>>();
+            head = list.getFirst();
+            count = 0;
+            
         }
 
         // Functions --------------------------------------------------------
-
-
+        
+        
         /** {@inheritDoc} */
         @Override
         public boolean hasNext() {
             // TODO uncomment return statement
             // return cursor != null;
-            return false;
+            return count != list.size();
         }
 
-
+        
         /** {@inheritDoc} */
         @Override
         public BaseNode<String, Integer> next() {
@@ -376,12 +387,15 @@ public class PRQuadTree {
             if (!hasNext()) {
                 return null;
             }
-
+            
             // TODO modify code
             // SkipNode<String, Integer> temp = cursor;
             // cursor = cursor.getForward()[0];
             // return temp;
-            return null;
+            BaseNode<String, Integer> next = list.get(count);
+            count ++;
+            return next;
+            
         }
 
 
@@ -391,8 +405,24 @@ public class PRQuadTree {
          * @return node after taking a step
          * @implNote Set as cursor in next
          */
-        private BaseNode<String, Integer> preorderTraversal() {
+        private BaseNode<String, Integer> preorderTraversal(BaseNode<String, Integer> start) {
             // TODO implementation and change return type
+            
+                if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() == NodeClassification.ParentNode) {
+                    //System.out.print("Node at ");
+                    return ((ParentNode<String, Integer>)start).getChild(i);
+                    
+                }
+                if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() == NodeClassification.FlyweightNode) {
+                    //empty node
+                    return start;
+                }
+                LeafNode<String, Integer> leaf = (LeafNode<String, Integer>)((ParentNode<String, Integer>)start).getChild(i);
+                Iterator<PointNode<String, Integer>> pointIte = leaf.getPoints();
+                
+            
+
+            
             return null;
         }
 
