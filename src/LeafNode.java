@@ -64,9 +64,11 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
     public int getNumUniquePoints() {
         return uniquePoints;
     }
-    
+
+
     /**
-     * Returns total number of points in leafnode including duplicate valued points
+     * Returns total number of points in leafnode including duplicate valued
+     * points
      */
     public int getTotalSize() {
         return points.getSize();

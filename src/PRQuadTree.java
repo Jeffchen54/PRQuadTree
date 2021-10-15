@@ -319,7 +319,7 @@ public class PRQuadTree {
         }
 
         if (x >= 0) {
-            if (y <= 0) {
+            if (y >= 0) {
                 return 2; // SE
             }
             else {

@@ -43,49 +43,52 @@ public class PRQuadTreeTest extends TestCase {
         tree = new PRQuadTree(min, max);
     }
 
+
     // Tests ----------------------------------------------------------------
     @Ignore
     public void testInsert() {
         // Inserts onto empty list
-        tree.insert("Hello World", new Integer[]{0, 125});
+        tree.insert("Hello World", new Integer[] { 0, 125 });
         tree.peek();
-        
+
         // Insert same quadrant
-        tree.insert("IT WORKS???!!", new Integer[]{0,100});
-        tree.insert("IT WORKS???!!", new Integer[]{0,50});
+        tree.insert("IT WORKS???!!", new Integer[] { 0, 100 });
+        tree.insert("IT WORKS???!!", new Integer[] { 0, 50 });
         tree.peek();
-        
+
         // Split
-        tree.insert("IT WORKS???!!", new Integer[]{0,75});
+        tree.insert("IT WORKS???!!", new Integer[] { 0, 75 });
         tree.peek();
-        
+
         // Putting values onto other quadrants
-        tree.insert("NE", new Integer[]{700, 200});
-        tree.insert("SW", new Integer[]{200, 700});
-        tree.insert("SE", new Integer[]{700, 700});
+        tree.insert("NE", new Integer[] { 700, 200 });
+        tree.insert("SW", new Integer[] { 200, 700 });
+        tree.insert("SE", new Integer[] { 700, 700 });
         tree.peek();
     }
-    
+
+
     /**
      * Tests commands from P2 input
      */
-    @Ignore
     public void testP2Input() {
-        tree.insert("p_p", new Integer[]{1, 20});
-        tree.insert("p", new Integer[]{10, 30});
-        tree.insert("p_42", new Integer[]{1, 20});
-        tree.insert("far_point", new Integer[]{200, 200});
+        tree.insert("p_p", new Integer[] { 1, 20 });
+        tree.insert("p", new Integer[] { 10, 30 });
+        tree.insert("p_42", new Integer[] { 1, 20 });
+        tree.insert("far_point", new Integer[] { 200, 200 });
         tree.peek();
     }
-    
+
+
     /**
      * Edge cases
      */
     public void testEdgeCases() {
-        tree.insert("NE", new Integer[] {512, 1024});
-        tree.insert("SE", new Integer[] {512,512});
-        tree.insert("Buffer", new Integer[] {0,0});
-        tree.insert("Buffer", new Integer[] {1,0});
+        tree.insert("NE", new Integer[] { 512, 0 });
+        tree.insert("SE", new Integer[] { 512, 512 });
+        tree.insert("SE", new Integer[] { 1024, 512 });
+        tree.insert("SE", new Integer[] { 512, 1024 });
+        tree.insert("SW", new Integer[] { 0, 512 });
         tree.peek();
     }
 }
