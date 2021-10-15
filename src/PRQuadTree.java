@@ -110,9 +110,10 @@ public class PRQuadTree {
      * @implNote Copy data over to a chain of nodes then return
      * @implNote Port regionsearch to Dimensions class
      */
-    public Object regionSearch() {
-        // TODO implementation and change return type
-        return null;
+    public RegionSearchList<String, Integer> regionSearch(Integer[] rectangle) {
+        RegionSearchList<String, Integer> list = new RegionSearchList<>();
+        this.regionSearch(rt, rectangle, min, max, list);
+        return list;
     }
 
 
@@ -373,10 +374,123 @@ public class PRQuadTree {
             }
             else {
                 return 1; // NE
+
             }
         }
 
         return -1;
+    }
+
+
+    private void regionSearch(
+        BaseNode<String, Integer> curr,
+        Integer[] region,
+        Integer[] min,
+        Integer[] max,
+        RegionSearchList<String, Integer> list) {
+
+        // Increment visit count
+        list.incrementVisited();
+
+        // Leaf node - Check if points within bounds
+        if (curr.getNodeClass() == NodeClassification.LeafNode) {
+            LeafNode<String, Integer> leaf = (LeafNode<String, Integer>)curr;
+            Iterator<PointNode<String, Integer>> iter = leaf.getPoints();
+
+            while (iter.hasNext()) {
+                PointNode<String, Integer> temp = iter.next();
+                if (this.withinRegion(region, temp.getValue())) {
+                    list.insert(temp.getKey(), temp.getValue());
+
+                }
+            }
+        }
+
+        // ParentNode - can go to multiple branches
+        if (curr.getNodeClass() == NodeClassification.ParentNode) {
+
+            Integer[] mid = this.midpoint(min, max);
+            ParentNode<String, Integer> parent =
+                (ParentNode<String, Integer>)curr;
+
+            // NW
+            if (this.collide(region, min, mid)) {
+                this.regionSearch(parent.getChild(0), region, min, mid, list);
+            }
+            // NE
+            if (this.collide(region, new Integer[] { mid[0], min[1] },
+                new Integer[] { max[0], mid[1] })) {
+                this.regionSearch(parent.getChild(1), region, new Integer[] {
+                    mid[0], min[1] }, new Integer[] { max[0], mid[1] }, list);
+            }
+            // SE
+            if (this.collide(region, mid, max)) {
+                this.regionSearch(parent.getChild(2), region, min, mid, list);
+            }
+            // SW
+            if (this.collide(region, new Integer[] { min[0], mid[1] },
+                new Integer[] { mid[0], max[1] })) {
+                this.regionSearch(parent.getChild(3), region, new Integer[] {
+                    min[0], mid[1] }, new Integer[] { mid[0], max[1] }, list);
+            }
+        }
+
+        // EOF when flyweight is reached, nothing needed to be done.
+    }
+
+
+    /**
+     * Checks if a Rectangle collides/intersects another. Rectangles collide if
+     * any part of a Rectangle is within another Rectangle. Sharing the same
+     * edge
+     * or corner does not count as colliding.
+     * 
+     * @param dimensions
+     *            Rectangles dimension
+     * @param other
+     *            Another rectangle's dimension
+     * @return true if collides, false if does not
+     * @precondition dimensions and other are valid rectangle dimensions
+     */
+    private boolean withinRegion(Integer[] region, Integer[] point) {
+
+        return ((point[0] <= region[0] && point[0] > region[0])
+            || ((point[0] >= region[0] && point[0] < region[0] + region[2])))
+
+            && ((point[1] <= region[1] && point[1] > region[1])
+                || ((point[1] >= region[1] && point[1] < region[1]
+                    + region[3])));
+    }
+
+
+    /**
+     * Checks if a Rectangle collides/intersects another. Rectangles collide if
+     * any part of a Rectangle is within another Rectangle. Sharing the same
+     * edge
+     * or corner does not count as colliding.
+     * 
+     * @param dimensions
+     *            Rectangles dimension
+     * @param other
+     *            Another rectangle's dimension
+     * @return true if collides, false if does not
+     * @precondition dimensions and other are valid rectangle dimensions
+     */
+    private boolean collide(
+        Integer[] region,
+        Integer[] lower,
+        Integer[] upper) {
+        int width = upper[0] - lower[0];
+        int height = upper[1] - lower[1];
+        Integer[] bounded = { lower[0], lower[1], width, height };
+
+        return ((bounded[0] <= region[0] && bounded[0] + bounded[2] > region[0])
+            || ((bounded[0] >= region[0] && bounded[0] < region[0]
+                + region[2])))
+
+            && ((bounded[1] <= region[1] && bounded[1] + bounded[3] > region[1])
+                || ((bounded[1] >= region[1] && bounded[1] < region[1]
+                    + region[3])));
     }
 
 

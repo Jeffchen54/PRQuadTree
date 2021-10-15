@@ -114,16 +114,16 @@ public class LeafNodeTest extends TestCase {
         node1.addPoint(s1, i1);
         assertEquals(1, node1.getNumUniquePoints());
         assertEquals(1, node1.getTotalSize());
-        
+
         node1.addPoint(s2, i2);
         assertEquals(2, node1.getNumUniquePoints());
         assertEquals(2, node1.getTotalSize());
-        
+
         // Dupe entry
         node1.addPoint(s1, i1);
         assertEquals(2, node1.getNumUniquePoints());
         assertEquals(2, node1.getTotalSize());
-        
+
         // Removing dupe values
         node1.addPoint(s1, i2);
         node1.addPoint(s3, i2);
