@@ -92,8 +92,8 @@ public class LeafNodeTest extends TestCase {
         assertTrue(node1.exists(s1, i2));
 
         // remove points
-        node1.removeEntry(s1, i2);
-        node1.removeEntry(s1, i1);
+        node1.remove(s1, i2);
+        node1.remove(s1, i1);
         iter = node1.getPoints();
 
         assertEquals(s3, iter.next().getKey());
@@ -103,37 +103,45 @@ public class LeafNodeTest extends TestCase {
 
 
     /**
-     * Tests size
+     * Tests size and numUniquePoint
      */
     public void testSize() {
         // Empty
         assertEquals(0, node1.getNumUniquePoints());
+        assertEquals(0, node1.getTotalSize());
 
         // Entries
         node1.addPoint(s1, i1);
         assertEquals(1, node1.getNumUniquePoints());
-
+        assertEquals(1, node1.getTotalSize());
+        
         node1.addPoint(s2, i2);
         assertEquals(2, node1.getNumUniquePoints());
-
+        assertEquals(2, node1.getTotalSize());
+        
         // Dupe entry
         node1.addPoint(s1, i1);
         assertEquals(2, node1.getNumUniquePoints());
-
+        assertEquals(2, node1.getTotalSize());
+        
         // Removing dupe values
         node1.addPoint(s1, i2);
         node1.addPoint(s3, i2);
         assertEquals(2, node1.getNumUniquePoints());
-        assertNotNull(node1.removeEntry(s1, i2));
-        assertNotNull(node1.removePoint(i2));
+        assertEquals(4, node1.getTotalSize());
+        assertNotNull(node1.remove(s1, i2));
+        assertNotNull(node1.remove(null, i2));
         assertEquals(2, node1.getNumUniquePoints());
+        assertEquals(2, node1.getTotalSize());
 
         // All removed
-        node1.removeEntry(s1, i1);
+        node1.remove(s1, i1);
         assertEquals(1, node1.getNumUniquePoints());
+        assertEquals(1, node1.getTotalSize());
 
-        node1.removeEntry(s2, i2);
+        node1.remove(s2, i2);
         assertEquals(0, node1.getNumUniquePoints());
+        assertEquals(0, node1.getTotalSize());
     }
 
 
@@ -142,19 +150,19 @@ public class LeafNodeTest extends TestCase {
      */
     public void testRemove() {
         // Remove empty
-        assertNull(node1.removeEntry(s1, i1));
-        assertNull(node1.removePoint(i1));
+        assertNull(node1.remove(s1, i1));
+        assertNull(node1.remove(null, i1));
 
         // Coverage (more specific tests done in PointNodeList)
         node1.addPoint(s1, i1);
         node1.addPoint(s1, i1);
         node1.addPoint(s1, i2);
 
-        assertEquals(s1, node1.removeEntry(s1, i1).getKey());
-        assertEquals(s1, node1.removePoint(i2).getKey());
+        assertEquals(s1, node1.remove(s1, i1).getKey());
+        assertEquals(s1, node1.remove(null, i2).getKey());
 
         // Trying to remove invalid addition
-        assertNull(node1.removeEntry(s1, i1));
+        assertNull(node1.remove(s1, i1));
 
     }
 

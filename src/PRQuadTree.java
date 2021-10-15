@@ -42,6 +42,7 @@ public class PRQuadTree {
     private Integer[] max;
     private BaseNode<String, Integer> rt;
     private FlyweightNode<String, Integer> empty;
+    private PointNode<String, Integer> bufferSlot; // Saves last removed entry
 
     // Constructor ------------------------------------------------------------
 
@@ -53,6 +54,7 @@ public class PRQuadTree {
         this.max = max;
         empty = new FlyweightNode<String, Integer>();
         rt = empty;
+        bufferSlot = null;
 
     }
 
@@ -77,9 +79,10 @@ public class PRQuadTree {
      * @implNote Check size of list, if it is the same, return null, else return
      *           KVPair
      */
-    public KVPair<String, Integer> insert(String key, Integer[] value) {
+    public boolean insert(String key, Integer[] value) {
+        bufferSlot = null;
         rt = insert(rt, key, value, min, max);
-        return null;
+        return bufferSlot != null;
     }
 
 
@@ -90,26 +93,11 @@ public class PRQuadTree {
      *            Exact point record to remove
      * @implNote for remove {name} done in SkipList
      */
-    public void remove(KVPair<String, Integer> data) {
-        // TODO implementation
-    }
+    public PointNode<String, Integer> remove(String key, Integer[] values) {
+        bufferSlot = null;
 
-
-    /**
-     * Removes a single point from tree matching values.
-     * 
-     * @param values
-     *            Point of record to remove
-     * @return returns KVPair removed from tree, null otherwise
-     * @implNote Send this output to SkipList remove
-     * @implNote How to return entire KVPair from recursive function? Have
-     *           special object containing node and removed KVPair? Or even a
-     *           private KVPAir
-     *           variable which will point to the removed entry?
-     */
-    public KVPair<String, Integer> remove(Integer[] values) {
-        // TODO implementation
-        return null;
+        rt = this.remove(rt, key, values, min, max);
+        return bufferSlot;
     }
 
 
@@ -173,7 +161,7 @@ public class PRQuadTree {
             if (curr.getNodeClass() == NodeClassification.FlyweightNode) {
                 LeafNode<String, Integer> leaf =
                     new LeafNode<String, Integer>();
-                leaf.addPoint(key, value);
+                bufferSlot = leaf.addPoint(key, value);
                 return leaf;
             }
 
@@ -181,7 +169,7 @@ public class PRQuadTree {
             else {
                 LeafNode<String, Integer> leaf =
                     (LeafNode<String, Integer>)curr;
-                leaf.addPoint(key, value);
+                bufferSlot = leaf.addPoint(key, value);
                 return decompositionRule(leaf, min, max);
 
             }
@@ -229,8 +217,66 @@ public class PRQuadTree {
     /**
      * Recursively removes a point
      */
-    private BaseNode<String, Integer> remove(String key, Integer[] value) {
-        return null;
+    private BaseNode<String, Integer> remove(
+        BaseNode<String, Integer> curr,
+        String key,
+        Integer[] value,
+        Integer[] min,
+        Integer[] max) {
+        // Base case, reached destination
+        if (curr.getNodeClass() != NodeClassification.ParentNode) {
+
+            // For flyweight
+            if (curr.getNodeClass() == NodeClassification.FlyweightNode) {
+                return curr; // Nothing to be done
+            }
+
+            // For leaf
+            else {
+                LeafNode<String, Integer> leaf =
+                    (LeafNode<String, Integer>)curr;
+                bufferSlot = leaf.remove(key, value); // Saves removed entry
+                return refactor(leaf);
+
+            }
+        }
+
+        // For parent nodes, basically the same as insert
+        Integer[] mid = this.midpoint(min, max);
+        int direction = this.wayfinder(value, mid, min, max);
+        ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
+        Integer[] lBounds = new Integer[2];
+        Integer[] uBounds = new Integer[2];
+
+        switch (direction) {
+            case 0:
+                parent.setChild(remove(parent.getChild(direction), key, value,
+                    min, mid), direction);
+                break;
+            case 1:
+                lBounds[0] = mid[0];
+                lBounds[1] = min[1];
+                uBounds[0] = max[0];
+                uBounds[1] = mid[1];
+                parent.setChild(remove(parent.getChild(direction), key, value,
+                    lBounds, uBounds), direction);
+                break;
+            case 2:
+                parent.setChild(remove(parent.getChild(direction), key, value,
+                    mid, max), direction);
+                break;
+            case 3:
+                lBounds[0] = min[0];
+                lBounds[1] = mid[1];
+                uBounds[0] = mid[0];
+                uBounds[1] = max[1];
+                parent.setChild(remove(parent.getChild(direction), key, value,
+                    lBounds, uBounds), direction);
+                break;
+        }
+
+        return parent;
+
     }
 
 
@@ -267,9 +313,12 @@ public class PRQuadTree {
      *            Leafnode to check for decomposition
      * @return leaf node or flyweight node
      */
-    private BaseNode<String, Integer> refactor(Object leaf) {
+    private BaseNode<String, Integer> refactor(LeafNode<String, Integer> leaf) {
+        if (leaf.getTotalSize() == 0) {
+            return empty;
+        }
 
-        return null;
+        return leaf;
     }
 
 

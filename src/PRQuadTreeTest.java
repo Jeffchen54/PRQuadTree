@@ -45,26 +45,31 @@ public class PRQuadTreeTest extends TestCase {
 
 
     // Tests ----------------------------------------------------------------
-    @Ignore
     public void testInsert() {
         // Inserts onto empty list
-        tree.insert("Hello World", new Integer[] { 0, 125 });
+        assertTrue(tree.insert("Hello World", new Integer[] { 0, 125 }));
         tree.peek();
 
         // Insert same quadrant
-        tree.insert("IT WORKS???!!", new Integer[] { 0, 100 });
-        tree.insert("IT WORKS???!!", new Integer[] { 0, 50 });
+        assertTrue(tree.insert("IT WORKS???!!", new Integer[] { 0, 100 }));
+        assertTrue(tree.insert("IT WORKS???!!", new Integer[] { 0, 50 }));
         tree.peek();
 
         // Split
-        tree.insert("IT WORKS???!!", new Integer[] { 0, 75 });
+        assertTrue(tree.insert("IT WORKS???!!", new Integer[] { 0, 75 }));
         tree.peek();
 
         // Putting values onto other quadrants
-        tree.insert("NE", new Integer[] { 700, 200 });
-        tree.insert("SW", new Integer[] { 200, 700 });
-        tree.insert("SE", new Integer[] { 700, 700 });
+        assertTrue(tree.insert("NE", new Integer[] { 700, 200 }));
+        assertTrue(tree.insert("SW", new Integer[] { 200, 700 }));
+        assertTrue(tree.insert("SE", new Integer[] { 700, 700 }));
         tree.peek();
+        
+        // Inserting same point diff key
+        assertTrue(tree.insert("NE1", new Integer[] { 700, 200 }));
+        
+        // Inserting a clone point and key
+        assertFalse(tree.insert("NE", new Integer[] { 700, 200 }));
     }
 
 
@@ -72,23 +77,68 @@ public class PRQuadTreeTest extends TestCase {
      * Tests commands from P2 input
      */
     public void testP2Input() {
-        tree.insert("p_p", new Integer[] { 1, 20 });
-        tree.insert("p", new Integer[] { 10, 30 });
-        tree.insert("p_42", new Integer[] { 1, 20 });
-        tree.insert("far_point", new Integer[] { 200, 200 });
+        assertTrue(tree.insert("p_p", new Integer[] { 1, 20 }));
+        assertTrue(tree.insert("p", new Integer[] { 10, 30 }));
+        assertTrue(tree.insert("p_42", new Integer[] { 1, 20 }));
+        assertTrue(tree.insert("far_point", new Integer[] { 200, 200 }));
         tree.peek();
     }
 
 
     /**
-     * Edge cases
+     * Tests add remove edge cases
      */
     public void testEdgeCases() {
-        tree.insert("NE", new Integer[] { 512, 0 });
-        tree.insert("SE", new Integer[] { 512, 512 });
-        tree.insert("SE", new Integer[] { 1024, 512 });
-        tree.insert("SE", new Integer[] { 512, 1024 });
-        tree.insert("SW", new Integer[] { 0, 512 });
+        assertTrue(tree.insert("NE", new Integer[] { 512, 0 }));
+        assertTrue(tree.insert("SE1", new Integer[] { 512, 512 }));
+        assertTrue(tree.insert("SE2", new Integer[] { 1024, 512 }));
+        assertTrue(tree.insert("SE3", new Integer[] { 512, 1024 }));
+        assertTrue(tree.insert("SW", new Integer[] { 0, 512 }));
         tree.peek();
+        
+        assertEquals("NE", tree.remove(null, new Integer[] { 512, 0 }).getKey());
+        assertEquals("SE1", tree.remove(null, new Integer[] { 512, 512 }).getKey());
+        assertEquals("SE2", tree.remove(null, new Integer[] { 1024, 512 }).getKey());
+        assertEquals("SE3", tree.remove(null, new Integer[] { 512, 1024 }).getKey());
+        assertEquals("SW", tree.remove(null, new Integer[] { 0, 512 }).getKey());
+    }
+    
+    /**
+     * Tests remove
+     */
+    public void testRemove() {
+        // Remove from empty list
+        assertNull(tree.remove("BAD", new Integer[] {1,2}));
+        
+        // Inserting 3 distinct elems removing non existant entry
+        tree.insert("NE", new Integer[] { 700, 200 });
+        tree.insert("SW", new Integer[] { 200, 700 });
+        tree.insert("SE", new Integer[] { 700, 700 });
+        tree.insert("NE2", new Integer[] { 700, 200 });
+        tree.insert("SW2", new Integer[] { 200, 700 });
+        tree.insert("SE2", new Integer[] { 700, 700 });
+        
+        assertNull(tree.remove("BAD", new Integer[] {1,2}));
+        assertNull(tree.remove("BAD", new Integer[] {700,200}));
+        assertNull(tree.remove("NE", new Integer[] {1,2}));
+        assertNull(tree.remove(null, new Integer[]{1,2}));
+        
+        // Removing all 
+        assertEquals("NE", tree.remove("NE", new Integer[] { 700, 200 }).getKey());
+        assertEquals("SW", tree.remove("SW", new Integer[] { 200, 700 }).getKey());
+        assertEquals("SE", tree.remove("SE", new Integer[] { 700, 700 }).getKey());
+        assertEquals("NE2", tree.remove(null, new Integer[] { 700, 200 }).getKey());
+        assertEquals("SW2", tree.remove(null, new Integer[] { 200, 700 }).getKey());
+        assertEquals("SE2", tree.remove(null, new Integer[] { 700, 700 }).getKey());
+        
+        // Insert 3 elems with same point and remove all
+        tree.insert("NE1", new Integer[] { 700, 200 });
+        tree.insert("NE2", new Integer[] { 700, 200 });
+        tree.insert("NE3", new Integer[] { 700, 200 });
+        tree.insert("NE4", new Integer[] { 700, 200 });
+        assertEquals("NE4", tree.remove(null, new Integer[] { 700, 200 }).getKey());
+        assertEquals("NE3", tree.remove(null, new Integer[] { 700, 200 }).getKey());
+        assertEquals("NE2", tree.remove(null, new Integer[] { 700, 200 }).getKey());
+        assertEquals("NE1", tree.remove(null, new Integer[] { 700, 200 }).getKey());
     }
 }

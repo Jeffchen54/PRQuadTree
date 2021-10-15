@@ -74,23 +74,23 @@ public class PointNodeListTest extends TestCase {
      */
     public void testRemoveKey() {
         // Remove empty list
-        assertNull(list.removeKey("Utopia"));
+        assertNull(list.remove("Utopia", null));
 
         list.insert(s1, i1);
         list.insert(s2, i2);
         list.insert(s3, i3);
 
         // Remove nonexistant entry
-        assertNull(list.removeKey("Utopia"));
+        assertNull(list.remove("Utopia", null));
 
-        // removeKey - Remove first, last , only, then middle entry.
-        assertTrue(arrayEquals(i1, list.removeKey(s1).getValue()));
+        // remove - Remove first, last , only, then middle entry.
+        assertNotNull(arrayEquals(i1, list.remove(s1, null).getValue()));
         assertEquals(2, list.getSize());
 
-        assertTrue(this.arrayEquals(i3, list.removeKey(s3).getValue()));
+        assertNotNull(this.arrayEquals(i3, list.remove(s3, null).getValue()));
         assertEquals(1, list.getSize());
 
-        assertTrue(this.arrayEquals(i2, list.removeKey(s2).getValue()));
+        assertNotNull(this.arrayEquals(i2, list.remove(s2, null).getValue()));
         assertEquals(0, list.getSize());
 
         list.insert(s1, i1);
@@ -98,34 +98,42 @@ public class PointNodeListTest extends TestCase {
         list.insert("Middle Earth", new Integer[] { 4000 });
         list.insert(s3, i3);
 
-        assertTrue(this.arrayEquals(new Integer[] { 4000 }, list.removeKey(
-            "Middle Earth").getValue()));
+        assertNotNull(this.arrayEquals(new Integer[] { 4000 }, list.remove(
+            "Middle Earth", null).getValue()));
         assertEquals(3, list.getSize());
+    }
+    
+    /**
+     * Coverage for remove
+     */
+    public void testRemoveCoverage() {
+        list.insert(s1, i1);
+        assertNull(list.remove(null, null));
     }
 
 
     /**
-     * Tests removeValue
+     * Tests remove
      */
     public void testRemoveValue() {
         // Remove empty list
-        assertNull(list.removeValue(new Integer[] { 1516 }));
+        assertNull(list.remove(null, new Integer[] { 1516 }));
 
         list.insert(s1, i1);
         list.insert(s2, i2);
         list.insert(s3, i3);
 
         // Remove nonexistant entry
-        assertNull(list.removeValue(new Integer[] { 1516 }));
+        assertNull(list.remove(null, new Integer[] { 1516 }));
 
-        // removeKey - Remove first, last , only, then middle entry.
-        assertEquals(s1, list.removeValue(i1).getKey());
+        // remove - Remove first, last , only, then middle entry.
+        assertEquals(s1, list.remove(null, i1).getKey());
         assertEquals(2, list.getSize());
 
-        assertEquals(s3, list.removeValue(i3).getKey());
+        assertEquals(s3, list.remove(null, i3).getKey());
         assertEquals(1, list.getSize());
 
-        assertEquals(s2, list.removeValue(i2).getKey());
+        assertEquals(s2, list.remove(null, i2).getKey());
         assertEquals(0, list.getSize());
 
         list.insert(s1, i1);
@@ -133,7 +141,7 @@ public class PointNodeListTest extends TestCase {
         list.insert("Middle Earth", new Integer[] { 4000 });
         list.insert(s3, i3);
 
-        assertEquals("Middle Earth", list.removeValue(new Integer[] { 4000 })
+        assertEquals("Middle Earth", list.remove(null, new Integer[] { 4000 })
             .getKey());
         assertEquals(3, list.getSize());
     }
@@ -144,23 +152,23 @@ public class PointNodeListTest extends TestCase {
      */
     public void testRemoveEntry() {
         // Remove empty list
-        assertNull(list.removePair("Utopia", new Integer[] { 1516 }));
+        assertNull(list.remove("Utopia", new Integer[] { 1516 }));
 
         list.insert(s1, i1);
         list.insert(s2, i2);
         list.insert(s3, i3);
 
         // Remove nonexistant entry
-        assertNull(list.removePair("Utopia", new Integer[] { 1516 }));
+        assertNull(list.remove("Utopia", new Integer[] { 1516 }));
 
-        // removeKey - Remove first, last , only, then middle entry.
-        assertEquals(list.findKey(s1), list.removePair(s1, i1));
+        // remove - Remove first, last , only, then middle entry.
+        assertEquals(list.find(s1, null), list.remove(s1, i1));
         assertEquals(2, list.getSize());
 
-        assertEquals(list.findKey(s3), list.removePair(s3, i3));
+        assertEquals(list.find(s3, null), list.remove(s3, i3));
         assertEquals(1, list.getSize());
 
-        assertEquals(list.findKey(s2), list.removePair(s2, i2));
+        assertEquals(list.find(s2, null), list.remove(s2, i2));
         assertEquals(0, list.getSize());
 
         list.insert(s1, i1);
@@ -168,12 +176,12 @@ public class PointNodeListTest extends TestCase {
         list.insert("Middle Earth", new Integer[] { 4000 });
         list.insert(s3, i3);
 
-        assertEquals(list.findKey("Middle Earth"), list.removePair(
+        assertEquals(list.find("Middle Earth", null), list.remove(
             "Middle Earth", new Integer[] { 4000 }));
         assertEquals(3, list.getSize());
 
         // Edge cases
-        assertNull(list.removePair(s1, i2));
+        assertNull(list.remove(s1, i2));
     }
 
 
@@ -182,51 +190,51 @@ public class PointNodeListTest extends TestCase {
      */
     public void testFind() {
         // empty list
-        list.findEntry(s1, i1);
-        list.findKey(s1);
-        list.findValue(i1);
+        list.find(s1, i1);
+        list.find(s1, null);
+        list.find(null, i1);
 
         // Nonexistant
         list.insert(s1, i1);
         list.insert(s2, i2);
         list.insert(s3, i3);
 
-        assertNull(list.findKey("Utopia"));
-        assertNull(list.findValue(new Integer[] { 1516 }));
-        assertFalse(list.findEntry("Utopia", new Integer[] { 1516 }));
+        assertNull(list.find("Utopia", null));
+        assertNull(list.find(null, new Integer[] { 1516 }));
+        assertNull(list.find("Utopia", new Integer[] { 1516 }));
 
         // Existant
-        assertTrue(this.arrayEquals(i1, list.findKey(s1).getValue()));
-        assertTrue(this.arrayEquals(i2, list.findKey(s2).getValue()));
-        assertTrue(this.arrayEquals(i3, list.findKey(s3).getValue()));
+        assertNotNull(this.arrayEquals(i1, list.find(s1, null).getValue()));
+        assertNotNull(this.arrayEquals(i2, list.find(s2, null).getValue()));
+        assertNotNull(this.arrayEquals(i3, list.find(s3, null).getValue()));
 
-        assertEquals(s1, list.findValue(i1).getKey());
-        assertEquals(s2, list.findValue(i2).getKey());
-        assertEquals(s3, list.findValue(i3).getKey());
+        assertEquals(s1, list.find(null, i1).getKey());
+        assertEquals(s2, list.find(null, i2).getKey());
+        assertEquals(s3, list.find(null, i3).getKey());
 
-        assertTrue(list.findEntry(s1, i1));
-        assertTrue(list.findEntry(s2, i2));
-        assertTrue(list.findEntry(s3, i3));
+        assertNotNull(list.find(s1, i1));
+        assertNotNull(list.find(s2, i2));
+        assertNotNull(list.find(s3, i3));
 
-        // Edge cases for findEntry
-        assertFalse(list.findEntry(s1, i2));
+        // Edge cases for find
+        assertNull(list.find(s1, i2));
 
         // Removed
-        list.removeKey(s1);
-        list.removeKey(s3);
-        list.removeKey(s2);
+        list.remove(s1, null);
+        list.remove(s3, null);
+        list.remove(s2, null);
 
-        assertNull(list.findKey(s1));
-        assertNull(list.findKey(s2));
-        assertNull(list.findKey(s3));
+        assertNull(list.find(s1, null));
+        assertNull(list.find(s2, null));
+        assertNull(list.find(s3, null));
 
-        assertNull(list.findValue(i1));
-        assertNull(list.findValue(i2));
-        assertNull(list.findValue(i3));
+        assertNull(list.find(null, i1));
+        assertNull(list.find(null, i2));
+        assertNull(list.find(null, i3));
 
-        assertFalse(list.findEntry(s1, i1));
-        assertFalse(list.findEntry(s2, i2));
-        assertFalse(list.findEntry(s3, i3));
+        assertNull(list.find(s1, i1));
+        assertNull(list.find(s2, i2));
+        assertNull(list.find(s3, i3));
     }
 
 
@@ -264,19 +272,19 @@ public class PointNodeListTest extends TestCase {
         list.insert(s3, i3);
 
         // null
-        assertNull(list.findValue(null));
+        assertNull(list.find(null, null));
 
         // same obj
-        assertNotNull(list.findValue(i1));
+        assertNotNull(list.find(null, i1));
 
         // different length
-        assertNull(list.findValue(new Integer[] { 360, 0, 0 }));
+        assertNull(list.find(null, new Integer[] { 360, 0, 0 }));
 
         // same class, length, diff values
-        assertNull(list.findValue(new Integer[] { 360, 5 }));
+        assertNull(list.find(null, new Integer[] { 360, 5 }));
 
         // same everything
-        assertNotNull(list.findValue(new Integer[] { 360, 0 }));
+        assertNotNull(list.find(null, new Integer[] { 360, 0 }));
     }
     
     /**
@@ -297,7 +305,7 @@ public class PointNodeListTest extends TestCase {
         assertFalse(this.arrayEquals((new Integer[] { 360, 5 }), i1));
 
         // same everything
-        assertNotNull(this.arrayEquals((new Integer[] { 360, 0 }), i1));
+        assertTrue(this.arrayEquals((new Integer[] { 360, 0 }), i1));
     }
 
 

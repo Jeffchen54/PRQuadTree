@@ -50,6 +50,40 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
     // Functions ----------------------------------------------------------
 
 
+    public PointNode<K, V> remove(K key, V[] value) {
+        if (key == null) {
+            if (value == null) {
+                return null;
+            }
+            return removeValue(value); // computes value
+        }
+
+        // Key is not null at this point
+        if (value == null) {
+            return removeKey(key);
+        }
+        return removePair(key, value);
+
+    }
+
+
+    public PointNode<K, V> find(K key, V[] value) {
+        if (key == null) {
+            if (value == null) {
+                return null;
+            }
+            return findValue(value); // computes value
+        }
+
+        // Key is not null at this point
+        if (value == null) {
+            return findKey(key);
+        }
+        return findPair(key, value);
+
+    }
+
+
     /**
      * Inserts K and V into front of list
      * 
@@ -59,11 +93,12 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      *            Value to insert
      * @precondition key or value != null
      */
-    public void insert(K key, V[] value) {
+    public PointNode<K,V> insert(K key, V[] value) {
         PointNode<K, V> temp = head;
         head = new PointNode<K, V>(key, value);
         head.setNext(temp);
         size++;
+        return head;
     }
 
 
@@ -75,7 +110,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return entry removed or null if not found
      * @precondition key != null
      */
-    public PointNode<K, V> removeKey(K key) {
+    private PointNode<K, V> removeKey(K key) {
         PointNode<K, V> temp = head;
         PointNode<K, V> prev = null;
 
@@ -107,7 +142,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return entry removed or null if not found
      * @precondition value != null
      */
-    public PointNode<K, V> removeValue(V[] value) {
+    private PointNode<K, V> removeValue(V[] value) {
         PointNode<K, V> temp = head;
         PointNode<K, V> prev = null;
 
@@ -140,7 +175,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return entry removed or null if not found
      * @precondition key or value != null
      */
-    public PointNode<K, V> removePair(K key, V[] value) {
+    private PointNode<K, V> removePair(K key, V[] value) {
         PointNode<K, V> temp = head;
         PointNode<K, V> prev = null;
 
@@ -172,7 +207,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return first entry matching key
      * @precondition key != null
      */
-    public PointNode<K, V> findKey(K key) {
+    private PointNode<K, V> findKey(K key) {
         PointNode<K, V> temp = head;
 
         for (int i = 0; i < size; i++) {
@@ -194,7 +229,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @return first entry matching value
      * @precondition value != null
      */
-    public PointNode<K, V> findValue(V[] value) {
+    private PointNode<K, V> findValue(V[] value) {
         PointNode<K, V> temp = head;
 
         for (int i = 0; i < size; i++) {
@@ -215,21 +250,21 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      *            key to find
      * @param value
      *            value to find
-     * @return true if found, false if not found
+     * @return first entry matching value and key
      * @precondition key or value != null
      */
-    public boolean findEntry(K key, V[] value) {
+    private PointNode<K, V> findPair(K key, V[] value) {
         PointNode<K, V> temp = head;
 
         for (int i = 0; i < size; i++) {
             if (temp.getKey().compareTo(key) == 0 && this.valueEquals(temp
                 .getValue(), value)) {
-                return true;
+                return temp;
             }
             temp = temp.getNext();
         }
 
-        return false;
+        return null;
     }
 
 
@@ -261,11 +296,10 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      * @param obj
      *            Object to compare to V[] value
      * @return true if data values of 2 objects are identical
+     * @precondition value and obj != null
      */
     private boolean valueEquals(V[] value, V[] obj) {
-        if (obj == null) {
-            return false;
-        }
+
 
         if (obj == value) {
             return true;

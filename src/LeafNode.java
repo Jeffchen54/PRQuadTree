@@ -94,31 +94,15 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      *            value to add
      * @precondition key or value != null
      */
-    public void addPoint(K key, V[] value) {
+    public PointNode<K, V> addPoint(K key, V[] value) {
         if (!this.exists(key, value)) {
-            if (!this.exists(value)) {
+            if (!this.exists(null, value)) {
                 uniquePoints++;
             }
-            points.insert(key, value);
+            return points.insert(key, value);
+            
         }
-    }
-
-
-    /**
-     * Removes a point according to value
-     * 
-     * @param value
-     *            Value to remove
-     * @precondition value not null
-     * @return entry removed
-     */
-    public PointNode<K, V> removePoint(V[] value) {
-
-        PointNode<K, V> temp = points.removeValue(value);
-        if (temp != null && !exists(temp.getValue())) {
-            uniquePoints--;
-        }
-        return temp;
+        return null;
     }
 
 
@@ -129,11 +113,10 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      *            Key to remove
      * @param value
      *            Value to remove
-     * @precondition key or value != null
      */
-    public PointNode<K, V> removeEntry(K key, V[] value) {
-        PointNode<K, V> temp = points.removePair(key, value);
-        if (temp != null && !exists(temp.getValue())) {
+    public PointNode<K, V> remove(K key, V[] value) {
+        PointNode<K, V> temp = points.remove(key, value);
+        if (temp != null && !exists(null, temp.getValue())) {
             uniquePoints--;
         }
         return temp;
@@ -151,19 +134,6 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
 
 
     /**
-     * Checks if the value already exists in the node
-     * 
-     * @param value
-     *            Value to check for existance
-     * @return true if exists, false if not
-     * @precondition value != null
-     */
-    public boolean exists(V[] value) {
-        return (points.findValue(value) != null);
-    }
-
-
-    /**
      * Checks if the value and key already exists in the node
      * 
      * @param key
@@ -174,7 +144,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * @precondition key or value != null
      */
     public boolean exists(K key, V[] value) {
-        return (points.findEntry(key, value));
+        return (points.find(key, value)) != null;
     }
 
     // Deprecated Inner Node class --------------------------------------------
