@@ -69,11 +69,23 @@ public class PRQuadTreeTest extends TestCase {
     /**
      * Tests commands from P2 input
      */
+    @Ignore
     public void testP2Input() {
         tree.insert("p_p", new Integer[]{1, 20});
         tree.insert("p", new Integer[]{10, 30});
         tree.insert("p_42", new Integer[]{1, 20});
         tree.insert("far_point", new Integer[]{200, 200});
+        tree.peek();
+    }
+    
+    /**
+     * Edge cases
+     */
+    public void testEdgeCases() {
+        tree.insert("NE", new Integer[] {512, 1024});
+        tree.insert("SE", new Integer[] {512,512});
+        tree.insert("Buffer", new Integer[] {0,0});
+        tree.insert("Buffer", new Integer[] {1,0});
         tree.peek();
     }
 }

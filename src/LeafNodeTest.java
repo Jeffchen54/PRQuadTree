@@ -82,13 +82,13 @@ public class LeafNodeTest extends TestCase {
         assertEquals(s1, iter.next().getKey());
 
         // Adding dupe entry
-        assertEquals(3, node1.getSize());
+        assertEquals(3, node1.getNumUniquePoints());
         node1.addPoint(s1, i1);
-        assertEquals(3, node1.getSize());
+        assertEquals(3, node1.getNumUniquePoints());
 
         // Adding value dupe entry
         node1.addPoint(s1, i2);
-        assertEquals(3, node1.getSize());
+        assertEquals(3, node1.getNumUniquePoints());
         assertTrue(node1.exists(s1, i2));
 
         // remove points
@@ -107,33 +107,33 @@ public class LeafNodeTest extends TestCase {
      */
     public void testSize() {
         // Empty
-        assertEquals(0, node1.getSize());
+        assertEquals(0, node1.getNumUniquePoints());
 
         // Entries
         node1.addPoint(s1, i1);
-        assertEquals(1, node1.getSize());
+        assertEquals(1, node1.getNumUniquePoints());
 
         node1.addPoint(s2, i2);
-        assertEquals(2, node1.getSize());
+        assertEquals(2, node1.getNumUniquePoints());
 
         // Dupe entry
         node1.addPoint(s1, i1);
-        assertEquals(2, node1.getSize());
+        assertEquals(2, node1.getNumUniquePoints());
 
         // Removing dupe values
         node1.addPoint(s1, i2);
         node1.addPoint(s3, i2);
-        assertEquals(2, node1.getSize());
+        assertEquals(2, node1.getNumUniquePoints());
         assertNotNull(node1.removeEntry(s1, i2));
         assertNotNull(node1.removePoint(i2));
-        assertEquals(2, node1.getSize());
+        assertEquals(2, node1.getNumUniquePoints());
 
         // All removed
         node1.removeEntry(s1, i1);
-        assertEquals(1, node1.getSize());
+        assertEquals(1, node1.getNumUniquePoints());
 
         node1.removeEntry(s2, i2);
-        assertEquals(0, node1.getSize());
+        assertEquals(0, node1.getNumUniquePoints());
     }
 
 

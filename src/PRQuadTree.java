@@ -1,9 +1,5 @@
 import java.util.Iterator;
 import java.util.LinkedList;
-import spacecolonies.BaseNode;
-import spacecolonies.LeafNode;
-import spacecolonies.ParentNode;
-import spacecolonies.PointNode;
 
 // On my honor:
 //
@@ -309,35 +305,37 @@ public class PRQuadTree {
         Integer[] lower,
         Integer[] upper) {
 
+        // Some arithmetic to simplify the problem a bit
         int x = dest[0] - midpoint[0];
         int y = dest[1] - midpoint[1];
 
-        if (x <= 0) {
-            if (y <= 0) {
-                return 0;
+        if (x < 0) {
+            if (y < 0) {
+                return 0; // NW
             }
             else {
-                return 3;
+                return 3; // SW
             }
         }
 
         if (x >= 0) {
-            if (y >= 0) {
-                return 2;
+            if (y <= 0) {
+                return 2; // SE
             }
             else {
-                return 1;
+                return 1; // NE
             }
         }
 
         return -1;
     }
-    
+
+
     /**
      * For peeking at tree for testing
      */
     public void peek() {
-        // TODO remove when dump is complete. 
+        // TODO remove when dump is complete.
     }
 
     // Iterator ---------------------------------------------------------------
@@ -356,6 +354,7 @@ public class PRQuadTree {
         private LinkedList<BaseNode<String, Integer>> parentList;
         private BaseNode<String, Integer> head;
         private int count;
+
         // Constructor ------------------------------------------------------
         /**
          * Initializes the iterator by setting the cursor to the first node
@@ -365,12 +364,12 @@ public class PRQuadTree {
             list = new LinkedList<BaseNode<String, Integer>>();
             head = list.getFirst();
             count = 0;
-            
+
         }
 
         // Functions --------------------------------------------------------
-        
-        
+
+
         /** {@inheritDoc} */
         @Override
         public boolean hasNext() {
@@ -379,7 +378,7 @@ public class PRQuadTree {
             return count != list.size();
         }
 
-        
+
         /** {@inheritDoc} */
         @Override
         public BaseNode<String, Integer> next() {
@@ -387,17 +386,16 @@ public class PRQuadTree {
             if (!hasNext()) {
                 return null;
             }
-            
+
             // TODO modify code
             // SkipNode<String, Integer> temp = cursor;
             // cursor = cursor.getForward()[0];
             // return temp;
             BaseNode<String, Integer> next = list.get(count);
-            count ++;
+            count++;
             return next;
-            
-        }
 
+        }
 
         /**
          * Performs a single step in preorder traversal.
@@ -405,26 +403,32 @@ public class PRQuadTree {
          * @return node after taking a step
          * @implNote Set as cursor in next
          */
-        private BaseNode<String, Integer> preorderTraversal(BaseNode<String, Integer> start) {
-            // TODO implementation and change return type
-            
-                if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() == NodeClassification.ParentNode) {
-                    //System.out.print("Node at ");
-                    return ((ParentNode<String, Integer>)start).getChild(i);
-                    
-                }
-                if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() == NodeClassification.FlyweightNode) {
-                    //empty node
-                    return start;
-                }
-                LeafNode<String, Integer> leaf = (LeafNode<String, Integer>)((ParentNode<String, Integer>)start).getChild(i);
-                Iterator<PointNode<String, Integer>> pointIte = leaf.getPoints();
-                
-            
-
-            
-            return null;
-        }
+        /*
+         * private BaseNode<String, Integer> preorderTraversal(BaseNode<String,
+         * Integer> start) {
+         * // TODO implementation and change return type
+         * 
+         * if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() ==
+         * NodeClassification.ParentNode) {
+         * //System.out.print("Node at ");
+         * return ((ParentNode<String, Integer>)start).getChild(i);
+         * 
+         * }
+         * if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() ==
+         * NodeClassification.FlyweightNode) {
+         * //empty node
+         * return start;
+         * }
+         * LeafNode<String, Integer> leaf = (LeafNode<String,
+         * Integer>)((ParentNode<String, Integer>)start).getChild(i);
+         * Iterator<PointNode<String, Integer>> pointIte = leaf.getPoints();
+         * 
+         * 
+         * 
+         * 
+         * return null;
+         * }
+         */
 
     }
 
