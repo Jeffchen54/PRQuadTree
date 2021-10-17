@@ -493,13 +493,11 @@ public class PRQuadTree {
      * @precondition dimensions and other are valid rectangle dimensions
      */
     private boolean withinRegion(Integer[] region, Integer[] point) {
-        if (region[0].compareTo(point[0]) == 0 && 
-            region[1].compareTo(point[1]) == 0) {
-            return true;
-        }
 
-        return ((point[0] >= region[0] && point[0] < region[0] + region[2])
-            && (point[1] >= region[1] && point[1] < region[1] + region[3]));
+        return (region[0].compareTo(point[0]) == 0 && region[1].compareTo(
+            point[1]) == 0) || point[0] >= region[0] && point[0] < region[0]
+                + region[2] && point[1] >= region[1] && point[1] < region[1]
+                    + region[3];
     }
 
 

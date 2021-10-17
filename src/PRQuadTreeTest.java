@@ -1,5 +1,4 @@
 import java.util.Iterator;
-import org.junit.Ignore;
 import student.TestCase;
 
 // On my honor:
@@ -97,16 +96,18 @@ public class PRQuadTreeTest extends TestCase {
             new Integer[] { 0, 0, 25, 25 });
 
         Iterator<PointNode<String, Integer>> iter = list.getIterator();
-        this.printValue(iter);
+        assertTrue(arrayEquals(new Integer[] {1,20}, iter.next().getValue()));
+        assertTrue(arrayEquals(new Integer[] {1,20}, iter.next().getValue()));
+        assertFalse(iter.hasNext());
 
         assertEquals(4, list.numVisited());
-        
-        PointNodeList<String, Integer>.ValueRecordNode record = tree.duplicates();
+
+        PointNodeList<String, Integer>.ValueRecordNode record = tree
+            .duplicates();
         assertEquals(2, record.getCount());
-        assertTrue(this.arrayEquals(new Integer[] {1, 20}, record.getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 1, 20 }, record
+            .getValue()));
         assertNull(record.getNext());
-        
-        
 
     }
 
@@ -191,7 +192,6 @@ public class PRQuadTreeTest extends TestCase {
      */
     public void testRegionSearch() {
 
-        
         // Empty list region search
         RegionSearchList<String, Integer> list = tree.regionSearch(
             new Integer[] { 0, 0, 25, 25 });
@@ -205,67 +205,98 @@ public class PRQuadTreeTest extends TestCase {
         tree.insert("b2", new Integer[] { 553, 1 });
 
         list = tree.regionSearch(new Integer[] { 0, 0, 768, 768 });
-        this.printValue(list.getIterator());
+        Iterator<PointNode<String, Integer>> iter = list.getIterator();
+        assertTrue(this.arrayEquals(new Integer[] { 553, 1 }, iter.next()
+            .getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 551, 1 }, iter.next()
+            .getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 2, 1 }, iter.next()
+            .getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 1, 1 }, iter.next()
+            .getValue()));
         assertEquals(5, list.numVisited());
 
         list = tree.regionSearch(new Integer[] { 752, 752, 224, 224 });
-        this.printValue(list.getIterator());
+        iter = list.getIterator();
+        assertFalse(iter.hasNext());
         assertEquals(2, list.numVisited());
-        
+
         // Edge cases
         tree = new PRQuadTree(min, max);
         tree.insert("NE", new Integer[] { 700, 200 });
         tree.insert("SW", new Integer[] { 200, 700 });
         tree.insert("SE", new Integer[] { 700, 700 });
-        tree.insert("NW", new Integer[] {200,200});
-        
+        tree.insert("NW", new Integer[] { 200, 200 });
+
         // All 4 sides, not intersecting NW point
-        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {0,0,100,400}).getIterator()).hasNext());
-        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {300,300,100,400}).getIterator()).hasNext());
-        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {0,0,400,100}).getIterator()).hasNext());
-        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {300,300,400,100}).getIterator()).hasNext());
-        
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(
+            new Integer[] { 0, 0, 100, 400 }).getIterator()).hasNext());
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(
+            new Integer[] { 300, 300, 100, 400 }).getIterator()).hasNext());
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(
+            new Integer[] { 0, 0, 400, 100 }).getIterator()).hasNext());
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(
+            new Integer[] { 300, 300, 400, 100 }).getIterator()).hasNext());
+
         // Well within bounds of NW
-        Iterator<PointNode<String, Integer>> iter = tree.regionSearch(new Integer[] {0,0,400,400}).getIterator();
-        assertTrue(arrayEquals(new Integer[] {200,200}, iter.next().getValue()));
-        
+        iter = tree.regionSearch(new Integer[] { 0, 0, 400, 400 })
+            .getIterator();
+        assertTrue(arrayEquals(new Integer[] { 200, 200 }, iter.next()
+            .getValue()));
+
         // 4 edge bounds
-        iter = tree.regionSearch(new Integer[] {0,0,200, 400}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 0, 200, 400 })
+            .getIterator();
         assertFalse(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] {200,0,200, 400}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 200, 0, 200, 400 })
+            .getIterator();
         assertTrue(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] {0,0,400, 200}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 0, 400, 200 })
+            .getIterator();
         assertFalse(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] {0,200,400, 200}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 200, 400, 200 })
+            .getIterator();
         assertTrue(iter.hasNext());
-        
+
         // Corner cases
-        iter = tree.regionSearch(new Integer[] {0,0,200, 200}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 0, 200, 200 })
+            .getIterator();
         assertFalse(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] {200,0,200, 200}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 200, 0, 200, 200 })
+            .getIterator();
         assertFalse(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] {0,200,200, 200}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 200, 200, 200 })
+            .getIterator();
         assertFalse(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] {200,200,200, 200}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 200, 200, 200, 200 })
+            .getIterator();
         assertTrue(iter.hasNext());
-        
+
         // entire space
-        iter = tree.regionSearch(new Integer[] {0,0, 1024, 1024}).getIterator();
-        assertTrue(this.arrayEquals(new Integer[] {200, 700}, iter.next().getValue()));
-        assertTrue(this.arrayEquals(new Integer[] {700, 700}, iter.next().getValue()));
-        assertTrue(this.arrayEquals(new Integer[] {700, 200}, iter.next().getValue()));
-        assertTrue(this.arrayEquals(new Integer[] {200, 200}, iter.next().getValue()));
+        iter = tree.regionSearch(new Integer[] { 0, 0, 1024, 1024 })
+            .getIterator();
+        assertTrue(this.arrayEquals(new Integer[] { 200, 700 }, iter.next()
+            .getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 700, 700 }, iter.next()
+            .getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 700, 200 }, iter.next()
+            .getValue()));
+        assertTrue(this.arrayEquals(new Integer[] { 200, 200 }, iter.next()
+            .getValue()));
         assertFalse(iter.hasNext());
-        
+
         // Point intersection
-        iter = tree.regionSearch(new Integer[] {200,200, 0, 0}).getIterator();
-        assertTrue(this.arrayEquals(new Integer[] {200, 200}, iter.next().getValue()));
+        iter = tree.regionSearch(new Integer[] { 200, 200, 0, 0 })
+            .getIterator();
+        assertTrue(this.arrayEquals(new Integer[] { 200, 200 }, iter.next()
+            .getValue()));
         assertFalse(iter.hasNext());
-        
+
         // no intersections
-        iter = tree.regionSearch(new Integer[] {0,0, 10, 10}).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 0, 10, 10 }).getIterator();
         assertFalse(iter.hasNext());
-        
+        iter = tree.regionSearch(new Integer[] { 0, 250, 250, 0 }).getIterator();
+        assertFalse(iter.hasNext());
 
     }
 
