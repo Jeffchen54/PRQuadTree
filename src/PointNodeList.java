@@ -35,6 +35,7 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
 
     // Fields -------------------------------------------------------------
     private PointNode<K, V> head;
+    private ValueRecord record;
     private int size;
 
     // Constructor --------------------------------------------------------
@@ -45,24 +46,34 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
     public PointNodeList() {
         head = null;
         size = 0;
+        record = new ValueRecord();
     }
 
     // Functions ----------------------------------------------------------
 
 
     public PointNode<K, V> remove(K key, V[] value) {
+        PointNode<K, V> temp = null;
         if (key == null) {
             if (value == null) {
                 return null;
             }
-            return removeValue(value); // computes value
+            temp = removeValue(value);
+
         }
 
         // Key is not null at this point
-        if (value == null) {
-            return removeKey(key);
+        else if (value == null) {
+            temp = removeKey(key);
+
         }
-        return removePair(key, value);
+        else {
+            temp = removePair(key, value);
+        }
+        if (temp != null) {
+            record.remove(temp.getValue());
+        }
+        return temp; // computes value
 
     }
 
@@ -93,11 +104,12 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      *            Value to insert
      * @precondition key or value != null
      */
-    public PointNode<K,V> insert(K key, V[] value) {
+    public PointNode<K, V> insert(K key, V[] value) {
         PointNode<K, V> temp = head;
         head = new PointNode<K, V>(key, value);
         head.setNext(temp);
         size++;
+        record.insert(value);
         return head;
     }
 
@@ -278,6 +290,11 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
     }
 
 
+    public ValueRecordNode reportDuplicates() {
+        return record.reportDuplicates();
+    }
+
+
     /**
      * Returns an iterator of the whole list
      * 
@@ -300,7 +317,6 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
      */
     private boolean valueEquals(V[] value, V[] obj) {
 
-
         if (obj == value) {
             return true;
         }
@@ -317,6 +333,123 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
         return true;
 
     }
+
+    public class ValueRecordNode {
+        // Fields --------------------------------------------------------------
+        private ValueRecordNode next;
+        private int count;
+        private V[] data;
+
+        public ValueRecordNode(V[] data, int count) {
+            this.data = data;
+            this.count = count;
+            next = null;
+        }
+
+
+        public V[] getValue() {
+            return data;
+        }
+
+
+        public int getCount() {
+            return count;
+        }
+
+
+        public ValueRecordNode getNext() {
+            return next;
+        }
+
+
+        public void setNext(ValueRecordNode next) {
+            this.next = next;
+        }
+    }
+
+
+// ValueRecord ---------------------------------------------------
+    public class ValueRecord {
+        private ValueRecordNode head;
+
+        public ValueRecord() {
+            head = null;
+        }
+
+
+        public void remove(V[] value) {
+
+            ValueRecordNode temp = head;
+            ValueRecordNode prev = null;
+            boolean found = false;
+
+            while (temp != null && !found) {
+                if (valueEquals(temp.data, value)) {
+                    // Decrements count of value
+                    temp.count--;
+
+                    // Removal case
+                    if (temp.count < 2) {
+                        // Head cases
+                        if (temp == head) {
+                            head = head.getNext();
+                        }
+                        else {
+                            prev.setNext(temp.getNext());
+                        }
+                    }
+                    found = true;
+                }
+                prev = temp;
+                temp = temp.getNext();
+            }
+        }
+
+
+        public void insert(V[] value) {
+
+            ValueRecordNode temp = head;
+            boolean found = false;
+
+            while (temp != null && !found) {
+                if (valueEquals(temp.data, value)) {
+                    found = true;
+                    temp.count++;
+                }
+                temp = temp.next;
+            }
+
+            if (!found) {
+                // Not found
+                temp = head;
+                head = new ValueRecordNode(value, 1);
+                head.setNext(temp);
+            }
+        }
+
+
+        public ValueRecordNode reportDuplicates() {
+            ValueRecordNode curr = head;
+            ValueRecordNode record = null;
+
+            while (curr != null) {
+                if (curr.count > 1) {
+                    if (record == null) {
+                        record = new ValueRecordNode(curr.data, curr.count);
+                    }
+                    else {
+                        ValueRecordNode dupe = new ValueRecordNode(curr.data,
+                            curr.count);
+                        dupe.next = record;
+                        record = dupe;
+                    }
+                }
+                curr = curr.next;
+            }
+            return record;
+        }
+    }
+
 
     // Iterator --------------------------------------------------------------
     // Java Doc ---------------------------------------------------------------

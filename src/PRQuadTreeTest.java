@@ -45,7 +45,6 @@ public class PRQuadTreeTest extends TestCase {
 
 
     // Tests ----------------------------------------------------------------
-    @Ignore
     public void testInsert() {
         // Inserts onto empty list
         assertTrue(tree.insert("Hello World", new Integer[] { 0, 125 }));
@@ -77,7 +76,6 @@ public class PRQuadTreeTest extends TestCase {
     /**
      * Tests commands from P2 input
      */
-    @Ignore
     public void testP2Input() {
         assertTrue(tree.insert("p_p", new Integer[] { 1, 20 }));
         assertTrue(tree.insert("p", new Integer[] { 10, 30 }));
@@ -100,8 +98,15 @@ public class PRQuadTreeTest extends TestCase {
 
         Iterator<PointNode<String, Integer>> iter = list.getIterator();
         this.printValue(iter);
-       
+
         assertEquals(4, list.numVisited());
+        
+        PointNodeList<String, Integer>.ValueRecordNode record = tree.duplicates();
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(new Integer[] {1, 20}, record.getValue()));
+        assertNull(record.getNext());
+        
+        
 
     }
 
@@ -185,6 +190,8 @@ public class PRQuadTreeTest extends TestCase {
      * Tests regionSearch
      */
     public void testRegionSearch() {
+
+        
         // Empty list region search
         RegionSearchList<String, Integer> list = tree.regionSearch(
             new Integer[] { 0, 0, 25, 25 });
@@ -200,18 +207,167 @@ public class PRQuadTreeTest extends TestCase {
         list = tree.regionSearch(new Integer[] { 0, 0, 768, 768 });
         this.printValue(list.getIterator());
         assertEquals(5, list.numVisited());
-        
-        list = tree.regionSearch(new Integer[] {752,752,224,224});
+
+        list = tree.regionSearch(new Integer[] { 752, 752, 224, 224 });
         this.printValue(list.getIterator());
         assertEquals(2, list.numVisited());
+        
+        // Edge cases
+        tree = new PRQuadTree(min, max);
+        tree.insert("NE", new Integer[] { 700, 200 });
+        tree.insert("SW", new Integer[] { 200, 700 });
+        tree.insert("SE", new Integer[] { 700, 700 });
+        tree.insert("NW", new Integer[] {200,200});
+        
+        // All 4 sides, not intersecting NW point
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {0,0,100,400}).getIterator()).hasNext());
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {300,300,100,400}).getIterator()).hasNext());
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {0,0,400,100}).getIterator()).hasNext());
+        assertFalse(((Iterator<PointNode<String, Integer>>)tree.regionSearch(new Integer[] {300,300,400,100}).getIterator()).hasNext());
+        
+        // Well within bounds of NW
+        Iterator<PointNode<String, Integer>> iter = tree.regionSearch(new Integer[] {0,0,400,400}).getIterator();
+        assertTrue(arrayEquals(new Integer[] {200,200}, iter.next().getValue()));
+        
+        // 4 edge bounds
+        iter = tree.regionSearch(new Integer[] {0,0,200, 400}).getIterator();
+        assertFalse(iter.hasNext());
+        iter = tree.regionSearch(new Integer[] {200,0,200, 400}).getIterator();
+        assertTrue(iter.hasNext());
+        iter = tree.regionSearch(new Integer[] {0,0,400, 200}).getIterator();
+        assertFalse(iter.hasNext());
+        iter = tree.regionSearch(new Integer[] {0,200,400, 200}).getIterator();
+        assertTrue(iter.hasNext());
+        
+        // Corner cases
+        iter = tree.regionSearch(new Integer[] {0,0,200, 200}).getIterator();
+        assertFalse(iter.hasNext());
+        iter = tree.regionSearch(new Integer[] {200,0,200, 200}).getIterator();
+        assertFalse(iter.hasNext());
+        iter = tree.regionSearch(new Integer[] {0,200,200, 200}).getIterator();
+        assertFalse(iter.hasNext());
+        iter = tree.regionSearch(new Integer[] {200,200,200, 200}).getIterator();
+        assertTrue(iter.hasNext());
+        
+        // entire space
+        iter = tree.regionSearch(new Integer[] {0,0, 1024, 1024}).getIterator();
+        assertTrue(this.arrayEquals(new Integer[] {200, 700}, iter.next().getValue()));
+        assertTrue(this.arrayEquals(new Integer[] {700, 700}, iter.next().getValue()));
+        assertTrue(this.arrayEquals(new Integer[] {700, 200}, iter.next().getValue()));
+        assertTrue(this.arrayEquals(new Integer[] {200, 200}, iter.next().getValue()));
+        assertFalse(iter.hasNext());
+        
+        // Point intersection
+        iter = tree.regionSearch(new Integer[] {200,200, 0, 0}).getIterator();
+        assertTrue(this.arrayEquals(new Integer[] {200, 200}, iter.next().getValue()));
+        assertFalse(iter.hasNext());
+        
+        // no intersections
+        iter = tree.regionSearch(new Integer[] {0,0, 10, 10}).getIterator();
+        assertFalse(iter.hasNext());
+        
+
+    }
+
+
+    /**
+     * Tests duplicates
+     */
+    public void testDuplicates() {
+        // Empty
+        assertNull(tree.duplicates());
+
+        // No duplicates 1 leaf
+        tree.insert("NW1", new Integer[] { 0, 200 });
+        tree.insert("Non dupe NW", new Integer[] { 0, 201 });
+        assertNull(tree.duplicates());
+
+        // Duplicates 1 leaf
+        tree.insert("NW2", new Integer[] { 0, 200 });
+        PointNodeList<String, Integer>.ValueRecordNode record = tree
+            .duplicates();
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 0,
+            200 }));
+
+        // Branching duplicates each leaf
+        tree.insert("NE1", new Integer[] { 800, 200 });
+        tree.insert("NE2", new Integer[] { 800, 200 });
+        tree.insert("SE1", new Integer[] { 800, 800 });
+        tree.insert("SE2", new Integer[] { 800, 800 });
+        tree.insert("SW1", new Integer[] { 200, 800 });
+        tree.insert("SW2", new Integer[] { 200, 800 });
+        record = tree.duplicates();
+
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 0,
+            200 }));
+        record = record.getNext();
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 800,
+            200 }));
+        record = record.getNext();
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 800,
+            800 }));
+        record = record.getNext();
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 200,
+            800 }));
+        record = record.getNext();
+        assertNull(record);
+
+        // Removing NE and SW duplicates
+        tree.remove(null, new Integer[] { 800, 200 });
+        tree.remove(null, new Integer[] { 200, 800 });
+        record = tree.duplicates();
+
+        assertEquals(2, record.getCount());
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 0,
+            200 }));
+        record = record.getNext();
+        assertTrue(this.arrayEquals(record.getValue(), new Integer[] { 800,
+            800 }));
+        record = record.getNext();
+        assertNull(record);
+    }
+
+
+    /**
+     * Quick function to check contents of 2 Integer Arrays
+     * 
+     * @param value
+     *            Array to compare
+     * @param obj
+     *            Array to compare
+     * @return true if data values of 2 Arrays are identical
+     */
+    private boolean arrayEquals(Integer[] value, Integer[] obj) {
+        if (obj == null || value == null) {
+            return false;
+        }
+
+        if (obj == value) {
+            return true;
+        }
+
+        if (obj.length != value.length) {
+            return false;
+        }
+
+        for (int i = 0; i < value.length; i++) {
+            if (value[i].compareTo(obj[i]) != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
     /**
      * 
      */
-    private void printValue(
-        Iterator<PointNode<String, Integer>> iter) {
+    private void printValue(Iterator<PointNode<String, Integer>> iter) {
 
         while (iter.hasNext()) {
             System.out.print("{");

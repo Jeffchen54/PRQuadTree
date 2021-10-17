@@ -46,23 +46,20 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
     private PointNodeList<K, V> points;
     private static final NodeClassification CLASSIFICATION =
         NodeClassification.LeafNode;
-    private int uniquePoints;
 
     // Constructor -----------------------------------------------------------
     public LeafNode() {
         points = new PointNodeList<K, V>();
-        uniquePoints = 0;
     }
 
-
     // Functions -------------------------------------------------------------
+
+
     /**
-     * return size for a leafNode, duplicate valued points are counted once
-     * 
-     * @return
+     * Reports number of points that share the same value
      */
-    public int getNumUniquePoints() {
-        return uniquePoints;
+    public PointNodeList<K, V>.ValueRecordNode getDuplicates() {
+        return points.reportDuplicates();
     }
 
 
@@ -96,11 +93,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      */
     public PointNode<K, V> addPoint(K key, V[] value) {
         if (!this.exists(key, value)) {
-            if (!this.exists(null, value)) {
-                uniquePoints++;
-            }
             return points.insert(key, value);
-            
         }
         return null;
     }
@@ -116,9 +109,6 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      */
     public PointNode<K, V> remove(K key, V[] value) {
         PointNode<K, V> temp = points.remove(key, value);
-        if (temp != null && !exists(null, temp.getValue())) {
-            uniquePoints--;
-        }
         return temp;
     }
 

@@ -338,5 +338,47 @@ public class PointNodeListTest extends TestCase {
         }
         return true;
     }
+    
+    /**
+     * Duplicate values
+     */
+    public void testDupeValues() {
+        // Inserting 3 dupes and 2 non dupe regular entries
+        list.insert(s1, i1);
+        list.insert(s2, i1);
+        list.insert(s3, i1);
+        list.insert(s2, i2);
+        list.insert(s3, i3);
+        
+        // reporting the dupes
+        PointNodeList<String, Integer>.ValueRecordNode record = list.reportDuplicates();
+        
+        assertEquals(3, record.getCount());
+        assertTrue(arrayEquals(record.getValue(), i1));
+        assertNull(record.getNext());
+        
+        // List now contains 3 kinds of dupe values and 1 non dupe
+        list.insert(s1, i2);
+        list.insert(s1, i3);
+        list.insert(s1, new Integer[] {999,666});
+        record = list.reportDuplicates();
+        
+        assertEquals(3, record.getCount());
+        assertTrue(arrayEquals(record.getValue(), i1));
+        assertNotNull(record = record.getNext());
+        assertEquals(2, record.getCount());
+        assertTrue(arrayEquals(record.getValue(), i2));
+        assertNotNull(record = record.getNext());
+        assertEquals(2, record.getCount());
+        assertTrue(arrayEquals(record.getValue(), i3));
+        assertNull(record.getNext());
+        
+        // Removing dupes until all are unique
+        list.remove(null, i1);
+        list.remove(null, i1);
+        list.remove(null, i2);
+        list.remove(null, i3);
+        assertNull(list.reportDuplicates());
+    }
 
 }

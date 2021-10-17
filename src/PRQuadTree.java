@@ -126,9 +126,8 @@ public class PRQuadTree {
      * @implNote Explore each branch separetly and pick out all dupes.
      * @implNote same return type and method as regionSearch()
      */
-    public Integer[][] duplicates() {
-        // TODO implementation and change return type
-        return null;
+    public PointNodeList<String, Integer>.ValueRecordNode duplicates() {
+        return this.duplicate(rt, null);
     }
 
 
@@ -281,6 +280,53 @@ public class PRQuadTree {
     }
 
 
+    private PointNodeList<String, Integer>.ValueRecordNode duplicate(
+        BaseNode<String, Integer> curr,
+        PointNodeList<String, Integer>.ValueRecordNode tail) {
+        // Base case, reached destination
+        if (curr.getNodeClass() != NodeClassification.ParentNode) {
+
+            // For flyweight
+            if (curr.getNodeClass() == NodeClassification.FlyweightNode) {
+                return null;
+            }
+
+            // For leaf
+            else {
+                LeafNode<String, Integer> leaf =
+                    (LeafNode<String, Integer>)curr;
+
+                return leaf.getDuplicates();
+
+            }
+        }
+
+        // Parent node, visits all children
+        ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
+        PointNodeList<String, Integer>.ValueRecordNode head = tail;
+        for (int i = 0; i < 4; i++) {
+            if (head == null) {
+                head = duplicate(parent.getChild(i), tail);
+                tail = head;
+            }
+            else {
+                tail = incrementTail(tail);
+                tail.setNext(duplicate(parent.getChild(i), tail));
+            }
+        }
+        return head;
+    }
+
+
+    private PointNodeList<String, Integer>.ValueRecordNode incrementTail(
+        PointNodeList<String, Integer>.ValueRecordNode head) {
+        while (head.getNext() != null) {
+            head = head.getNext();
+        }
+        return head;
+    }
+
+
     /**
      * Applies decomposition rule to a leafnode
      * 
@@ -292,7 +338,8 @@ public class PRQuadTree {
         LeafNode<String, Integer> leaf,
         Integer[] min,
         Integer[] max) {
-        if (leaf.getNumUniquePoints() > 1 && leaf.getTotalSize() > 3) {
+        if ((leaf.getDuplicates() == null || leaf.getDuplicates()
+            .getCount() != leaf.getTotalSize()) && leaf.getTotalSize() > 3) {
             ParentNode<String, Integer> parent = new ParentNode<>(empty);
             Iterator<PointNode<String, Integer>> iter = leaf.getPoints();
 
@@ -363,22 +410,15 @@ public class PRQuadTree {
             if (y < 0) {
                 return 0; // NW
             }
-            else {
-                return 3; // SW
-            }
+            return 3; // SW
+
         }
 
-        if (x >= 0) {
-            if (y >= 0) {
-                return 2; // SE
-            }
-            else {
-                return 1; // NE
-
-            }
+        if (y >= 0) {
+            return 2; // SE
         }
+        return 1; // NE
 
-        return -1;
     }
 
 
@@ -453,13 +493,13 @@ public class PRQuadTree {
      * @precondition dimensions and other are valid rectangle dimensions
      */
     private boolean withinRegion(Integer[] region, Integer[] point) {
+        if (region[0].compareTo(point[0]) == 0 && 
+            region[1].compareTo(point[1]) == 0) {
+            return true;
+        }
 
-        return ((point[0] <= region[0] && point[0] > region[0])
-            || ((point[0] >= region[0] && point[0] < region[0] + region[2])))
-
-            && ((point[1] <= region[1] && point[1] > region[1])
-                || ((point[1] >= region[1] && point[1] < region[1]
-                    + region[3])));
+        return ((point[0] >= region[0] && point[0] < region[0] + region[2])
+            && (point[1] >= region[1] && point[1] < region[1] + region[3]));
     }
 
 
