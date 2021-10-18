@@ -41,7 +41,8 @@ public class PRQuadTree {
     private Integer[] min;
     private Integer[] max;
     private BaseNode<String, Integer> rt;
-    private FlyweightNode<String, Integer> empty;
+    @SuppressWarnings("rawtypes")
+    private static FlyweightNode empty = new FlyweightNode();
     private PointNode<String, Integer> bufferSlot; // Saves last removed entry
 
     private LinkedList<BaseNode<String, Integer>> nodeList; // this is for dump
@@ -318,6 +319,7 @@ public class PRQuadTree {
                 break;
         }
 
+        // refactor parent
         boolean isParent = false;
         int totalPoints = 0;
         int flyweights = 0;
@@ -344,8 +346,13 @@ public class PRQuadTree {
             }
         }
 
-        if (!isParent && totalPoints <= 3 && flyweights < 3) {
-            return combination;
+        if (!isParent) {
+            if (totalPoints <= 3) {
+                return combination;
+            }
+            if(flyweights == 3) {
+                return combination;
+            }
         }
         return parent;
 

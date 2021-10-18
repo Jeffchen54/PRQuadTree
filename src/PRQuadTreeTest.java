@@ -84,7 +84,6 @@ public class PRQuadTreeTest extends TestCase {
         assertTrue(tree.insert("p_42", new Integer[] { 1, 20 }));
         assertTrue(tree.insert("far_point", new Integer[] { 200, 200 }));
         tree.peek();
-
         assertEquals("p_p", tree.remove("p_p", new Integer[] { 1, 20 })
             .getKey());
         assertEquals("p", tree.remove(null, new Integer[] { 10, 30 }).getKey());
@@ -113,6 +112,11 @@ public class PRQuadTreeTest extends TestCase {
         assertTrue(this.arrayEquals(new Integer[] { 1, 20 }, record
             .getValue()));
         assertNull(record.getNext());
+        
+        tree.peek();
+        tree.remove("p_p", new Integer[] {1,20});
+        tree.remove(null, new Integer[] {10,30});
+        tree.peek();
 
     }
 

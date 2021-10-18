@@ -35,7 +35,6 @@ public class ParentNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
     // Fields --------------------------------------------------------------
     private BaseNode<K, V>[] children;
     private NodeClassification type;
-    private FlyweightNode<K, V> empty;
     private static final int NUMCHILDREN = 4;
 
     // Constructor ---------------------------------------------------------
@@ -49,7 +48,6 @@ public class ParentNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
     public ParentNode(FlyweightNode<K, V> empty) {
         children = (BaseNode<K, V>[])new BaseNode[NUMCHILDREN];
         type = NodeClassification.ParentNode;
-        this.empty = empty;
 
         for (int i = 0; i < NUMCHILDREN; i++) {
             children[i] = empty;
