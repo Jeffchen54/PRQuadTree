@@ -42,7 +42,7 @@ public class RectangleControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-        controller = new RectangleController(new File("P2test2.txt"));
+        
     }
 
     // Tests ------------------------------------------------------------------
@@ -54,58 +54,74 @@ public class RectangleControllerTest extends TestCase {
      * 
      * @throws FileNotFoundException
      */
-    
-    public void testRun() throws FileNotFoundException {
-        controller.runAll();
-        assertFuzzyEquals("Rectangle rejected: (r_r, -1, -20, 3, 4)\r\n"
-            + "Rectangle rejected: (rec, 7, -8, 1, 3)\r\n"
-            + "Rectangle rejected: (virtual_rec0, 1, 1, 0, 0)\r\n"
-            + "Rectangle rejected: (virtual_REC0, 0, 0, 11, 0)\r\n"
-            + "Rectangle rejected: (inExistRec_0, 1, 1, -1, -2)\r\n"
-            + "Rectangle inserted: (r1, 10, 10, 5, 5)\r\n"
-            + "Rectangle rejected: (11, 11, 0, 0)\r\n"
-            + "Rectangle inserted: (r2, 15, 15, 5, 5)\r\n"
-            + "Rectangle inserted: (r3, 7, 7, 10, 10)\r\n"
-            + "Rectangle inserted: (r4, 20, 25, 7, 9)\r\n"
-            + "Rectangle inserted: (r4, 20, 12, 3, 3)\r\n"
-            + "Rectangle inserted: (r5, 6, 7, 11, 9)\r\n"
-            + "Rectangle rejected: (r10, 100, 100, 1000, 10)\r\n"
-            + "Rectangle rejected: (r11, 100, 100, 10, 1000)\r\n"
-            + "Rectangle inserted: (r12, 108, 136, 55, 103)\r\n"
-            + "Rectangle rejected: (r13, 360, 968, 7110, 354)\r\n"
-            + "Rectangle inserted: (r14, 120, 117, 93, 706)\r\n"
-            + "Rectangle inserted: (r15, 120, 117, 93, 706)\r\n"
-            + "Rectangle not removed: (r_r)\r\n"
-            + "Rectangle not removed: (inExistRec)\r\n"
-            + "Rectangles found:\r\n" + "(r4, 20, 12, 3, 3)\r\n"
-            + "(r4, 20, 25, 7, 9)\r\n"
-            + "Rectangle removed: (r4, 20, 12, 3, 3)\r\n"
-            + "Rectangle removed: (r5, 6, 7, 11, 9)\r\n"
-            + "Rectangle not removed: (r5)\r\n" + "Rectangles found:\r\n"
-            + "(r14, 120, 117, 93, 706)\r\n" + "Rectangle not found: r11\r\n"
-            + "Rectangle not found: R11\r\n"
-            + "Rectangle not removed: (r10)\r\n"
-            + "Rectangle not removed: (r11)\r\n"
-            + "Rectangle removed: (r12, 108, 136, 55, 103)\r\n"
-            + "Rectangle not removed: (r13)\r\n"
-            + "Rectangle removed: (r14, 120, 117, 93, 706)\r\n"
-            + "Rectangle rejected: (100, 100, 1000, 10)\r\n"
-            + "Rectangle not removed: (r14)\r\n"
-            + "Rectangles intersecting region (-5, -5, 20, 20): \r\n"
-            + "(r1, 10, 10, 5, 5)\r\n" + "(r3, 7, 7, 10, 10)\r\n"
-            + "Intersections pairs:\r\n"
-            + "(r1, 10, 10, 5, 5 | r3, 7, 7, 10, 10)\r\n"
-            + "(r3, 7, 7, 10, 10 | r1, 10, 10, 5, 5)\r\n"
-            + "(r2, 15, 15, 5, 5 | r3, 7, 7, 10, 10)\r\n"
-            + "(r3, 7, 7, 10, 10 | r2, 15, 15, 5, 5)\r\n"
-            + "Rectangles found:\r\n" + "(r2, 15, 15, 5, 5)\r\n"
-            + "Rectangles found:\r\n" + "(r4, 20, 25, 7, 9)", systemOut()
-                .getHistory());
-        controller.close();
 
+    public void testRun() throws FileNotFoundException {
+        controller = new RectangleController(new File("P2test2.txt"));
+        controller.runAll();
+        assertFuzzyEquals("Point Inserted: (p_p, 1, 20)\n" + 
+            "Point Inserted: (p, 10, 30)\n" + 
+            "Point Inserted: (p_42, 1, 20)\n" + 
+            "Point Inserted: (far_point, 200, 200)\n" + 
+            "SkipList Dump:\n" + 
+            "level: 3 Value: null\n" + 
+            "level: 1 Value: (far_point, 200, 200)\n" + 
+            "level: 3 Value: (p, 10, 30)\n" + 
+            "level: 1 Value: (p_42, 1, 20)\n" + 
+            "level: 1 Value: (p_p, 1, 20)\n" + 
+            "The SkipList's size is: 4\n" + 
+            "QuadTree Dump:\n" + 
+            "Node at 0, 0, 1024: Internal\n" + 
+            "  Node at 0, 0, 512: Internal\n" + 
+            "    Node at 0, 0, 256: Internal\n" + 
+            "      Node at 0, 0, 128:\n" + 
+            "      (p_p, 1, 20)\n" + 
+            "      (p, 10, 30)\n" + 
+            "      (p_42, 1, 20)\n" + 
+            "      Node at 128, 0, 128: Empty\n" + 
+            "      Node at 0, 128, 128: Empty\n" + 
+            "      Node at 128, 128, 128:\n" + 
+            "      (far_point, 200, 200)\n" + 
+            "    Node at 256, 0, 256: Empty\n" + 
+            "    Node at 0, 256, 256: Empty\n" + 
+            "    Node at 256, 256, 256: Empty\n" + 
+            "  Node at 512, 0, 512: Empty\n" + 
+            "  Node at 0, 512, 512: Empty\n" + 
+            "  Node at 512, 512, 512: Empty\n" + 
+            "QuadTree Size: 13 QuadTree Nodes Printed.\n" + 
+            "Duplicate Points:\n" + 
+            "(1, 20)\n" + 
+            "Point Found (p_p, 1, 20)\n" + 
+            "Points intersecting region: (0, 0, 25, 25)\n" + 
+            "Point Found: (p_42, 1, 20)\n" + 
+            "Point Found: (p_p, 1, 20)\n" + 
+            "4 QuadTree Nodes Visited\n" + 
+            "Point (p_p, 1, 20) Removed\n" + 
+            "Point (p, 10, 30) Removed\n" + 
+            "Duplicate Points:\n" + 
+            "SkipList Dump:\n" + 
+            "level: 3 Value: null\n" + 
+            "level: 1 Value: (far_point, 200, 200)\n" + 
+            "level: 1 Value: (p_42, 1, 20)\n" + 
+            "The SkipList's size is: 2\n" + 
+            "QuadTree Dump:\n" + 
+            "Node at 0, 0, 1024:\n" + 
+            "(far_point, 200, 200)\n" + 
+            "(p_42, 1, 20)\n" + 
+            "QuadTree Size: 1 QuadTree Nodes Printed.", systemOut()
+            .getHistory());
+        systemOut().clearHistory();
+        controller.close();
+        
+
+
+
+        // JUnit can shut up about long methods
+    }
+
+
+    public void testSecondInput() throws FileNotFoundException {
         controller = new RectangleController(new File("P2test1.txt"));
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
-        systemOut().clearHistory();
         controller.runAll();
         assertFuzzyEquals("Rectangle rejected: "
             + "(inExist_Rec0, 1, 1, 0, 10)\r\n"
@@ -195,9 +211,8 @@ public class RectangleControllerTest extends TestCase {
             + "(r3, 0, 0, 1000, 10)\r\n"
             + "Rectangle rejected: (0, 0, -2147483644, -2147483644)",
             systemOut().getHistory());
+        systemOut().clearHistory();
         controller.close();
-
-        // JUnit can shut up about long methods
     }
 
 
@@ -245,7 +260,7 @@ public class RectangleControllerTest extends TestCase {
             + "Rectangle rejected: (r99, 1, -2, 3, 4)\r\n"
             + "Rectangle rejected: (r99, 1, 2, -3, 4)\r\n"
             + "Rectangle rejected: (r99, 1, 2, 3, -4)", systemOut()
-                .getHistory());
+            .getHistory());
 
         // Tests dump
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
@@ -256,7 +271,7 @@ public class RectangleControllerTest extends TestCase {
         controller.runAll();
         controller.close();
     }
-    
+
     /**
      * Runs P2Test1 command file
      * @throws FileNotFoundException 
@@ -267,7 +282,7 @@ public class RectangleControllerTest extends TestCase {
         controller = new RectangleController(new File("P2test1.txt"));
         controller.runAll();
     }
-    
+
     /**
      * Runs P2Test2 command file
      * @throws FileNotFoundException 
