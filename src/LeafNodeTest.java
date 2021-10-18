@@ -26,6 +26,7 @@ import student.TestCase;
  * Tests the LeafNode
  * 
  * @author chenj (chenjeff4840), XC
+ * @version 10.17.2021
  */
 public class LeafNodeTest extends TestCase {
 
@@ -121,7 +122,7 @@ public class LeafNodeTest extends TestCase {
         // Removing dupe values
         node1.addPoint(s1, i2);
         node1.addPoint(s3, i2);
-        
+
         assertNotNull(node1.getDuplicates());
         assertEquals(4, node1.getTotalSize());
         assertNotNull(node1.remove(s1, i2));
@@ -129,7 +130,6 @@ public class LeafNodeTest extends TestCase {
         assertEquals(2, node1.getTotalSize());
         assertNull(node1.getDuplicates());
 
-        
         // All removed
         node1.remove(s1, i1);
         assertEquals(1, node1.getTotalSize());

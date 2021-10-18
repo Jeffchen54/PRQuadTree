@@ -24,6 +24,9 @@ import student.TestCase;
 // Java Doc ----------------------------------------------------------------
 /**
  * Tests the PointNodeList class
+ * 
+ * @author Jeff Chen (chenjeff4840)
+ * @version 10.17.2021
  */
 public class PointNodeListTest extends TestCase {
 
@@ -102,7 +105,8 @@ public class PointNodeListTest extends TestCase {
             "Middle Earth", null).getValue()));
         assertEquals(3, list.getSize());
     }
-    
+
+
     /**
      * Coverage for remove
      */
@@ -286,7 +290,8 @@ public class PointNodeListTest extends TestCase {
         // same everything
         assertNotNull(list.find(null, new Integer[] { 360, 0 }));
     }
-    
+
+
     /**
      * Tests private helper function arrayEquals
      */
@@ -313,16 +318,16 @@ public class PointNodeListTest extends TestCase {
      * Quick function to check contents of 2 Integer Arrays
      * 
      * @param value
-     *           Array to compare
+     *            Array to compare
      * @param obj
      *            Array to compare
      * @return true if data values of 2 Arrays are identical
      */
     private boolean arrayEquals(Integer[] value, Integer[] obj) {
-        if(obj == null || value == null) {
+        if (obj == null || value == null) {
             return false;
         }
-        
+
         if (obj == value) {
             return true;
         }
@@ -338,7 +343,8 @@ public class PointNodeListTest extends TestCase {
         }
         return true;
     }
-    
+
+
     /**
      * Duplicate values
      */
@@ -349,20 +355,21 @@ public class PointNodeListTest extends TestCase {
         list.insert(s3, i1);
         list.insert(s2, i2);
         list.insert(s3, i3);
-        
+
         // reporting the dupes
-        PointNodeList<String, Integer>.ValueRecordNode record = list.reportDuplicates();
-        
+        PointNodeList<String, Integer>.ValueRecordNode record = list
+            .reportDuplicates();
+
         assertEquals(3, record.getCount());
         assertTrue(arrayEquals(record.getValue(), i1));
         assertNull(record.getNext());
-        
+
         // List now contains 3 kinds of dupe values and 1 non dupe
         list.insert(s1, i2);
         list.insert(s1, i3);
-        list.insert(s1, new Integer[] {999,666});
+        list.insert(s1, new Integer[] { 999, 666 });
         record = list.reportDuplicates();
-        
+
         assertEquals(3, record.getCount());
         assertTrue(arrayEquals(record.getValue(), i1));
         assertNotNull(record = record.getNext());
@@ -372,7 +379,7 @@ public class PointNodeListTest extends TestCase {
         assertEquals(2, record.getCount());
         assertTrue(arrayEquals(record.getValue(), i3));
         assertNull(record.getNext());
-        
+
         // Removing dupes until all are unique
         list.remove(null, i1);
         list.remove(null, i1);

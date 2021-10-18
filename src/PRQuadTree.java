@@ -32,7 +32,7 @@ import java.util.LinkedList;
  *            Key for KVPair
  * @param Integer
  *            Value for KVPair
- * @author chenj (chenjeff4840)
+ * @author chenj (chenjeff4840), XC
  * @version 10.5.2021
  */
 public class PRQuadTree {
@@ -43,13 +43,19 @@ public class PRQuadTree {
     private BaseNode<String, Integer> rt;
     private FlyweightNode<String, Integer> empty;
     private PointNode<String, Integer> bufferSlot; // Saves last removed entry
-    
-    private LinkedList<BaseNode<String, Integer>> nodeList; //this is for dump
+
+    private LinkedList<BaseNode<String, Integer>> nodeList; // this is for dump
 
     // Constructor ------------------------------------------------------------
 
     /**
      * Creates an empty PRQuadTree. Initializes fields
+     * 
+     * @param min
+     *            Minimum dimensions of tree
+     * @param max
+     *            Maximum dimensions of tree
+     * @precondition min is always lower than max, min and max != null
      */
     public PRQuadTree(Integer[] min, Integer[] max) {
         this.min = min;
@@ -57,7 +63,7 @@ public class PRQuadTree {
         empty = new FlyweightNode<String, Integer>();
         rt = empty;
         bufferSlot = null;
-        
+
         nodeList = new LinkedList<BaseNode<String, Integer>>();
 
     }
@@ -74,14 +80,10 @@ public class PRQuadTree {
      * @param key
      *            Key of point to insert
      * @param value
-     *            Value of key to insert
-     * @return KVPair of inserted element, null if rejected.
-     * @implNote key must start with a letter, do this in the controller
-     * @implNote check if contains negative cords or out of world box in
-     *           controller
-     * @implNote send output to skiplist
-     * @implNote Check size of list, if it is the same, return null, else return
-     *           KVPair
+     *            Value of point to insert
+     * @return true if inserted, false if not
+     * @precondition key and value != null, key meets proper naming
+     *               convention.
      */
     public boolean insert(String key, Integer[] value) {
         bufferSlot = null;
@@ -91,11 +93,14 @@ public class PRQuadTree {
 
 
     /**
-     * Removes selected KVPair from the tree. Does nothing if not in tree.
+     * Removes selected point from the tree. Does nothing if not in tree.
      * 
-     * @param data
-     *            Exact point record to remove
-     * @implNote for remove {name} done in SkipList
+     * @param key
+     *            key of point
+     * @param value
+     *            value of point
+     * @return removed point, null if not found
+     * @precondition key and value != null
      */
     public PointNode<String, Integer> remove(String key, Integer[] values) {
         bufferSlot = null;
@@ -106,13 +111,13 @@ public class PRQuadTree {
 
 
     /**
-     * Returns all points that are contained in the query values
+     * Returns all points that are contained in the query rectangle
      * 
+     * @param rectange
+     *            Range of values to be searched in the
      * @return Data structure containing all points matching query values
      *         also containing meta data on # of nodes visited
-     * @implNote Reject illegal values in Controller
-     * @implNote Copy data over to a chain of nodes then return
-     * @implNote Port regionsearch to Dimensions class
+     * @precondition rectangle is a valid rectangle array
      */
     public RegionSearchList<String, Integer> regionSearch(Integer[] rectangle) {
         RegionSearchList<String, Integer> list = new RegionSearchList<>();
@@ -122,41 +127,30 @@ public class PRQuadTree {
 
 
     /**
-     * Returns chain of nodes containing all points with duplicate values
+     * Returns list of nodes containing all duplicate values
      * 
-     * @return 2D array with row corresponding to a point and column
-     *         representing
-     *         a value from that point.
-     * @implNote Explore each branch separetly and pick out all dupes.
-     * @implNote same return type and method as regionSearch()
+     * @return list containing all duplicate values as well as how many
+     *         of each duplicate values exists
      */
     public PointNodeList<String, Integer>.ValueRecordNode duplicates() {
         return this.duplicate(rt, null);
     }
 
 
-    /**
-     * Returns an TreeIterator of the tree acquired from preorder traversal
-     * 
-     * @implNote Basically the dump function
-     * @return TreeIterator of nodes from preorder traversal
-     * @implNote call tree Iterator constructor
-     */
-    public TreeIterator getIterator() {
-        return null;
-    }
-    
     // this section is helper method for dump ----------------------------
     /**
      * this will be a helper method for dump
+     * 
      * @return
      */
     public LinkedList<BaseNode<String, Integer>> getPreOrderList() {
         return nodeList;
     }
 
+
     /**
      * this return the root node
+     * 
      * @return
      */
     public BaseNode<String, Integer> getRt() {
@@ -168,6 +162,20 @@ public class PRQuadTree {
 
     /**
      * Recursively inserts a point.
+     * 
+     * @param curr
+     *            Current node
+     * @param key
+     *            Key of point to insert
+     * @param value
+     *            Value of point to insert
+     * @param min
+     *            Lower bound
+     * @param max
+     *            Upper bound
+     * @return the current node after being inserted to.
+     * @precondition All params are != null. value, min, max size is 2.
+     *               and falls within this.min and this.max. min < max.
      */
     private BaseNode<String, Integer> insert(
         BaseNode<String, Integer> curr,
@@ -237,6 +245,20 @@ public class PRQuadTree {
 
     /**
      * Recursively removes a point
+     * 
+     * @param curr
+     *            Current node
+     * @param key
+     *            Key of point to remove, can be null
+     * @param value
+     *            Value of point to remove
+     * @param min
+     *            Lower bound
+     * @param max
+     *            Upper bound
+     * @return the current node after having contents removed
+     * @precondition curr, value, min, max are != null. value, min, max size is
+     *               2 and falls within this.min and this.max. min < max.
      */
     private BaseNode<String, Integer> remove(
         BaseNode<String, Integer> curr,
@@ -296,11 +318,50 @@ public class PRQuadTree {
                 break;
         }
 
+        boolean isParent = false;
+        int totalPoints = 0;
+        int flyweights = 0;
+        LeafNode<String, Integer> combination = new LeafNode<>();
+
+        for (int i = 0; i < 4 && !isParent; i++) {
+            if (parent.getChild(i)
+                .getNodeClass() == NodeClassification.ParentNode) {
+                isParent = true;
+            }
+            else if (parent.getChild(i)
+                .getNodeClass() == NodeClassification.FlyweightNode) {
+                flyweights++;
+            }
+            else {
+                totalPoints += ((LeafNode<String, Integer>)parent.getChild(i))
+                    .getTotalSize();
+                Iterator<PointNode<String, Integer>> iter =
+                    ((LeafNode<String, Integer>)parent.getChild(i)).getPoints();
+                while (iter.hasNext()) {
+                    PointNode<String, Integer> next = iter.next();
+                    combination.addPoint(next.getKey(), next.getValue());
+                }
+            }
+        }
+
+        if (!isParent && totalPoints <= 3 && flyweights < 3) {
+            return combination;
+        }
         return parent;
 
     }
 
 
+    /**
+     * Recursively reports all duplicate values
+     * 
+     * @param curr
+     *            Current node
+     * @param tail
+     *            tail of node chain storing duplicate points
+     * @return duplicate values from a node/series of nodes
+     * @precondition curr != null
+     */
     private PointNodeList<String, Integer>.ValueRecordNode duplicate(
         BaseNode<String, Integer> curr,
         PointNodeList<String, Integer>.ValueRecordNode tail) {
@@ -349,11 +410,18 @@ public class PRQuadTree {
 
 
     /**
-     * Applies decomposition rule to a leafnode
+     * Applies decomposition rule to a leafnode. If node consists of multiple
+     * values and size > 3, leafnode will be broken down.
      * 
      * @param leaf
      *            Leafnode to apply decompositionRule to
+     * @param min
+     *            Lower bound
+     * @param max
+     *            Upper bound
      * @return leaf after decompositionRule has been applied
+     * @precondition params != null, min and max size 2 and within this.min
+     *               and this.max
      */
     private BaseNode<String, Integer> decompositionRule(
         LeafNode<String, Integer> leaf,
@@ -376,7 +444,8 @@ public class PRQuadTree {
 
 
     /**
-     * Checks if a leaf node should be turned into a flyweight node
+     * Checks if a leaf node should be turned into a flyweight node.
+     * leaf nodes broken down if leaf node has no children
      * 
      * @param leaf
      *            Leafnode to check for decomposition
@@ -398,6 +467,7 @@ public class PRQuadTree {
      *            [0][] = lower bound
      *            [1][] = upper bound
      * @return midpoint calculated from the 2 points
+     * @precondition lower and upper != null
      */
     private Integer[] midpoint(Integer[] lower, Integer[] upper) {
         int x = lower[0] + ((upper[0] - lower[0]) >> 1);
@@ -415,7 +485,10 @@ public class PRQuadTree {
      *            Lower bound of current quadrant
      * @param upper
      *            Upperbound of current quadant
+     * @param midpoint
+     *            Midpoint of lower and upper bound
      * @return 0 -> NW, 1 -> NE, 2 -> SW , 3 -> SE, -1 -> cannot be calculated
+     * @precondition params != null, lower bound is actually lower than upper
      */
     private int wayfinder(
         Integer[] dest,
@@ -443,6 +516,24 @@ public class PRQuadTree {
     }
 
 
+    /**
+     * Recursively performs regionSearch on tree and saves all points onto
+     * a list
+     * 
+     * @param curr
+     *            Current node
+     * @param region
+     *            Rectangular region to search points in
+     * @param min
+     *            Lower bound
+     * @param max
+     *            Upper bound
+     * @param list
+     *            list to save points from regionSearch to
+     * @precondition params != null, min < max and size 2. region is a
+     *               valid rectangle dimensions. region, min, max is
+     *               within this.min and this.max.
+     */
     private void regionSearch(
         BaseNode<String, Integer> curr,
         Integer[] region,
@@ -501,17 +592,16 @@ public class PRQuadTree {
 
 
     /**
-     * Checks if a Rectangle collides/intersects another. Rectangles collide if
-     * any part of a Rectangle is within another Rectangle. Sharing the same
-     * edge
-     * or corner does not count as colliding.
+     * Checks if a point exists within a rectangular region. Lower bounds
+     * are inclusive while upper bounds are exclusive.
      * 
-     * @param dimensions
+     * @param region
      *            Rectangles dimension
-     * @param other
-     *            Another rectangle's dimension
-     * @return true if collides, false if does not
-     * @precondition dimensions and other are valid rectangle dimensions
+     * @param point
+     *            value of a point
+     * @return true if point is within region, false otherwise
+     * @precondition point of size 2 and region is valid rectangle dimensions.
+     *               point and region != null.
      */
     private boolean withinRegion(Integer[] region, Integer[] point) {
 
@@ -524,16 +614,18 @@ public class PRQuadTree {
 
     /**
      * Checks if a Rectangle collides/intersects another. Rectangles collide if
-     * any part of a Rectangle is within another Rectangle. Sharing the same
-     * edge
-     * or corner does not count as colliding.
+     * any part of a Rectangle is within another Rectangle. Lower bounds are
+     * inclusive and upper bounds are exclusive.
      * 
-     * @param dimensions
-     *            Rectangles dimension
-     * @param other
-     *            Another rectangle's dimension
+     * @param region
+     *            Rectangular region
+     * @param lower
+     *            Lower bound of another rectangle
+     * @param upper
+     *            Upper bound of another rectangle
      * @return true if collides, false if does not
      * @precondition dimensions and other are valid rectangle dimensions
+     *               and bounds
      */
     private boolean collide(
         Integer[] region,
@@ -558,104 +650,6 @@ public class PRQuadTree {
      */
     public void peek() {
         // TODO remove when dump is complete.
-    }
-
-    // Iterator ---------------------------------------------------------------
-    
- 
-    
-    
-
-    // Java Doc ---------------------------------------------------------------
-    /**
-     * Iterator storing nodes from tree in preorder traversal.
-     */
-    private class TreeIterator implements Iterator<Object> {
-        // TODO change Iterator type
-
-        // Fields -----------------------------------------------------------
-        // private SkipNode<String, Integer> cursor;
-        // TODO change type
-        private LinkedList<BaseNode<String, Integer>> list;
-        private LinkedList<BaseNode<String, Integer>> parentList;
-        private BaseNode<String, Integer> head;
-        private int count;
-
-        // Constructor ------------------------------------------------------
-        /**
-         * Initializes the iterator by setting the cursor to the first node
-         * after head.
-         */
-        public TreeIterator() {
-            list = new LinkedList<BaseNode<String, Integer>>();
-            head = list.getFirst();
-            count = 0;
-
-        }
-
-        // Functions --------------------------------------------------------
-
-
-        /** {@inheritDoc} */
-        @Override
-        public boolean hasNext() {
-            // TODO uncomment return statement
-            // return cursor != null;
-            return count != list.size();
-        }
-
-
-        /** {@inheritDoc} */
-        @Override
-        public BaseNode<String, Integer> next() {
-            // TODO change return type
-            if (!hasNext()) {
-                return null;
-            }
-
-            // TODO modify code
-            // SkipNode<String, Integer> temp = cursor;
-            // cursor = cursor.getForward()[0];
-            // return temp;
-            BaseNode<String, Integer> next = list.get(count);
-            count++;
-            return next;
-
-        }
-
-        /**
-         * Performs a single step in preorder traversal.
-         * 
-         * @return node after taking a step
-         * @implNote Set as cursor in next
-         */
-        /*
-         * private BaseNode<String, Integer> preorderTraversal(BaseNode<String,
-         * Integer> start) {
-         * // TODO implementation and change return type
-         * 
-         * if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() ==
-         * NodeClassification.ParentNode) {
-         * //System.out.print("Node at ");
-         * return ((ParentNode<String, Integer>)start).getChild(i);
-         * 
-         * }
-         * if(((ParentNode<String, Integer>)start).getChild(i).getNodeClass() ==
-         * NodeClassification.FlyweightNode) {
-         * //empty node
-         * return start;
-         * }
-         * LeafNode<String, Integer> leaf = (LeafNode<String,
-         * Integer>)((ParentNode<String, Integer>)start).getChild(i);
-         * Iterator<PointNode<String, Integer>> pointIte = leaf.getPoints();
-         * 
-         * 
-         * 
-         * 
-         * return null;
-         * }
-         */
-
     }
 
 }

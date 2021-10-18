@@ -27,13 +27,12 @@ import java.util.Iterator;
  * rule. Rejects dupe key and value entries
  * 
  * For Example:
- * <A, 1>, <B, 2>, <C, 1>, size == 2.
- * <A, 1>, <B, 2>, <C, 3>, size == 3.
  * this.addPoint(dupe Entry) -> Rejected
  * this.addPoint(Entry w/ dupe value not dupe key) -> Accepted
  * this.addPoint(Distinct Entry) -> Accepted
  * 
  * @author chenj (chenjeff4840), XC
+ * @version 10.17.2021
  * @param <K>
  *            Key
  * @param <V>
@@ -48,6 +47,9 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
         NodeClassification.LeafNode;
 
     // Constructor -----------------------------------------------------------
+    /**
+     * Constructs an empty leaf node
+     */
     public LeafNode() {
         points = new PointNodeList<K, V>();
     }
@@ -56,7 +58,9 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
 
 
     /**
-     * Reports number of points that share the same value
+     * Reports duplicate points
+     * 
+     * @return list of duplicate points and their count
      */
     public PointNodeList<K, V>.ValueRecordNode getDuplicates() {
         return points.reportDuplicates();
@@ -66,6 +70,8 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
     /**
      * Returns total number of points in leafnode including duplicate valued
      * points
+     * 
+     * @return total number of points
      */
     public int getTotalSize() {
         return points.getSize();
@@ -75,7 +81,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
     /**
      * Returns all points in node
      * 
-     * @return points
+     * @return iterator of all the points
      */
     public Iterator<PointNode<K, V>> getPoints() {
         return points.getIterator();
@@ -86,10 +92,10 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * Adds a point
      * 
      * @param key
-     *            key to add
+     *            key to add, can be null
      * @param value
      *            value to add
-     * @precondition key or value != null
+     * @precondition value != null
      */
     public PointNode<K, V> addPoint(K key, V[] value) {
         if (!this.exists(key, value)) {
@@ -103,9 +109,11 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * Removes a point with exact key and value
      * 
      * @param key
-     *            Key to remove
+     *            Key to remove, can be null
      * @param value
      *            Value to remove
+     * @return removed point, null if not removed
+     * @precondition value != null
      */
     public PointNode<K, V> remove(K key, V[] value) {
         PointNode<K, V> temp = points.remove(key, value);
@@ -114,9 +122,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
 
 
     /**
-     * returns classification of node
-     * 
-     * @return classification of node
+     * {@inheritDoc}
      */
     public NodeClassification getNodeClass() {
         return CLASSIFICATION;
@@ -127,11 +133,11 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      * Checks if the value and key already exists in the node
      * 
      * @param key
-     *            Key to check for existance
+     *            Key to check for existance, can be null
      * @param value
      *            Value to check for existance
      * @return true if exists, false if not
-     * @precondition key or value != null
+     * @precondition value != null
      */
     public boolean exists(K key, V[] value) {
         return (points.find(key, value)) != null;

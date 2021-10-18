@@ -44,6 +44,9 @@ public class PRQuadTreeTest extends TestCase {
 
 
     // Tests ----------------------------------------------------------------
+    /**
+     * Tests insert()
+     */
     public void testInsert() {
         // Inserts onto empty list
         assertTrue(tree.insert("Hello World", new Integer[] { 0, 125 }));
@@ -96,8 +99,10 @@ public class PRQuadTreeTest extends TestCase {
             new Integer[] { 0, 0, 25, 25 });
 
         Iterator<PointNode<String, Integer>> iter = list.getIterator();
-        assertTrue(arrayEquals(new Integer[] {1,20}, iter.next().getValue()));
-        assertTrue(arrayEquals(new Integer[] {1,20}, iter.next().getValue()));
+        assertTrue(arrayEquals(new Integer[] { 1, 20 }, iter.next()
+            .getValue()));
+        assertTrue(arrayEquals(new Integer[] { 1, 20 }, iter.next()
+            .getValue()));
         assertFalse(iter.hasNext());
 
         assertEquals(4, list.numVisited());
@@ -295,7 +300,8 @@ public class PRQuadTreeTest extends TestCase {
         // no intersections
         iter = tree.regionSearch(new Integer[] { 0, 0, 10, 10 }).getIterator();
         assertFalse(iter.hasNext());
-        iter = tree.regionSearch(new Integer[] { 0, 250, 250, 0 }).getIterator();
+        iter = tree.regionSearch(new Integer[] { 0, 250, 250, 0 })
+            .getIterator();
         assertFalse(iter.hasNext());
 
     }
@@ -365,6 +371,23 @@ public class PRQuadTreeTest extends TestCase {
 
 
     /**
+     * test for helper method for dump
+     */
+    public void testGetPreOrderList() {
+        assertEquals(0, tree.getPreOrderList().size());
+    }
+
+
+    /**
+     * test for helper method for dump
+     */
+    public void testGetRt() {
+        assertEquals(tree.getRt().getNodeClass(),
+            NodeClassification.FlyweightNode);
+    }
+
+
+    /**
      * Quick function to check contents of 2 Integer Arrays
      * 
      * @param value
@@ -392,36 +415,5 @@ public class PRQuadTreeTest extends TestCase {
             }
         }
         return true;
-    }
-
-
-    /**
-     * 
-     */
-    private void printValue(Iterator<PointNode<String, Integer>> iter) {
-
-        while (iter.hasNext()) {
-            System.out.print("{");
-
-            for (int i : iter.next().getValue()) {
-                System.out.print(i + ", ");
-            }
-
-            System.out.println("}");
-        }
-    }
-    
-    /**
-     * test for helper method for dump
-     */
-    public void testGetPreOrderList() {
-        assertEquals(0, tree.getPreOrderList().size());
-    }
-    
-    /**
-     * test for helper method for dump
-     */
-    public void testGetRt() {
-        assertEquals(tree.getRt().getNodeClass(), NodeClassification.FlyweightNode);
     }
 }

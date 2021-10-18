@@ -22,6 +22,9 @@ import student.TestCase;
 // JavaDoc --------------------------------------------------------------
 /**
  * Tests the FlyweightNode
+ * 
+ * @author Jeff Chen (chenjeff4840), XC
+ * @version 10.17.2021
  */
 public class FlyweightNodeTest extends TestCase {
 

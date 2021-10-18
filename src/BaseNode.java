@@ -18,6 +18,7 @@
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction. - JC & XC
 
+// Java Doc ----------------------------------------------------------------
 /**
  * Interface representing a base node that can only return class information
  * 
@@ -30,6 +31,7 @@
  */
 public interface BaseNode<K, V extends Comparable<V>> {
 
+    // Functions -----------------------------------------------------------
     /**
      * Returns the type of node according to enum NodeClassification.
      * 

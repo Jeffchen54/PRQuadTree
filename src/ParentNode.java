@@ -35,7 +35,6 @@ public class ParentNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
     // Fields --------------------------------------------------------------
     private BaseNode<K, V>[] children;
     private NodeClassification type;
-    @SuppressWarnings("unused")
     private FlyweightNode<K, V> empty;
     private static final int NUMCHILDREN = 4;
 
@@ -94,9 +93,7 @@ public class ParentNode<K, V extends Comparable<V>> implements BaseNode<K, V> {
 
 
     /**
-     * this function return the name of the class
-     * 
-     * @return a string
+     * {@inheritDoc}
      */
     public NodeClassification getNodeClass() {
         return type;

@@ -16,13 +16,13 @@
 // may help me debug my program so long as neither of us writes
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
-// letter of this restriction. - JC & XC
+// letter of this restriction. - JC
 
 // Java Doc ----------------------------------------------------------------
 /**
  * Basic node storing a Key and Value. Only has getNext and getData functions.
  * 
- * @author chenj (chenjeff4840), XC
+ * @author chenj (chenjeff4840)
  * @param <K>
  *            Key
  * @param <V>
@@ -36,6 +36,14 @@ public class PointNode<K, V> {
     private PointNode<K, V> next;
 
     // Constructor -------------------------------------------------------------
+    /**
+     * Constructs a PointNode with a point
+     * 
+     * @param key
+     *            Key of point
+     * @param value
+     *            Value of point
+     */
     public PointNode(K key, V[] value) {
         this.key = key;
         this.value = value;
@@ -81,7 +89,7 @@ public class PointNode<K, V> {
      * 
      * @return next node
      */
-    public PointNode<K,V> getNext() {
+    public PointNode<K, V> getNext() {
         return next;
     }
 }

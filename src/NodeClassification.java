@@ -16,7 +16,16 @@
 // may help me debug my program so long as neither of us writes
 // anything during the discussion or modifies any computer file
 // during the discussion. I have violated neither the spirit nor
-// letter of this restriction. - JC & XC
+// letter of this restriction. - JC
+
+// Java Doc ---------------------------------------------------------------
+/**
+ * Enumerated type specifying the different types of BaseNodes used
+ * in the PRQuadTree
+ * 
+ * @author Jeff Chen (chenjeff4840)
+ * @version 10.17.2021
+ */
 enum NodeClassification {
     ParentNode, LeafNode, FlyweightNode;
 }

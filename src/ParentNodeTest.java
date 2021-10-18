@@ -32,7 +32,7 @@ public class ParentNodeTest extends TestCase {
     // Fields -------------------------------------------------------------
     private ParentNode<String, Integer> node;
     private FlyweightNode<String, Integer> empty;
-    
+
     // Set up -------------------------------------------------------------
     /**
      * this is set up
@@ -41,7 +41,8 @@ public class ParentNodeTest extends TestCase {
         empty = new FlyweightNode<String, Integer>();
         node = new ParentNode<String, Integer>(empty);
     }
-    
+
+
     // Tests -------------------------------------------------------------
     /**
      * this is test for getNodeClass function
@@ -49,7 +50,8 @@ public class ParentNodeTest extends TestCase {
     public void testGetNodeClass() {
         assertEquals(NodeClassification.ParentNode, node.getNodeClass());
     }
-    
+
+
     /**
      * Tests setting and getting children
      */
@@ -58,21 +60,22 @@ public class ParentNodeTest extends TestCase {
         for (int i = 0; i < 4; i++) {
             assertEquals(empty, node.getChild(i));
         }
-        
+
         // Invalid directions
         assertNull(node.getChild(-1));
         assertNull(node.getChild(4));
         node.setChild(empty, -1);
         node.setChild(empty, 4);
-        
+
         // setting and getting children at directions
         LeafNode<String, Integer> leaf;
         for (int i = 0; i < 4; i++) {
             leaf = new LeafNode<String, Integer>();
-            leaf.addPoint("Earth 200" + Integer.toString(i), new Integer[] {1,2,3});
-           node.setChild(leaf, i);
-           assertEquals(leaf, node.getChild(i));
+            leaf.addPoint("Earth 200" + Integer.toString(i), new Integer[] { 1,
+                2, 3 });
+            node.setChild(leaf, i);
+            assertEquals(leaf, node.getChild(i));
         }
     }
-    
+
 }
