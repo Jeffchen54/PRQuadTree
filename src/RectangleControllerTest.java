@@ -166,7 +166,6 @@ public class RectangleControllerTest extends TestCase {
      * @throws FileNotFoundException
      * 
      */
-    @Ignore
     public void testMissedCoverage() throws FileNotFoundException {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
@@ -176,20 +175,20 @@ public class RectangleControllerTest extends TestCase {
         controller.runAll();
         controller.close();
 
-        assertFuzzyEquals("Rectangle inserted: (r2, 15, 15, 5, 5)\r\n"
-            + "Rectangle inserted: (r3, 7, 7, 10, 10)\r\n"
-            + "Rectangle inserted: (r4, 20, 25, 7, 9)\r\n"
-            + "Rectangle inserted: (r4, 20, 12, 3, 3)\r\n"
-            + "Rectangle inserted: (r5, 6, 7, 11, 9)\r\n"
-            + "An unknown command was ran\r\n"
-            + "Rectangle not found:(69, 420, 69, 420)\r\n"
-            + "Rectangles found:\r\n" + "(r5, 6, 7, 11, 9)\r\n"
-            + "Rectangle not found: r69420\r\n"
-            + "Rectangle rejected: (r99, 1, 2, 3, 4, 5)\r\n"
-            + "Rectangle rejected: (r99, -1, 2, 3, 4)\r\n"
-            + "Rectangle rejected: (r99, 1, -2, 3, 4)\r\n"
-            + "Rectangle rejected: (r99, 1, 2, -3, 4)\r\n"
-            + "Rectangle rejected: (r99, 1, 2, 3, -4)", systemOut()
+        assertFuzzyEquals("point inserted r2 15 15 5 5\n" + 
+            "point inserted r3 7 7 10 10\n" + 
+            "point inserted r4 20 25 7 9\n" + 
+            "point inserted r4 20 12 3 3\n" + 
+            "point inserted r5 6 7 11 9\n" + 
+            "an unknown command was ran\n" + 
+            "point not found69 420 69 420\n" + 
+            "point found r5 6 7 11 9\n" + 
+            "point not found r69420\n" + 
+            "point rejected r99 1 2 3 4 5\n" + 
+            "point rejected r99 1 2 3 4\n" + 
+            "point rejected r99 1 2 3 4\n" + 
+            "point rejected r99 1 2 3 4\n" + 
+            "point rejected r99 1 2 3 4", systemOut()
             .getHistory());
 
         // Tests dump
@@ -206,7 +205,6 @@ public class RectangleControllerTest extends TestCase {
      * Runs P2Test1 command file
      * @throws FileNotFoundException 
      */
-    @Ignore
     public void testRunP2T1() throws FileNotFoundException {
         TestableRandom.setNextInts(5, 10, 22, 13, 12, 47);
         controller = new RectangleController(new File("P2test1.txt"));
