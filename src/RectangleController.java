@@ -110,10 +110,6 @@ public class RectangleController {
                 break;
             case "insert": // Should still work for prj1 smaller Dimensions
                 insert(tokens[1], new Dimensions(extractArr(tokens, 2)));
-                //below is for tree insert
-                int x = Integer.parseInt(tokens[2]); 
-                int y = Integer.parseInt(tokens[3]);
-                tree.insert(tokens[1], new Integer[] { x , y });
                 break;
             case "search":
                 search(tokens[1]); // Same for prj1 and prj2 no changes at all
@@ -145,7 +141,7 @@ public class RectangleController {
      */
     private void duplicates() {
         System.out.println("Duplicate Points:");
-        // TODO implementation and print to screen
+        
     }
 
 
@@ -196,6 +192,10 @@ public class RectangleController {
         }
         else {
             list.insert(name, dimensions);
+            // this is for sync
+            int x = dimensions.getArr()[0];
+            int y = dimensions.getArr()[1];
+            tree.insert(name, new Integer[] { x , y });
             System.out.println("Point Inserted: (" + shapeInfo(name,
                 dimensions.getArr()) + ")");
         }
@@ -252,13 +252,17 @@ public class RectangleController {
             printIntArr(dimensions);
             System.out.println("");
 
+            int visited = 0;
             while (iter.hasNext()) {
+                visited +=1;
                 KVPair<String, Dimensions> data = iter.next().getData();
                 if (collide(data.getValue().getArr(), dimensions)) {
                     System.out.println("Point Found: (" + shapeInfo(data.getKey(), data
                         .getValue().getArr()) + ")");
                 }
             }
+            
+            System.out.println(Math.max(visited, 1) + " QuadTree Nodes Visited");
         }
         else {
             System.out.print("Rectangle Rejected: ");
