@@ -410,4 +410,18 @@ public class PRQuadTreeTest extends TestCase {
             System.out.println("}");
         }
     }
+    
+    /**
+     * test for helper method for dump
+     */
+    public void testGetPreOrderList() {
+        assertEquals(0, tree.getPreOrderList().size());
+    }
+    
+    /**
+     * test for helper method for dump
+     */
+    public void testGetRt() {
+        assertEquals(tree.getRt().getNodeClass(), NodeClassification.FlyweightNode);
+    }
 }

@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 // On my honor:
 //
@@ -34,6 +35,7 @@ public class RectangleController {
     // Fields ----------------------------------------------------------------
     private CommandParser parser;
     private SkipList<String, Dimensions> list;
+    private PRQuadTree tree;
 
     // Constructor -----------------------------------------------------------
 
@@ -48,6 +50,7 @@ public class RectangleController {
     public RectangleController(File commands) throws FileNotFoundException {
         parser = new CommandParser(commands);
         list = new SkipList<String, Dimensions>();
+        tree = new PRQuadTree(new Integer[] { 0 , 0 }, new Integer[] { 1024 , 1024 });
     }
 
     // Functions ------------------------------------------------------------
@@ -82,6 +85,9 @@ public class RectangleController {
         switch (tokens[0]) {
             case "dump": // Same for prj1 and 2 but also prints tree dump
                 dump();
+                System.out.println("QuadTree Dump:");
+                int treeSize = dump(tree.getRt(), -1, 0, 0).size();
+                System.out.println("QuadTree Size: " + treeSize + " QuadTree Nodes Printed.");
                 break;
             case "intersections":
                 intersections();
@@ -104,6 +110,10 @@ public class RectangleController {
                 break;
             case "insert": // Should still work for prj1 smaller Dimensions
                 insert(tokens[1], new Dimensions(extractArr(tokens, 2)));
+                //below is for tree insert
+                int x = Integer.parseInt(tokens[2]); 
+                int y = Integer.parseInt(tokens[3]);
+                tree.insert(tokens[1], new Integer[] { x , y });
                 break;
             case "search":
                 search(tokens[1]); // Same for prj1 and prj2 no changes at all
@@ -151,13 +161,18 @@ public class RectangleController {
 
         KVPair<String, Dimensions> data = list.remove(name);
         // TODO Send data to tree remove to sync list up. ********************
-
+        
         if (data == null) {
             System.out.println("point Not Removed: " + name);
         }
         else {
             System.out.println("Point (" + shapeInfo(data.getKey(),
                 data.getValue().getArr()) + ") Removed");
+            
+            //sync part for tree
+            int a = data.getValue().getArr()[0];
+            int b = data.getValue().getArr()[1];
+            tree.remove(name, new Integer[] { a , b });
         }
     }
 
@@ -213,6 +228,11 @@ public class RectangleController {
             else {
                 System.out.println("Point (" + shapeInfo(data
                     .getKey(), data.getValue().getArr()) + ") Removed");
+                
+                //sync for the tree
+                int a = dimensions.getArr()[0];
+                int b = dimensions.getArr()[1];
+                tree.remove(data.getKey(), new Integer[] { a , b });
             }
         }
     }
@@ -321,14 +341,67 @@ public class RectangleController {
         node = node.getForward()[0];
         while (node != null) {
 
-            System.out.println("level: " + node.getLevel() + " Value: "
+            System.out.println("level: " + node.getLevel() + " Value: ("
                 + shapeInfo(node.getData().getKey(), node.getData().getValue()
-                    .getArr()));
+                    .getArr()) + ")");
             node = node.getForward()[0];
         }
         System.out.println("The SkipList's size is: " + list.getSize());
-
-        // TODO Tree dump*****************************************************
+    }
+    
+    /**
+     * 
+     * @param base the default value is rt
+     * @param x 
+     * @param y 
+     * @param level the starting level, in this case by default value -1
+     */
+    private LinkedList<BaseNode<String, Integer>> dump(BaseNode<String, 
+        Integer> base, int level, int x, int y) {
+        tree.getPreOrderList().add(base);
+        level +=1;
+        int mapSize = 1024; // 1024 depend on map size
+        int side = mapSize / (int)(Math.pow(2, level)); 
+        // format things
+        for (int space = 0; space < level; space++) {
+            System.out.print("  ");
+        }
+        // the recursion go through this if statement
+        if (base.getNodeClass() == NodeClassification.ParentNode) {
+            System.out.println("Node at " + x + ", " + y + ", " + side + ": Internal");
+                int start = mapSize / (int)(Math.pow(2, level + 1)); 
+                
+                dump(((ParentNode<String, Integer>)base).getChild(0), level, x, y);
+                x = x + start;
+                dump(((ParentNode<String, Integer>)base).getChild(1), level, x, y);
+                x = x - start;
+                y = y + start;          
+                dump(((ParentNode<String, Integer>)base).getChild(3), level, x, y);
+                x = x + start;
+                y = y - start;
+                y = y + start;
+                dump(((ParentNode<String, Integer>)base).getChild(2), level, x, y);
+        }
+        // if we met a flyweightNode, we need to print this
+        if (base.getNodeClass() == NodeClassification.FlyweightNode) {
+            System.out.println("Node at " + x + ", " + y + ", " + side +  ": Empty");
+        }
+        // if me met a leafNode, we need to print this
+        if (base.getNodeClass() == NodeClassification.LeafNode) {
+            System.out.println("Node at " + x + ", " + y + ", " + side + ":");
+            Iterator ite = ((LeafNode<String, Integer>)base).getPoints();
+            while (ite.hasNext()) {
+                for (int space = 0; space < level; space++) {
+                    System.out.print("  ");
+                }
+                PointNode pNode = (PointNode)ite.next();
+                pNode.getKey();
+                int xLoc = (int)pNode.getValue()[0];
+                int yLoc = (int)pNode.getValue()[1];
+                System.out.println("(" + pNode.getKey() + ", " + xLoc + ", " + yLoc + ")");
+            }
+        }
+        return tree.getPreOrderList();
     }
 
 

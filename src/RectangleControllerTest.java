@@ -42,7 +42,7 @@ public class RectangleControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-        controller = new RectangleController(new File("P1test1.txt"));
+        controller = new RectangleController(new File("P2test2.txt"));
     }
 
     // Tests ------------------------------------------------------------------

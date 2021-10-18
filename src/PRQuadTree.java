@@ -43,6 +43,8 @@ public class PRQuadTree {
     private BaseNode<String, Integer> rt;
     private FlyweightNode<String, Integer> empty;
     private PointNode<String, Integer> bufferSlot; // Saves last removed entry
+    
+    private LinkedList<BaseNode<String, Integer>> nodeList; //this is for dump
 
     // Constructor ------------------------------------------------------------
 
@@ -55,6 +57,8 @@ public class PRQuadTree {
         empty = new FlyweightNode<String, Integer>();
         rt = empty;
         bufferSlot = null;
+        
+        nodeList = new LinkedList<BaseNode<String, Integer>>();
 
     }
 
@@ -140,6 +144,23 @@ public class PRQuadTree {
      */
     public TreeIterator getIterator() {
         return null;
+    }
+    
+    // this section is helper method for dump ----------------------------
+    /**
+     * this will be a helper method for dump
+     * @return
+     */
+    public LinkedList<BaseNode<String, Integer>> getPreOrderList() {
+        return nodeList;
+    }
+
+    /**
+     * this return the root node
+     * @return
+     */
+    public BaseNode<String, Integer> getRt() {
+        return rt;
     }
 
     // Helpers ----------------------------------------------------------------
@@ -540,6 +561,10 @@ public class PRQuadTree {
     }
 
     // Iterator ---------------------------------------------------------------
+    
+ 
+    
+    
 
     // Java Doc ---------------------------------------------------------------
     /**
