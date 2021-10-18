@@ -46,6 +46,7 @@ public class PRQuadTree {
     private PointNode<String, Integer> bufferSlot; // Saves last removed entry
 
     private LinkedList<BaseNode<String, Integer>> nodeList; // this is for dump
+    private int count;
 
     // Constructor ------------------------------------------------------------
 
@@ -66,6 +67,7 @@ public class PRQuadTree {
         bufferSlot = null;
 
         nodeList = new LinkedList<BaseNode<String, Integer>>();
+        count = 0;
 
     }
 
@@ -148,7 +150,18 @@ public class PRQuadTree {
         return nodeList;
     }
 
-
+    public void resetCount(){
+        this.count = 0;
+    }
+    
+    public void increment() {
+        count++;
+    }
+    
+    public int getCount() {
+        return this.count;
+    }
+    
     /**
      * this return the root node
      * 

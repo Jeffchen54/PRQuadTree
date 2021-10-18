@@ -86,8 +86,9 @@ public class RectangleController {
             case "dump": // Same for prj1 and 2 but also prints tree dump
                 dump();
                 System.out.println("QuadTree Dump:");
-                int treeSize = dump(tree.getRt(), -1, 0, 0).size();
-                System.out.println("QuadTree Size: " + treeSize + " QuadTree Nodes Printed.");
+                tree.resetCount();
+                dump(tree.getRt(), -1, 0, 0);
+                System.out.println("QuadTree Size: " + tree.getCount() + " QuadTree Nodes Printed.");
                 break;
             case "intersections":
                 intersections();
@@ -142,6 +143,13 @@ public class RectangleController {
     private void duplicates() {
         System.out.println("Duplicate Points:");
         
+        PointNodeList<String, Integer>.ValueRecordNode node = tree.duplicates();
+        while (node != null) {
+            System.out.println("(" + tree.duplicates().getValue()[0] + 
+                ", " + tree.duplicates().getValue()[1] + ")");
+            node = node.getNext();
+        }
+        
     }
 
 
@@ -192,10 +200,15 @@ public class RectangleController {
         }
         else {
             list.insert(name, dimensions);
+            
+            
             // this is for sync
+            
             int x = dimensions.getArr()[0];
             int y = dimensions.getArr()[1];
-            tree.insert(name, new Integer[] { x , y });
+            if (tree.insert(name, new Integer[] { x , y })) {
+                
+            }
             System.out.println("Point Inserted: (" + shapeInfo(name,
                 dimensions.getArr()) + ")");
         }
@@ -360,9 +373,8 @@ public class RectangleController {
      * @param y 
      * @param level the starting level, in this case by default value -1
      */
-    private LinkedList<BaseNode<String, Integer>> dump(BaseNode<String, 
-        Integer> base, int level, int x, int y) {
-        tree.getPreOrderList().add(base);
+    private void dump(BaseNode<String, Integer> base, int level, int x, int y) {
+        tree.increment();
         level +=1;
         int mapSize = 1024; // 1024 depend on map size
         int side = mapSize / (int)(Math.pow(2, level)); 
@@ -398,14 +410,13 @@ public class RectangleController {
                 for (int space = 0; space < level; space++) {
                     System.out.print("  ");
                 }
-                PointNode pNode = (PointNode)ite.next();
+                PointNode<String, Integer> pNode = (PointNode<String, Integer>)ite.next();
                 pNode.getKey();
                 int xLoc = (int)pNode.getValue()[0];
                 int yLoc = (int)pNode.getValue()[1];
                 System.out.println("(" + pNode.getKey() + ", " + xLoc + ", " + yLoc + ")");
             }
         }
-        return tree.getPreOrderList();
     }
 
 

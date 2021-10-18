@@ -42,7 +42,7 @@ public class RectangleControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-        controller = new RectangleController(new File("P2test1.txt"));
+        controller = new RectangleController(new File("P2test2.txt"));
     }
 
     // Tests ------------------------------------------------------------------
@@ -103,7 +103,7 @@ public class RectangleControllerTest extends TestCase {
                 .getHistory());
         controller.close();
 
-        controller = new RectangleController(new File("P2test2.txt"));
+        controller = new RectangleController(new File("P2test1.txt"));
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
         controller.runAll();
