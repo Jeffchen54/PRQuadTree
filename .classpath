@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/benjaminchen/Desktop/CS2114/PRQuadTree/student.jar"/>
+	<classpathentry kind="lib" path="/Users/benjaminchen/Desktop/student.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
