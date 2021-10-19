@@ -35,6 +35,9 @@ public class PRQuadTreeTest extends TestCase {
     private Integer[] max;
 
     // SetUp ----------------------------------------------------------------
+    /**
+     * this is setUp
+     */
     public void setUp() {
         min = new Integer[] { 0, 0 };
         max = new Integer[] { 1024, 1024 };

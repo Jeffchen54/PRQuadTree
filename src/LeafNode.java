@@ -95,6 +95,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      *            key to add, can be null
      * @param value
      *            value to add
+     * @return a pointNode that if it successfully added
      * @precondition value != null
      */
     public PointNode<K, V> addPoint(K key, V[] value) {

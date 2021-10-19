@@ -372,10 +372,12 @@ public class PointNodeListTest extends TestCase {
 
         assertEquals(3, record.getCount());
         assertTrue(arrayEquals(record.getValue(), i1));
-        assertNotNull(record = record.getNext());
+        record = record.getNext();
+        assertNotNull(record);
         assertEquals(2, record.getCount());
         assertTrue(arrayEquals(record.getValue(), i2));
-        assertNotNull(record = record.getNext());
+        record = record.getNext();
+        assertNotNull(record);
         assertEquals(2, record.getCount());
         assertTrue(arrayEquals(record.getValue(), i3));
         assertNull(record.getNext());

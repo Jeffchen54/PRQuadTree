@@ -31,6 +31,7 @@ import java.util.Iterator;
  *            Key
  * @param <V>
  *            Value
+ * @version (2021-10-18)
  */
 public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
 
@@ -532,23 +533,23 @@ public class PointNodeList<K extends Comparable<K>, V extends Comparable<V>> {
          */
         public ValueRecordNode reportDuplicates() {
             ValueRecordNode curr = head;
-            ValueRecordNode record = null;
+            ValueRecordNode record1 = null;
 
             while (curr != null) {
                 if (curr.count > 1) {
-                    if (record == null) {
-                        record = new ValueRecordNode(curr.data, curr.count);
+                    if (record1 == null) {
+                        record1 = new ValueRecordNode(curr.data, curr.count);
                     }
                     else {
                         ValueRecordNode dupe = new ValueRecordNode(curr.data,
                             curr.count);
-                        dupe.next = record;
-                        record = dupe;
+                        dupe.next = record1;
+                        record1 = dupe;
                     }
                 }
                 curr = curr.next;
             }
-            return record;
+            return record1;
         }
     }
 

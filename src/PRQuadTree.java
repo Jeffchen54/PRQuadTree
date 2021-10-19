@@ -28,11 +28,7 @@ import java.util.LinkedList;
  * 
  * Entries added to the tree dependent on Integer's compareTo(Integer)
  * 
- * @param String
- *            Key for KVPair
- * @param Integer
- *            Value for KVPair
- * @author chenj (chenjeff4840), XC
+ * @author chenj (chenjeff4840), chenx (xiangkec19)
  * @version 10.5.2021
  */
 public class PRQuadTree {
@@ -100,7 +96,7 @@ public class PRQuadTree {
      * 
      * @param key
      *            key of point
-     * @param value
+     * @param values
      *            value of point
      * @return removed point, null if not found
      * @precondition key and value != null
@@ -116,7 +112,7 @@ public class PRQuadTree {
     /**
      * Returns all points that are contained in the query rectangle
      * 
-     * @param rectange
+     * @param rectangle
      *            Range of values to be searched in the
      * @return Data structure containing all points matching query values
      *         also containing meta data on # of nodes visited
@@ -144,32 +140,38 @@ public class PRQuadTree {
     /**
      * this will be a helper method for dump
      * 
-     * @return
+     * @return this return a preordered linkedlist
      */
     public LinkedList<BaseNode<String, Integer>> getPreOrderList() {
         return nodeList;
     }
 
-
+    /**
+     * this reset the visited node to 0
+     */
     public void resetCount() {
         this.count = 0;
     }
 
-
+    /**
+     * this increment after visiting a node
+     */
     public void increment() {
         count++;
     }
 
-
+    /**
+     * this return the visited node number
+     * @return number of node visited
+     */
     public int getCount() {
         return this.count;
     }
 
-
     /**
      * this return the root node
      * 
-     * @return
+     * @return the root node
      */
     public BaseNode<String, Integer> getRt() {
         return rt;
@@ -199,8 +201,8 @@ public class PRQuadTree {
         BaseNode<String, Integer> curr,
         String key,
         Integer[] value,
-        Integer[] min,
-        Integer[] max) {
+        Integer[] min1,
+        Integer[] max1) {
         // Base case, reached destination
         if (curr.getNodeClass() != NodeClassification.ParentNode) {
 
@@ -217,14 +219,14 @@ public class PRQuadTree {
                 LeafNode<String, Integer> leaf =
                     (LeafNode<String, Integer>)curr;
                 bufferSlot = leaf.addPoint(key, value);
-                return decompositionRule(leaf, min, max);
+                return decompositionRule(leaf, min1, max1);
 
             }
         }
 
         // For parent nodes
-        Integer[] mid = this.midpoint(min, max);
-        int direction = this.wayfinder(value, mid, min, max);
+        Integer[] mid = this.midpoint(min1, max1);
+        int direction = this.wayfinder(value, mid, min1, max1);
         ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
         Integer[] lBounds = new Integer[2];
         Integer[] uBounds = new Integer[2];
@@ -240,23 +242,26 @@ public class PRQuadTree {
                 break;
             case 1:
                 lBounds[0] = mid[0];
-                lBounds[1] = min[1];
-                uBounds[0] = max[0];
+                lBounds[1] = min1[1];
+                uBounds[0] = max1[0];
                 uBounds[1] = mid[1];
                 parent.setChild(insert(parent.getChild(direction), key, value,
                     lBounds, uBounds), direction);
                 break;
             case 2:
                 parent.setChild(insert(parent.getChild(direction), key, value,
-                    mid, max), direction);
+                    mid, max1), direction);
                 break;
             case 3:
-                lBounds[0] = min[0];
+                lBounds[0] = min1[0];
                 lBounds[1] = mid[1];
                 uBounds[0] = mid[0];
-                uBounds[1] = max[1];
+                uBounds[1] = max1[1];
                 parent.setChild(insert(parent.getChild(direction), key, value,
                     lBounds, uBounds), direction);
+                break;
+            default:
+                // this is default case
                 break;
         }
 
@@ -286,8 +291,8 @@ public class PRQuadTree {
         BaseNode<String, Integer> curr,
         String key,
         Integer[] value,
-        Integer[] min,
-        Integer[] max) {
+        Integer[] min2,
+        Integer[] max2) {
         // Base case, reached destination
         if (curr.getNodeClass() != NodeClassification.ParentNode) {
 
@@ -307,8 +312,8 @@ public class PRQuadTree {
         }
 
         // For parent nodes, basically the same as insert
-        Integer[] mid = this.midpoint(min, max);
-        int direction = this.wayfinder(value, mid, min, max);
+        Integer[] mid = this.midpoint(min2, max2);
+        int direction = this.wayfinder(value, mid, min2, max2);
         ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
         Integer[] lBounds = new Integer[2];
         Integer[] uBounds = new Integer[2];
@@ -316,27 +321,30 @@ public class PRQuadTree {
         switch (direction) {
             case 0:
                 parent.setChild(remove(parent.getChild(direction), key, value,
-                    min, mid), direction);
+                    min2, mid), direction);
                 break;
             case 1:
                 lBounds[0] = mid[0];
-                lBounds[1] = min[1];
-                uBounds[0] = max[0];
+                lBounds[1] = min2[1];
+                uBounds[0] = max2[0];
                 uBounds[1] = mid[1];
                 parent.setChild(remove(parent.getChild(direction), key, value,
                     lBounds, uBounds), direction);
                 break;
             case 2:
                 parent.setChild(remove(parent.getChild(direction), key, value,
-                    mid, max), direction);
+                    mid, max2), direction);
                 break;
             case 3:
-                lBounds[0] = min[0];
+                lBounds[0] = min2[0];
                 lBounds[1] = mid[1];
                 uBounds[0] = mid[0];
-                uBounds[1] = max[1];
+                uBounds[1] = max2[1];
                 parent.setChild(remove(parent.getChild(direction), key, value,
                     lBounds, uBounds), direction);
+                break;
+            default:
+                // this is default case
                 break;
         }
 
@@ -453,8 +461,8 @@ public class PRQuadTree {
      */
     private BaseNode<String, Integer> decompositionRule(
         LeafNode<String, Integer> leaf,
-        Integer[] min,
-        Integer[] max) {
+        Integer[] min3,
+        Integer[] max3) {
         if ((leaf.getDuplicates() == null || leaf.getDuplicates()
             .getCount() != leaf.getTotalSize()) && leaf.getTotalSize() > 3) {
             ParentNode<String, Integer> parent = new ParentNode<>(empty);
@@ -462,7 +470,7 @@ public class PRQuadTree {
 
             while (iter.hasNext()) {
                 PointNode<String, Integer> next = iter.next();
-                this.insert(parent, next.getKey(), next.getValue(), min, max);
+                this.insert(parent, next.getKey(), next.getValue(), min3, max3);
             }
             return parent;
         }
@@ -565,8 +573,8 @@ public class PRQuadTree {
     private void regionSearch(
         BaseNode<String, Integer> curr,
         Integer[] region,
-        Integer[] min,
-        Integer[] max,
+        Integer[] min4,
+        Integer[] max4,
         RegionSearchList<String, Integer> list) {
 
         // Increment visit count
@@ -589,29 +597,29 @@ public class PRQuadTree {
         // ParentNode - can go to multiple branches
         if (curr.getNodeClass() == NodeClassification.ParentNode) {
 
-            Integer[] mid = this.midpoint(min, max);
+            Integer[] mid = this.midpoint(min4, max4);
             ParentNode<String, Integer> parent =
                 (ParentNode<String, Integer>)curr;
 
             // NW
-            if (this.collide(region, min, mid)) {
-                this.regionSearch(parent.getChild(0), region, min, mid, list);
+            if (this.collide(region, min4, mid)) {
+                this.regionSearch(parent.getChild(0), region, min4, mid, list);
             }
             // NE
-            if (this.collide(region, new Integer[] { mid[0], min[1] },
-                new Integer[] { max[0], mid[1] })) {
+            if (this.collide(region, new Integer[] { mid[0], min4[1] },
+                new Integer[] { max4[0], mid[1] })) {
                 this.regionSearch(parent.getChild(1), region, new Integer[] {
-                    mid[0], min[1] }, new Integer[] { max[0], mid[1] }, list);
+                    mid[0], min4[1] }, new Integer[] { max4[0], mid[1] }, list);
             }
             // SE
-            if (this.collide(region, mid, max)) {
-                this.regionSearch(parent.getChild(2), region, min, mid, list);
+            if (this.collide(region, mid, max4)) {
+                this.regionSearch(parent.getChild(2), region, min4, mid, list);
             }
             // SW
             if (this.collide(region, new Integer[] { min[0], mid[1] },
-                new Integer[] { mid[0], max[1] })) {
+                new Integer[] { mid[0], max4[1] })) {
                 this.regionSearch(parent.getChild(3), region, new Integer[] {
-                    min[0], mid[1] }, new Integer[] { mid[0], max[1] }, list);
+                    min4[0], mid[1] }, new Integer[] { mid[0], max4[1] }, list);
             }
         }
 

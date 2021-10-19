@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import org.junit.Ignore;
 import student.TestCase;
-import student.TestableRandom;
 
 // On my honor:
 //
@@ -42,7 +40,7 @@ public class RectangleControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-
+        //this is a setUp
     }
 
     // Tests ------------------------------------------------------------------
@@ -54,7 +52,6 @@ public class RectangleControllerTest extends TestCase {
      * 
      * @throws FileNotFoundException
      */
-
     public void testRun() throws FileNotFoundException {
         controller = new RectangleController(new File("P2test2.txt"));
         controller.setSkipListLevels(new int[] { 1, 3, 1, 1 });
@@ -101,7 +98,11 @@ public class RectangleControllerTest extends TestCase {
         // JUnit can shut up about long methods
     }
 
-
+    /**
+     * Runs modified spec example input files and closes the controller
+     * 
+     * @throws FileNotFoundException
+     */
     public void testSecondInput() throws FileNotFoundException {
         controller = new RectangleController(new File("P2test1.txt"));
 
