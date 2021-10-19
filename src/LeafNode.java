@@ -45,6 +45,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
     private PointNodeList<K, V> points;
     private static final NodeClassification CLASSIFICATION =
         NodeClassification.LeafNode;
+    private int unique;
 
     // Constructor -----------------------------------------------------------
     /**
@@ -52,6 +53,7 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      */
     public LeafNode() {
         points = new PointNodeList<K, V>();
+        unique = 0;
     }
 
     // Functions -------------------------------------------------------------
@@ -79,6 +81,16 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
 
 
     /**
+     * Returns number of unique points
+     * 
+     * @return number of unique points
+     */
+    public int getNumUniquePoints() {
+        return unique;
+    }
+
+
+    /**
      * Returns all points in node
      * 
      * @return iterator of all the points
@@ -100,6 +112,9 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      */
     public PointNode<K, V> addPoint(K key, V[] value) {
         if (!this.exists(key, value)) {
+            if (!this.exists(null, value)) {
+                unique++;
+            }
             return points.insert(key, value);
         }
         return null;
@@ -118,6 +133,10 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
      */
     public PointNode<K, V> remove(K key, V[] value) {
         PointNode<K, V> temp = points.remove(key, value);
+
+        if (temp != null && !this.exists(null, value)) {
+            unique--;
+        }
         return temp;
     }
 

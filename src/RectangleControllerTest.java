@@ -206,7 +206,7 @@ public class RectangleControllerTest extends TestCase {
             + "Point inserted: (a, 551, 1)\r\n" + "Point Found (b1, 551, 1)\r\n"
             + "Point Found (a, 551, 1)\r\n" + "Point Found (a, 1, 1)\r\n"
             + "Point not found: c1\r\n" + "DEBUG COMMAND: RESETTING TREE\r\n"
-            + "", systemOut().getHistory());
+            + "Point REJECTED: (2, 2, 1)", systemOut().getHistory());
 
         controller.close();
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");

@@ -464,12 +464,13 @@ public class PRQuadTree {
      * @precondition params != null, min and max size 2 and within this.min
      *               and this.max
      */
+    @SuppressWarnings("unchecked")
     private BaseNode<String, Integer> decompositionRule(
         LeafNode<String, Integer> leaf,
         Integer[] min3,
         Integer[] max3) {
-        if ((leaf.getDuplicates() == null || leaf.getDuplicates()
-            .getCount() != leaf.getTotalSize()) && leaf.getTotalSize() > 3) {
+
+        if (leaf.getNumUniquePoints() > 1 && leaf.getTotalSize() > 3) {
             ParentNode<String, Integer> parent = new ParentNode<>(empty);
             Iterator<PointNode<String, Integer>> iter = leaf.getPoints();
 

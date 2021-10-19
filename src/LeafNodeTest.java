@@ -150,13 +150,21 @@ public class LeafNodeTest extends TestCase {
         // Coverage (more specific tests done in PointNodeList)
         node1.addPoint(s1, i1);
         node1.addPoint(s1, i1);
+        node1.addPoint(s2, i3);
         node1.addPoint(s1, i2);
+        assertEquals(3, node1.getNumUniquePoints());
 
         assertEquals(s1, node1.remove(s1, i1).getKey());
         assertEquals(s1, node1.remove(null, i2).getKey());
+        assertEquals(1, node1.getNumUniquePoints());
 
         // Trying to remove invalid addition
         assertNull(node1.remove(s1, i1));
+        assertEquals(1, node1.getNumUniquePoints());
+
+        // Remove all entries
+        assertNotNull(node1.remove(null, i3));
+        assertEquals(0, node1.getNumUniquePoints());
 
     }
 

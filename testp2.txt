@@ -69,4 +69,6 @@ search c1
 
 clear
 
+insert 2 2 1
+
 

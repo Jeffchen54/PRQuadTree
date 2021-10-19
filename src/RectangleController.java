@@ -220,7 +220,14 @@ public class RectangleController {
      * @precondition name & dimensions != null
      */
     private void insert(String name, Dimensions dimensions) {
-        if (!isPlacable(dimensions.getArr(), 1024, 1024)) {
+
+        // Checks if fit naming convention
+        if (!Character.isLetter(name.charAt(0))) {
+            System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
+                .getArr()) + ")");
+        }
+
+        else if (!isPlacable(dimensions.getArr(), 1024, 1024)) {
             System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
                 .getArr()) + ")");
         }

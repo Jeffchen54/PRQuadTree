@@ -89,6 +89,15 @@ public class PRQuadTreeTest extends TestCase {
 
         // Inserting a clone point and key
         assertFalse(tree.insert("NE", new Integer[] { 700, 200 }));
+
+        // Inserting 2 pairs of duplicate points
+        tree = new PRQuadTree(min, max);
+        tree.insert("NE1", new Integer[] { 200, 200 });
+        tree.insert("NE2", new Integer[] { 200, 200 });
+        tree.insert("NEV1", new Integer[] { 150, 200 });
+        tree.insert("NEV2", new Integer[] { 150, 200 });
+
+        System.out.println(tree.toString());
     }
 
 

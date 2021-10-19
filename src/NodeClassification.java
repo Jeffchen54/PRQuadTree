@@ -26,21 +26,15 @@
  * @author Jeff Chen (chenjeff4840)
  * @version 10.17.2021
  */
-
-
-/**
- * this is the java doc for enumeration type
- *
- */
 enum NodeClassification {
     /**
      * parent Node
      */
-    ParentNode, 
+    ParentNode,
     /**
      * leaf Node
      */
-    LeafNode, 
+    LeafNode,
     /**
      * flyweight Node
      */
