@@ -1,0 +1,35 @@
+insert a1  256 220
+insert a1  282 266
+insert a1  282 222
+insert a1  252 213
+insert a1  258 253
+insert a1  285 288
+insert a1  241 252
+insert a1  162 285
+
+insert a1  412 2
+insert a1  212 2
+insert a1  852 232
+insert a1  362 223
+insert a1  223 223
+insert a1  212 223
+insert a1  296 252
+insert a1  256 252
+insert a1  232 285
+insert a1  233 266
+insert a1  263 285
+insert a1  285 221
+insert a1  268 225
+insert a1  256 296
+insert a1  212 212
+insert a1  223 23
+insert a1  263 258
+insert a1  258 21
+insert a1  288 223
+
+insert a1  22 22
+insert a1  21 26
+insert a1  21 21
+
+dump
+
