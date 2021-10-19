@@ -40,7 +40,7 @@ public class RectangleControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-        //this is a setUp
+        // this is a setUp
     }
 
     // Tests ------------------------------------------------------------------
@@ -97,6 +97,7 @@ public class RectangleControllerTest extends TestCase {
 
         // JUnit can shut up about long methods
     }
+
 
     /**
      * Runs modified spec example input files and closes the controller
@@ -157,6 +158,7 @@ public class RectangleControllerTest extends TestCase {
             + "Point REJECTED: (p_p, 1, 20)\r\n"
             + "Point REJECTED: (p_bad_length, 1)\r\n"
             + "rectangle rejected (11, 11, 0, 0)\r\n"
+            + "DEBUG COMMAND: RESETTING TREE\r\n"
             + "Point REJECTED: (p_bad_toolargexy, 121212, 12313)\r\n"
             + "Point REJECTED: (p_bad_toolargex, 121212, 13)\r\n"
             + "Point REJECTED: (p_bad_toolargy, 122, 12313)\r\n"
@@ -165,7 +167,83 @@ public class RectangleControllerTest extends TestCase {
             + "rectangle rejected (11, 11, -1, 1)\r\n"
             + "rectangle rejected (11, 11, 1, -1)\r\n"
             + "rectangle rejected (5, 5, 4, 2, 3)\r\n"
-            + "rectangle rejected (5, 5, 4, -2, 3)", systemOut().getHistory());
+            + "rectangle rejected (5, 5, 4, -2, 3)\r\n"
+            + "DEBUG COMMAND: RESETTING TREE\r\n"
+            + "Point inserted: (a, 1, 0)\r\n"
+            + "Point rejected: (a0, 2048, 4)\r\n"
+            + "Point inserted: (a_1, 1, 0)\r\n"
+            + "Point rejected: (a4, -1, 0)\r\n"
+            + "DEBUG COMMAND: RESETTING TREE\r\n"
+            + "Point inserted: (a, 1, 1)\r\n" + "Point inserted: (a1, 2, 1)\r\n"
+            + "Point inserted: (b1, 551, 1)\r\n"
+            + "Point inserted: (b2, 553, 1)\r\n"
+            + "Point b1, 551, 1 removed\r\n" + "Point not removed: b\r\n"
+            + "Point b2, 553, 1 removed\r\n" + "Point rejected: (-1, 0)\r\n"
+            + "Point not found: (5, 3)\r\n"
+            + "DEBUG COMMAND: RESETTING TREE\r\n"
+            + "Point inserted: (a, 1, 1)\r\n" + "Point inserted: (a1, 2, 1)\r\n"
+            + "Point inserted: (b1, 551, 1)\r\n"
+            + "Point inserted: (b2, 553, 1)\r\n"
+            + "Points intersecting region (0, 0, 768, 768):\r\n"
+            + "Point found: (b2, 553, 1)\r\n" + "Point found: (b1, 551, 1)\r\n"
+            + "Point found: (a1, 2, 1)\r\n" + "Point found: (a, 1, 1)\r\n"
+            + "5 quadtree nodes visited\r\n"
+            + "Points intersecting region (752, 752, 224, 224):\r\n"
+            + "2 quadtree nodes visited\r\n"
+            + "Rectangle rejected: (0, 0, -5, -5)\r\n"
+            + "DEBUG COMMAND: RESETTING TREE\r\n" + "Duplicate points:\r\n"
+            + "Point inserted: (a, 1, 1)\r\n" + "Point inserted: (b, 1, 1)\r\n"
+            + "Point inserted: (a1, 2, 1)\r\n"
+            + "Point inserted: (b1, 551, 1)\r\n"
+            + "Point inserted: (b2, 553, 1)\r\n"
+            + "Point inserted: (a, 551, 1)\r\n" + "Duplicate points:\r\n"
+            + "(1, 1)\r\n" + "(551, 1)\r\n"
+            + "DEBUG COMMAND: RESETTING TREE\r\n"
+            + "Point inserted: (a, 1, 1)\r\n" + "Point inserted: (b, 1, 1)\r\n"
+            + "Point inserted: (a1, 2, 1)\r\n"
+            + "Point inserted: (b1, 551, 1)\r\n"
+            + "Point inserted: (b2, 553, 1)\r\n"
+            + "Point inserted: (a, 551, 1)\r\n" + "Point Found (b1, 551, 1)\r\n"
+            + "Point Found (a, 551, 1)\r\n" + "Point Found (a, 1, 1)\r\n"
+            + "Point not found: c1\r\n" + "DEBUG COMMAND: RESETTING TREE\r\n"
+            + "", systemOut().getHistory());
+
+        controller.close();
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+        systemOut().clearHistory();
+        controller = new RectangleController(new File("testp2dump.txt"));
+        controller.setSkipListLevels(new int[] { 3, 1, 3, 1, 5, 6, 3 });
+        controller.runAll();
+
+        assertFuzzyEquals("SkipList Dump:\r\n" + "level: 1 Value: null\r\n"
+            + "The SkipList's size is: 0\r\n" + "QuadTree Dump:\r\n"
+            + "Node at 0, 0, 1024: Empty\r\n"
+            + "QuadTree Size: 1 QuadTree Nodes Printed.\r\n"
+            + "Point inserted: (a, 1, 1)\r\n" + "Point inserted: (b, 1, 1)\r\n"
+            + "Point inserted: (a1, 2, 1)\r\n"
+            + "Point inserted: (x, 257, 1)\r\n"
+            + "Point inserted: (b1, 551, 1)\r\n"
+            + "Point inserted: (b2, 553, 1)\r\n"
+            + "Point inserted: (a, 551, 1)\r\n" + "SkipList dump:\r\n"
+            + "level: 6 Value: null\r\n" + "level: 3 Value: (a, 551, 1)\r\n"
+            + "level: 3 Value: (a, 1, 1)\r\n" + "level: 3 Value: (a1, 2, 1)\r\n"
+            + "level: 1 Value: (b, 1, 1)\r\n"
+            + "level: 5 Value: (b1, 551, 1)\r\n"
+            + "level: 6 Value: (b2, 553, 1)\r\n"
+            + "level: 1 Value: (x, 257, 1)\r\n"
+            + "The SkipList's size is: 7\r\n" + "QuadTree dump:\r\n"
+            + "Node at 0, 0, 1024: Internal\r\n"
+            + "  Node at 0, 0, 512: Internal\r\n" + "    Node at 0, 0, 256:\r\n"
+            + "    (a1, 2, 1)\r\n" + "    (b, 1, 1)\r\n" + "    (a, 1, 1)\r\n"
+            + "    Node at 256, 0, 256:\r\n" + "    (x, 257, 1)\r\n"
+            + "    Node at 0, 256, 256: Empty\r\n"
+            + "    Node at 256, 256, 256: Empty\r\n"
+            + "  Node at 512, 0, 512:\r\n" + "  (a, 551, 1)\r\n"
+            + "  (b2, 553, 1)\r\n" + "  (b1, 551, 1)\r\n"
+            + "  Node at 0, 512, 512: Empty\r\n"
+            + "  Node at 512, 512, 512: Empty\r\n"
+            + "QuadTree Size: 9 QuadTree Nodes Printed.\r\n", systemOut()
+                .getHistory());
         controller.close();
     }
 }

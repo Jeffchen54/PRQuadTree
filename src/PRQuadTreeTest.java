@@ -395,6 +395,29 @@ public class PRQuadTreeTest extends TestCase {
         iter = tree.regionSearch(new Integer[] { 0, 250, 250, 0 })
             .getIterator();
         assertFalse(iter.hasNext());
+
+        // Additional test cases:
+        tree = new PRQuadTree(min, max);
+        tree.insert("a", new Integer[] { 1, 1 });
+        tree.insert("a1", new Integer[] { 2, 1 });
+        tree.insert("b1", new Integer[] { 551, 1 });
+        tree.insert("b2", new Integer[] { 553, 1 });
+
+        iter = tree.regionSearch(new Integer[] { 0, 0, 768, 768 })
+            .getIterator();
+        assertEquals(5, tree.regionSearch(new Integer[] { 0, 0, 768, 768 })
+            .numVisited());
+        assertNotNull(iter.next());
+        assertNotNull(iter.next());
+        assertNotNull(iter.next());
+        assertNotNull(iter.next());
+        assertNull(iter.next());
+
+        iter = tree.regionSearch(new Integer[] { 752, 752, 224, 224 })
+            .getIterator();
+        assertEquals(2, tree.regionSearch(new Integer[] { 752, 752, 224, 224 })
+            .numVisited());
+        assertFalse(iter.hasNext());
     }
 
 

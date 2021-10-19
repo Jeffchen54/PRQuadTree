@@ -146,12 +146,14 @@ public class PRQuadTree {
         return nodeList;
     }
 
+
     /**
      * this reset the visited node to 0
      */
     public void resetCount() {
         this.count = 0;
     }
+
 
     /**
      * this increment after visiting a node
@@ -160,13 +162,16 @@ public class PRQuadTree {
         count++;
     }
 
+
     /**
      * this return the visited node number
+     * 
      * @return number of node visited
      */
     public int getCount() {
         return this.count;
     }
+
 
     /**
      * this return the root node
@@ -573,8 +578,8 @@ public class PRQuadTree {
     private void regionSearch(
         BaseNode<String, Integer> curr,
         Integer[] region,
-        Integer[] min4,
-        Integer[] max4,
+        Integer[] lower,
+        Integer[] upper,
         RegionSearchList<String, Integer> list) {
 
         // Increment visit count
@@ -597,29 +602,31 @@ public class PRQuadTree {
         // ParentNode - can go to multiple branches
         if (curr.getNodeClass() == NodeClassification.ParentNode) {
 
-            Integer[] mid = this.midpoint(min4, max4);
+            Integer[] mid = this.midpoint(lower, upper);
             ParentNode<String, Integer> parent =
                 (ParentNode<String, Integer>)curr;
 
             // NW
-            if (this.collide(region, min4, mid)) {
-                this.regionSearch(parent.getChild(0), region, min4, mid, list);
+            if (this.collide(region, lower, mid)) {
+                this.regionSearch(parent.getChild(0), region, lower, mid, list);
             }
             // NE
-            if (this.collide(region, new Integer[] { mid[0], min4[1] },
-                new Integer[] { max4[0], mid[1] })) {
+            if (this.collide(region, new Integer[] { mid[0], lower[1] },
+                new Integer[] { upper[0], mid[1] })) {
                 this.regionSearch(parent.getChild(1), region, new Integer[] {
-                    mid[0], min4[1] }, new Integer[] { max4[0], mid[1] }, list);
+                    mid[0], lower[1] }, new Integer[] { upper[0], mid[1] },
+                    list);
             }
             // SE
-            if (this.collide(region, mid, max4)) {
-                this.regionSearch(parent.getChild(2), region, min4, mid, list);
+            if (this.collide(region, mid, upper)) {
+                this.regionSearch(parent.getChild(2), region, lower, mid, list);
             }
             // SW
             if (this.collide(region, new Integer[] { min[0], mid[1] },
-                new Integer[] { mid[0], max4[1] })) {
+                new Integer[] { mid[0], upper[1] })) {
                 this.regionSearch(parent.getChild(3), region, new Integer[] {
-                    min4[0], mid[1] }, new Integer[] { mid[0], max4[1] }, list);
+                    lower[0], mid[1] }, new Integer[] { mid[0], upper[1] },
+                    list);
             }
         }
 
@@ -667,17 +674,11 @@ public class PRQuadTree {
         Integer[] region,
         Integer[] lower,
         Integer[] upper) {
-        int width = upper[0] - lower[0];
-        int height = upper[1] - lower[1];
-        Integer[] bounded = { lower[0], lower[1], width, height };
 
-        return ((bounded[0] <= region[0] && bounded[0] + bounded[2] > region[0])
-            || ((bounded[0] >= region[0] && bounded[0] < region[0]
-                + region[2])))
-
-            && ((bounded[1] <= region[1] && bounded[1] + bounded[3] > region[1])
-                || ((bounded[1] >= region[1] && bounded[1] < region[1]
-                    + region[3])));
+        return ((region[0] < lower[0] && region[0] + region[2] > lower[0])
+            || (region[0] >= lower[0] && region[0] < upper[0]))
+            && ((region[1] < lower[1] && region[1] + region[3] > lower[1])
+                || (region[1] >= lower[1] && region[1] < upper[1]));
     }
 
 

@@ -118,6 +118,9 @@ public class RectangleController {
             case "duplicates":
                 duplicates(); // prj2
                 break;
+            case "clear":
+                clear();
+                break;
             default:
                 System.out.println("An unknown command was ran");
         }
@@ -136,6 +139,19 @@ public class RectangleController {
 
 
     /**
+     * Clears skipList and tree, for debugging purposes. Prints clear
+     * notification
+     * when clearing structures.
+     */
+    public void clear() {
+        System.out.println("DEBUG COMMAND: RESETTING TREE");
+        tree = new PRQuadTree(new Integer[] { 0, 0 }, new Integer[] { 1024,
+            1024 });
+        list = new SkipList<String, Dimensions>();
+    }
+
+
+    /**
      * Prints all points with duplicate coordinates
      * 
      * @implNote Calls duplicates from PRQuadTree
@@ -145,8 +161,8 @@ public class RectangleController {
 
         PointNodeList<String, Integer>.ValueRecordNode node = tree.duplicates();
         while (node != null) {
-            System.out.println("(" + tree.duplicates().getValue()[0] + ", "
-                + tree.duplicates().getValue()[1] + ")");
+            System.out.println("(" + node.getValue()[0] + ", " + node
+                .getValue()[1] + ")");
             node = node.getNext();
         }
 
@@ -208,18 +224,18 @@ public class RectangleController {
             System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
                 .getArr()) + ")");
         }
-
-        // check condition for tree see if there is identical point
         else {
-            int x = dimensions.getArr()[0];
-            int y = dimensions.getArr()[1];
-            if (!tree.insert(name, new Integer[] { x, y })) {
-                System.out.println("Point REJECTED: (" + shapeInfo(name,
+            // Attempts to insert into the tree
+            boolean inserted = tree.insert(name, IntStream.of(dimensions
+                .getArr()).boxed().toArray(Integer[]::new));
+
+            if (inserted == true) {
+                list.insert(name, dimensions);
+                System.out.println("Point Inserted: (" + shapeInfo(name,
                     dimensions.getArr()) + ")");
             }
             else {
-                list.insert(name, dimensions);
-                System.out.println("Point Inserted: (" + shapeInfo(name,
+                System.out.println("Point REJECTED: (" + shapeInfo(name,
                     dimensions.getArr()) + ")");
             }
         }
@@ -495,7 +511,7 @@ public class RectangleController {
      */
     private boolean isLegal(int[] dimensions) {
 
-        if (dimensions.length >= 2) {
+        if (dimensions.length == 2) {
             if (dimensions[0] < 0 || dimensions[1] < 0) {
                 return false;
             }
