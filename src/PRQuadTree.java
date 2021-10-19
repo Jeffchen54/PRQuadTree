@@ -650,8 +650,8 @@ public class PRQuadTree {
     private boolean withinRegion(Integer[] region, Integer[] point) {
 
         return (region[0].compareTo(point[0]) == 0 && region[1].compareTo(
-            point[1]) == 0) || point[0] >= region[0] && point[0] < region[0]
-                + region[2] && point[1] >= region[1] && point[1] < region[1]
+            point[1]) == 0) || point[0] >= region[0] && point[0] <= region[0]
+                + region[2] && point[1] >= region[1] && point[1] <= region[1]
                     + region[3];
     }
 

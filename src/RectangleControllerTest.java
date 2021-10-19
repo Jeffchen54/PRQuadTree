@@ -246,15 +246,4 @@ public class RectangleControllerTest extends TestCase {
                 .getHistory());
         controller.close();
     }
-    
-    /**
-     * Tests large insert + dump
-     * @throws FileNotFoundException 
-     */
-    public void testLargeInsert() throws FileNotFoundException {
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
-        systemOut().clearHistory();
-        controller = new RectangleController(new File("Large_insert.txt"));
-        controller.runAll();
-    }
 }
