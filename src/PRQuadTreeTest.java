@@ -50,23 +50,37 @@ public class PRQuadTreeTest extends TestCase {
     public void testInsert() {
         // Inserts onto empty list
         assertTrue(tree.insert("Hello World", new Integer[] { 0, 125 }));
-        tree.peek();
+        assertEquals("Leaf-Hello World, \n", tree.toString());
 
         // Insert same quadrant
         assertTrue(tree.insert("IT WORKS???!!", new Integer[] { 0, 100 }));
         assertTrue(tree.insert("IT WORKS???!!", new Integer[] { 0, 50 }));
-        tree.peek();
+        assertEquals("Leaf-IT WORKS???!!, IT WORKS???!!, Hello World, \r\n",
+            tree.toString());
 
         // Split
         assertTrue(tree.insert("IT WORKS???!!", new Integer[] { 0, 75 }));
-        tree.peek();
+        assertEquals("Parent\r\n" + "\tNW-Parent\r\n" + "\tNW-Parent\r\n"
+            + "\tNW-Parent\r\n" + "\tNW-Leaf-IT WORKS???!!, \r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n"
+            + "\tSW-Leaf-IT WORKS???!!, IT WORKS???!!, Hello World, \r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n"
+            + "\tSW-Flyweight\r\n", tree.toString());
 
         // Putting values onto other quadrants
         assertTrue(tree.insert("NE", new Integer[] { 700, 200 }));
         assertTrue(tree.insert("SW", new Integer[] { 200, 700 }));
         assertTrue(tree.insert("SE", new Integer[] { 700, 700 }));
-        tree.peek();
-
+        assertEquals("Parent\r\n" + "\tNW-Parent\r\n" + "\tNW-Parent\r\n"
+            + "\tNW-Parent\r\n" + "\tNW-Leaf-IT WORKS???!!, \r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n"
+            + "\tSW-Leaf-IT WORKS???!!, IT WORKS???!!, Hello World, \r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Leaf-NE, \r\n" + "\tSE-Leaf-SE, \r\n" + "\tSW-Leaf-SW, \n",
+            tree.toString());
         // Inserting same point diff key
         assertTrue(tree.insert("NE1", new Integer[] { 700, 200 }));
 
@@ -83,11 +97,16 @@ public class PRQuadTreeTest extends TestCase {
         assertTrue(tree.insert("p", new Integer[] { 10, 30 }));
         assertTrue(tree.insert("p_42", new Integer[] { 1, 20 }));
         assertTrue(tree.insert("far_point", new Integer[] { 200, 200 }));
-        tree.peek();
+        assertEquals("Parent\r\n" + "\tNW-Parent\r\n" + "\tNW-Parent\r\n"
+            + "\tNW-Leaf-p_p, p, p_42, \r\n" + "\tNE-Flyweight\r\n"
+            + "\tSE-Leaf-far_point, \r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\n",
+            tree.toString());
         assertEquals("p_p", tree.remove("p_p", new Integer[] { 1, 20 })
             .getKey());
         assertEquals("p", tree.remove(null, new Integer[] { 10, 30 }).getKey());
-        tree.peek();
+        assertEquals("Leaf-far_point, p_42, \r\n", tree.toString());
 
         tree = new PRQuadTree(min, max);
         assertTrue(tree.insert("p_p", new Integer[] { 1, 20 }));
@@ -112,10 +131,15 @@ public class PRQuadTreeTest extends TestCase {
         assertTrue(this.arrayEquals(new Integer[] { 1, 20 }, record
             .getValue()));
         assertNull(record.getNext());
-        
-        tree.peek();
-        tree.remove("p_p", new Integer[] {1,20});
-        tree.remove(null, new Integer[] {10,30});
+
+        assertEquals("Parent\r\n" + "\tNW-Parent\r\n" + "\tNW-Parent\r\n"
+            + "\tNW-Leaf-p_p, p, p_42, \r\n" + "\tNE-Flyweight\r\n"
+            + "\tSE-Leaf-far_point, \r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n"
+            + "\tSW-Flyweight\r\n", tree.toString());
+        tree.remove("p_p", new Integer[] { 1, 20 });
+        tree.remove(null, new Integer[] { 10, 30 });
         tree.peek();
 
     }
@@ -193,6 +217,67 @@ public class PRQuadTreeTest extends TestCase {
             .getKey());
         assertEquals("NE1", tree.remove(null, new Integer[] { 700, 200 })
             .getKey());
+
+        // Removing a element such that decomposition is applied to
+        // Parent
+        // -Parent, leaf, fly, fly which does not break it down
+        tree = new PRQuadTree(min, max);
+        tree.insert("NE1", new Integer[] { 700, 50 });
+        tree.insert("NE2", new Integer[] { 700, 100 });
+        tree.insert("NE3", new Integer[] { 700, 150 });
+        tree.insert("NE4", new Integer[] { 700, 199 });
+
+        tree.insert("SE1", new Integer[] { 700, 850 });
+        tree.insert("SE2", new Integer[] { 700, 900 });
+        tree.insert("SE3", new Integer[] { 700, 950 });
+        tree.insert("SE4", new Integer[] { 700, 1000 });
+
+        // Confirming tree structure
+        assertEquals("Parent\r\n" + "\tNW-Flyweight\r\n" + "\tNE-Parent\r\n"
+            + "\tNW-Parent\r\n" + "\tNW-Flyweight\r\n"
+            + "\tNE-Leaf-NE1, NE2, \r\n" + "\tSE-Leaf-NE3, NE4, \r\n"
+            + "\tSW-Flyweight\r\n" + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n"
+            + "\tSW-Flyweight\r\n" + "\tSE-Parent\r\n" + "\tNW-Flyweight\r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n" + "\tSW-Parent\r\n"
+            + "\tNW-Flyweight\r\n" + "\tNE-Leaf-SE1, \r\n"
+            + "\tSE-Leaf-SE4, SE3, SE2, \r\n" + "\tSW-Flyweight\r\n"
+            + "\tSW-Flyweight\r\n", tree.toString());
+
+        // Removing a point to trigger decomposition event where a parentNode
+        // exists where Leaf is trying to collapse from 4 nodes to 1
+        tree.remove(null, new Integer[] { 700, 50 });
+        assertEquals("Parent\r\n" + "\tNW-Flyweight\r\n"
+            + "\tNE-Leaf-NE2, NE3, NE4, \r\n" + "\tSE-Parent\r\n"
+            + "\tNW-Flyweight\r\n" + "\tNE-Flyweight\r\n" + "\tSE-Flyweight\r\n"
+            + "\tSW-Parent\r\n" + "\tNW-Flyweight\r\n" + "\tNE-Leaf-SE1, \r\n"
+            + "\tSE-Leaf-SE4, SE3, SE2, \r\n" + "\tSW-Flyweight\r\n"
+            + "\tSW-Flyweight\r\n", tree.toString());
+
+    }
+
+
+    /**
+     * Tests for duplicate values not duplicate()
+     */
+    public void testDuplicateValues() {
+        // Testing with 4 duplicate values
+        tree = new PRQuadTree(min, max);
+        tree.insert("NW1", new Integer[] { 0, 100 });
+        tree.insert("NW2", new Integer[] { 0, 100 });
+        tree.insert("NW3", new Integer[] { 0, 100 });
+        tree.insert("NW4", new Integer[] { 0, 100 });
+        assertEquals("Leaf-NW4, NW3, NW2, NW1, \r\n", tree.toString());
+
+        // Adding nondupe value but to another tree, should split the tree up
+        tree.insert("SE", new Integer[] { 800, 800 });
+        assertEquals("Parent\r\n" + "\tNW-Leaf-NW1, NW2, NW3, NW4, \r\n"
+            + "\tNE-Flyweight\r\n" + "\tSE-Leaf-SE, \r\n" + "\tSW-Flyweight\n",
+            tree.toString());
+
+        // Remove that point, should break the tree into a single leaf
+        tree.remove("SE", new Integer[] { 800, 800 });
+        assertEquals("Leaf-NW4, NW3, NW2, NW1, \r\n", tree.toString());
+
     }
 
 
@@ -307,7 +392,6 @@ public class PRQuadTreeTest extends TestCase {
         iter = tree.regionSearch(new Integer[] { 0, 250, 250, 0 })
             .getIterator();
         assertFalse(iter.hasNext());
-
     }
 
 

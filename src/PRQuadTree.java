@@ -150,18 +150,22 @@ public class PRQuadTree {
         return nodeList;
     }
 
-    public void resetCount(){
+
+    public void resetCount() {
         this.count = 0;
     }
-    
+
+
     public void increment() {
         count++;
     }
-    
+
+
     public int getCount() {
         return this.count;
     }
-    
+
+
     /**
      * this return the root node
      * 
@@ -224,6 +228,10 @@ public class PRQuadTree {
         ParentNode<String, Integer> parent = (ParentNode<String, Integer>)curr;
         Integer[] lBounds = new Integer[2];
         Integer[] uBounds = new Integer[2];
+
+        // BEGONE STACK OVERFLOW DUE TO MIDPOINT CALCULATION!!!
+        // System.out.println(min[0] + ", " + min[1] + " --- " + max[0] + ", " +
+        // max[1]);
 
         switch (direction) {
             case 0:
@@ -363,7 +371,7 @@ public class PRQuadTree {
             if (totalPoints <= 3) {
                 return combination;
             }
-            if(flyweights == 3) {
+            if (flyweights == 3) {
                 return combination;
             }
         }
@@ -491,7 +499,7 @@ public class PRQuadTree {
      */
     private Integer[] midpoint(Integer[] lower, Integer[] upper) {
         int x = lower[0] + ((upper[0] - lower[0]) >> 1);
-        int y = lower[1] + ((upper[1] - lower[0]) >> 1);
+        int y = lower[1] + ((upper[1] - lower[1]) >> 1);
         return new Integer[] { x, y };
     }
 
@@ -670,6 +678,83 @@ public class PRQuadTree {
      */
     public void peek() {
         // TODO remove when dump is complete.
+    }
+
+
+    /**
+     * Returns the each node from top to bottom as seen in the debugger.
+     * For example:
+     * 
+     * Debugger view:
+     * Parent1
+     * \tFlyNode1
+     * \tFlyNode2
+     * \tParent2
+     * \t\tLeafNode1
+     * \t\tFlyNode3
+     * \t\tFlyNode4
+     * \t\tLeafnode2
+     * \tLeafnode3
+     * 
+     * String View:
+     * Parent
+     * \tNW-Flyweight
+     * \tNE-Flyweight
+     * \tSE-Parent
+     * \tNW-Leaf-pointKey,pointKey,pointKey...
+     * \tNE-Flyweight
+     * \tSE-Flyweight
+     * \tSW-Leaf-pointKey,pointKey,pointKey...
+     * \tSW-Leaf-pointKey,pointKey,pointKey...
+     * 
+     * 
+     * @return String view of the tree
+     */
+    public String toString() {
+        return this.getTree(rt);
+
+    }
+
+
+    /**
+     * Builds string view of the tree
+     * 
+     * @param curr
+     *            Current node
+     * @return Token of the string view, return entire string view on last
+     *         return.
+     */
+    private String getTree(BaseNode<String, Integer> curr) {
+        // Flyweight
+        if (curr.getNodeClass() == NodeClassification.FlyweightNode) {
+            return "Flyweight\n";
+        }
+
+        // Child
+        if (curr.getNodeClass() == NodeClassification.LeafNode) {
+            Iterator<PointNode<String, Integer>> iter =
+                ((LeafNode<String, Integer>)curr).getPoints();
+            String keys = "Leaf-";
+            while (iter.hasNext()) {
+                keys += iter.next().getKey() + ", ";
+            }
+            keys += "\n";
+            return keys;
+        }
+        String build = "Parent\n";
+
+        // Parent
+
+        build += "\tNW-" + (this.getTree(((ParentNode<String, Integer>)curr)
+            .getChild(0)));
+        build += "\tNE-" + (this.getTree(((ParentNode<String, Integer>)curr)
+            .getChild(1)));
+        build += "\tSE-" + (this.getTree(((ParentNode<String, Integer>)curr)
+            .getChild(2)));
+        build += "\tSW-" + (this.getTree(((ParentNode<String, Integer>)curr)
+            .getChild(3)));
+
+        return build;
     }
 
 }
