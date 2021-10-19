@@ -1,0 +1,14 @@
+insert p_p          1 20
+insert p_p          1 20
+insert p_bad_length 1
+  regionsearch   11 11                 0 0
+
+insert p_bad_toolargexy	121212 12313
+insert p_bad_toolargex	121212 13
+insert p_bad_toolargy	122 12313
+deez nutes
+  regionsearch   11 11                 0 0
+  regionsearch   11 11                 -1 1
+  regionsearch   11 11                 1 -1
+regionsearch 5    5   4   2 3
+regionsearch 5    5   4   -2 3

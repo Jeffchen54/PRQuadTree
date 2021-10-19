@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.stream.IntStream;
 
 // On my honor:
 //
@@ -50,7 +51,8 @@ public class RectangleController {
     public RectangleController(File commands) throws FileNotFoundException {
         parser = new CommandParser(commands);
         list = new SkipList<String, Dimensions>();
-        tree = new PRQuadTree(new Integer[] { 0 , 0 }, new Integer[] { 1024 , 1024 });
+        tree = new PRQuadTree(new Integer[] { 0, 0 }, new Integer[] { 1024,
+            1024 });
     }
 
     // Functions ------------------------------------------------------------
@@ -88,10 +90,8 @@ public class RectangleController {
                 System.out.println("QuadTree Dump:");
                 tree.resetCount();
                 dump(tree.getRt(), -1, 0, 0);
-                System.out.println("QuadTree Size: " + tree.getCount() + " QuadTree Nodes Printed.");
-                break;
-            case "intersections":
-                intersections();
+                System.out.println("QuadTree Size: " + tree.getCount()
+                    + " QuadTree Nodes Printed.");
                 break;
             case "regionsearch":
                 regionSearch(extractArr(tokens, 1)); // Same as prj1 but through
@@ -142,14 +142,26 @@ public class RectangleController {
      */
     private void duplicates() {
         System.out.println("Duplicate Points:");
-        
+
         PointNodeList<String, Integer>.ValueRecordNode node = tree.duplicates();
         while (node != null) {
-            System.out.println("(" + tree.duplicates().getValue()[0] + 
-                ", " + tree.duplicates().getValue()[1] + ")");
+            System.out.println("(" + tree.duplicates().getValue()[0] + ", "
+                + tree.duplicates().getValue()[1] + ")");
             node = node.getNext();
         }
-        
+
+    }
+
+
+    /**
+     * Sets the next levels in the Skiplist
+     * 
+     * @param levels
+     *            Next SkipList levels
+     * @precondition levels != null and length > 0
+     */
+    public void setSkipListLevels(int[] levels) {
+        list.setRandomLevel(levels);
     }
 
 
@@ -164,19 +176,18 @@ public class RectangleController {
     private void remove(String name) {
 
         KVPair<String, Dimensions> data = list.remove(name);
-        // TODO Send data to tree remove to sync list up. ********************
-        
+
         if (data == null) {
             System.out.println("point Not Removed: " + name);
         }
         else {
-            System.out.println("Point (" + shapeInfo(data.getKey(),
-                data.getValue().getArr()) + ") Removed");
-            
-            //sync part for tree
+            System.out.println("Point (" + shapeInfo(data.getKey(), data
+                .getValue().getArr()) + ") Removed");
+
+            // sync part for tree
             int a = data.getValue().getArr()[0];
             int b = data.getValue().getArr()[1];
-            tree.remove(name, new Integer[] { a , b });
+            tree.remove(name, new Integer[] { a, b });
         }
     }
 
@@ -193,22 +204,21 @@ public class RectangleController {
      * @precondition name & dimensions != null
      */
     private void insert(String name, Dimensions dimensions) {
-        // TODO check if insert less dimensions works
         if (!isPlacable(dimensions.getArr(), 1024, 1024)) {
             System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
                 .getArr()) + ")");
         }
-        
-        // check condition for tree  see if there is identical point
+
+        // check condition for tree see if there is identical point
         else {
             int x = dimensions.getArr()[0];
             int y = dimensions.getArr()[1];
-            if (!tree.insert(name, new Integer[] { x , y })) {
-                System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
-                    .getArr()) + ")");
+            if (!tree.insert(name, new Integer[] { x, y })) {
+                System.out.println("Point REJECTED: (" + shapeInfo(name,
+                    dimensions.getArr()) + ")");
             }
             else {
-                list.insert(name, dimensions); 
+                list.insert(name, dimensions);
                 System.out.println("Point Inserted: (" + shapeInfo(name,
                     dimensions.getArr()) + ")");
             }
@@ -235,18 +245,18 @@ public class RectangleController {
 
             KVPair<String, Dimensions> data = list.remove(dimensions);
             if (data == null) {
-                System.out.print("point Not Found:");
+                System.out.print("point Not Found: ");
                 this.printIntArr(dimensions.getArr());
                 System.out.println("");
             }
             else {
-                System.out.println("Point (" + shapeInfo(data
-                    .getKey(), data.getValue().getArr()) + ") Removed");
-                
-                //sync for the tree
+                System.out.println("Point (" + shapeInfo(data.getKey(), data
+                    .getValue().getArr()) + ") Removed");
+
+                // sync for the tree
                 int a = dimensions.getArr()[0];
                 int b = dimensions.getArr()[1];
-                tree.remove(data.getKey(), new Integer[] { a , b });
+                tree.remove(data.getKey(), new Integer[] { a, b });
             }
         }
     }
@@ -258,67 +268,30 @@ public class RectangleController {
      * @precondition dimensions is a valid Rectangle array
      */
     private void regionSearch(int[] dimensions) {
-
+        Integer[] ever = IntStream.of(dimensions).boxed().toArray(
+            Integer[]::new);
         // TODO let regionSearch print out values from tree, not skiplist
         if (validLengthWidth(dimensions)) {
-            Iterator<SkipNode<String, Dimensions>> iter = list.getIterator();
+            RegionSearchList<String, Integer> points = tree.regionSearch(ever);
+            Iterator<PointNode<String, Integer>> iter = points.getIterator();
+
             System.out.print("Points intersecting region: ");
             printIntArr(dimensions);
             System.out.println("");
 
-            int visited = 0;
             while (iter.hasNext()) {
-                visited +=1;
-                KVPair<String, Dimensions> data = iter.next().getData();
-                if (collide(data.getValue().getArr(), dimensions)) {
-                    System.out.println("Point Found: (" + shapeInfo(data.getKey(), data
-                        .getValue().getArr()) + ")");
-                }
+                PointNode<String, Integer> curr = iter.next();
+                System.out.println("Point Found: (" + shapeInfo(curr.getKey(),
+                    curr.getValue()) + ")");
+
             }
-            
-            System.out.println(Math.max(visited, 1) + " QuadTree Nodes Visited");
+
+            System.out.println(points.numVisited() + " QuadTree Nodes Visited");
         }
         else {
-            System.out.print("Rectangle Rejected: ");
+            System.out.print("rectangle rejected ");
             this.printIntArr(dimensions);
-            System.out.println(":");
-        }
-    }
-
-
-    /**
-     * Outputs all Rectangles in SkipList that intersect with each other
-     */
-    private void intersections() {
-        System.out.println("Intersections pairs:");
-        if (list.getSize() > 1) {
-            Iterator<SkipNode<String, Dimensions>> iter = list.getIterator();
-            SkipNode<String, Dimensions> remainder = iter.next();
-            SkipNode<String, Dimensions> compare = remainder.getForward()[0];
-
-            while (remainder != null) { // Loop outside limit
-
-                compare = remainder.getForward()[0];
-
-                while (compare != null) { // Compare inside components
-                    if (collide(compare.getData().getValue().getArr(), remainder
-                        .getData().getValue().getArr())) {
-
-                        System.out.println("(" + shapeInfo(remainder.getData()
-                            .getKey(), remainder.getData().getValue().getArr())
-                            + " | " + shapeInfo(compare.getData().getKey(),
-                                compare.getData().getValue().getArr()) + ")");
-                        System.out.println("(" + shapeInfo(compare.getData()
-                            .getKey(), compare.getData().getValue().getArr())
-                            + " | " + shapeInfo(remainder.getData().getKey(),
-                                remainder.getData().getValue().getArr()) + ")");
-                    }
-                    compare = compare.getForward()[0];
-                }
-
-                // Move limit and restore values
-                remainder = remainder.getForward()[0];
-            }
+            System.out.println("");
         }
     }
 
@@ -336,7 +309,7 @@ public class RectangleController {
             System.out.println("Point Not Found: " + name);
         }
         else {
-            
+
             for (int i = 0; data[i] != null; i++) {
                 System.out.print("Point Found ");
                 System.out.println("(" + shapeInfo(data[i].getKey(), data[i]
@@ -366,42 +339,47 @@ public class RectangleController {
         }
         System.out.println("The SkipList's size is: " + list.getSize());
     }
-    
+
+
     /**
      * 
-     * @param base the default value is rt
-     * @param x 
-     * @param y 
-     * @param level the starting level, in this case by default value -1
+     * @param base
+     *            the default value is rt
+     * @param x
+     * @param y
+     * @param level
+     *            the starting level, in this case by default value -1
      */
     private void dump(BaseNode<String, Integer> base, int level, int x, int y) {
         tree.increment();
-        level +=1;
+        level += 1;
         int mapSize = 1024; // 1024 depend on map size
-        int side = mapSize / (int)(Math.pow(2, level)); 
+        int side = mapSize / (int)(Math.pow(2, level));
         // format things
         for (int space = 0; space < level; space++) {
             System.out.print("  ");
         }
         // the recursion go through this if statement
         if (base.getNodeClass() == NodeClassification.ParentNode) {
-            System.out.println("Node at " + x + ", " + y + ", " + side + ": Internal");
-                int start = mapSize / (int)(Math.pow(2, level + 1)); 
-                
-                dump(((ParentNode<String, Integer>)base).getChild(0), level, x, y);
-                x = x + start;
-                dump(((ParentNode<String, Integer>)base).getChild(1), level, x, y);
-                x = x - start;
-                y = y + start;          
-                dump(((ParentNode<String, Integer>)base).getChild(3), level, x, y);
-                x = x + start;
-                y = y - start;
-                y = y + start;
-                dump(((ParentNode<String, Integer>)base).getChild(2), level, x, y);
+            System.out.println("Node at " + x + ", " + y + ", " + side
+                + ": Internal");
+            int start = mapSize / (int)(Math.pow(2, level + 1));
+
+            dump(((ParentNode<String, Integer>)base).getChild(0), level, x, y);
+            x = x + start;
+            dump(((ParentNode<String, Integer>)base).getChild(1), level, x, y);
+            x = x - start;
+            y = y + start;
+            dump(((ParentNode<String, Integer>)base).getChild(3), level, x, y);
+            x = x + start;
+            y = y - start;
+            y = y + start;
+            dump(((ParentNode<String, Integer>)base).getChild(2), level, x, y);
         }
         // if we met a flyweightNode, we need to print this
         if (base.getNodeClass() == NodeClassification.FlyweightNode) {
-            System.out.println("Node at " + x + ", " + y + ", " + side +  ": Empty");
+            System.out.println("Node at " + x + ", " + y + ", " + side
+                + ": Empty");
         }
         // if me met a leafNode, we need to print this
         if (base.getNodeClass() == NodeClassification.LeafNode) {
@@ -411,11 +389,13 @@ public class RectangleController {
                 for (int space = 0; space < level; space++) {
                     System.out.print("  ");
                 }
-                PointNode<String, Integer> pNode = (PointNode<String, Integer>)ite.next();
+                PointNode<String, Integer> pNode =
+                    (PointNode<String, Integer>)ite.next();
                 pNode.getKey();
                 int xLoc = (int)pNode.getValue()[0];
                 int yLoc = (int)pNode.getValue()[1];
-                System.out.println("(" + pNode.getKey() + ", " + xLoc + ", " + yLoc + ")");
+                System.out.println("(" + pNode.getKey() + ", " + xLoc + ", "
+                    + yLoc + ")");
             }
         }
     }
@@ -471,31 +451,6 @@ public class RectangleController {
 
 
     /**
-     * Checks if a Rectangle collides/intersects another. Rectangles collide if
-     * any part of a Rectangle is within another Rectangle. Sharing the same
-     * edge
-     * or corner does not count as colliding.
-     * 
-     * @param dimensions
-     *            Rectangles dimension
-     * @param other
-     *            Another rectangle's dimension
-     * @return true if collides, false if does not
-     * @precondition dimensions and other are valid rectangle dimensions
-     */
-    private boolean collide(int[] dimensions, int[] other) {
-
-        return ((other[0] <= dimensions[0] && other[0]
-            + other[2] > dimensions[0]) || ((other[0] >= dimensions[0]
-                && other[0] < dimensions[0] + dimensions[2])))
-
-            && ((other[1] <= dimensions[1] && other[1]
-                + other[3] > dimensions[1]) || ((other[1] >= dimensions[1]
-                    && other[1] < dimensions[1] + dimensions[3])));
-    }
-
-
-    /**
      * Checks if a rectangle can be placed on a board represented by x and y.
      * A rectangle can be placed if:
      * 
@@ -516,12 +471,11 @@ public class RectangleController {
             return false;
         }
 
-        if(dimensions.length == 2) {
-            return true;
+        if (dimensions.length != 2) {
+            return false;
         }
-        
-        return (dimensions[0] + dimensions[2] <= x && dimensions[1]
-            + dimensions[3] <= y);
+
+        return (dimensions[0] <= x && dimensions[1] <= y);
     }
 
 
@@ -550,8 +504,7 @@ public class RectangleController {
             }
         }
 
-        return (dimensions.length == 4 && dimensions[2] > 0
-            && dimensions[3] > 0);
+        return (dimensions.length == 4);
     }
 
 
@@ -564,7 +517,7 @@ public class RectangleController {
      * @precondition dimensions is a valid rectangle dimension
      */
     private boolean validLengthWidth(int[] dimensions) {
-        return dimensions[2] > 0 && dimensions[3] > 0;
+        return dimensions[2] > 0 && dimensions[3] > 0 && dimensions.length == 4;
     }
 
 
@@ -593,6 +546,19 @@ public class RectangleController {
      * @return name and dimension of Rectangle as "name, x, y, w, h"
      */
     private String shapeInfo(String name, int[] dimensions) {
+
+        return shapeInfo(name, IntStream.of(dimensions).boxed().toArray(
+            Integer[]::new));
+    }
+
+
+    /**
+     * Returns Rectangle's name and dimension
+     * 
+     * @precondition name != null && dimensions != null
+     * @return name and dimension of Rectangle as "name, x, y, w, h"
+     */
+    private String shapeInfo(String name, Integer[] dimensions) {
         StringBuilder line = new StringBuilder();
         line.append(name);
 

@@ -143,46 +143,4 @@ public class LeafNode<K extends Comparable<K>, V extends Comparable<V>>
         return (points.find(key, value)) != null;
     }
 
-    // Deprecated Inner Node class --------------------------------------------
-    /**
-     * this is the node class for storing
-     * the duplicate point
-     * 
-     * @author ben chen
-     * @deprecated list added with more advanced functionality
-     *
-     */
-    public class Node {
-        private KVPair<K, V> data;
-        private Node next;
-
-        /**
-         * constructor takes a pair
-         * 
-         * @param pair
-         */
-        public Node(KVPair<K, V> pair) {
-            this.data = pair;
-            next = null;
-        }
-
-
-        public KVPair<K, V> add(KVPair<K, V> data) {
-            Node temp = new Node(data);
-            this.next = temp;
-            return data;
-        }
-
-
-        public Node getNext() {
-            return this.getNext();
-        }
-
-
-        public KVPair<K, V> getData() {
-            return this.data;
-        }
-
-    }
-
 }

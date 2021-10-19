@@ -55,6 +55,10 @@ public class SkipList<K extends Comparable<K>, V> {
     private int size;
     private Random ran;
 
+    // Debugging functions to substitute TeststableRandom.setNextInts()
+    private int[] setRandomLevel;
+    private int randomCount;
+
     // Constructor ---------------------------------------------------------
 
     /**
@@ -65,6 +69,8 @@ public class SkipList<K extends Comparable<K>, V> {
         size = 0;
         ran = new Random();
         head = new SkipNode<K, V>(null, 0);
+        setRandomLevel = null;
+        randomCount = 0;
     }
 
 
@@ -277,11 +283,36 @@ public class SkipList<K extends Comparable<K>, V> {
 
 
     /**
+     * Set next random levels for SkipList levels
+     * 
+     * @param levels
+     *            Levels to set next SkipList levels to
+     * @precondition levels != null && levels size > 0
+     */
+    public void setRandomLevel(int[] levels) {
+        this.setRandomLevel = levels;
+    }
+
+
+    /**
      * Pick a level using a geometric distribution
      * 
      */
     private int randomLevel() {
         int lev;
+        if (this.setRandomLevel != null) {
+            if (randomCount < this.setRandomLevel.length) {
+                lev = this.setRandomLevel[randomCount] - 1;
+                randomCount++;
+                return lev;
+            }
+
+            if (randomCount > this.setRandomLevel.length) {
+                randomCount = 0;
+                this.setRandomLevel = null;
+            }
+        }
+
         for (lev = 0; Math.abs(ran.nextInt()) % 2 == 0; lev++) { // ran is
             // random
             // generator

@@ -42,7 +42,7 @@ public class RectangleControllerTest extends TestCase {
      * Sets up controller with an existing command file
      */
     public void setUp() throws FileNotFoundException {
-        
+
     }
 
     // Tests ------------------------------------------------------------------
@@ -57,63 +57,46 @@ public class RectangleControllerTest extends TestCase {
 
     public void testRun() throws FileNotFoundException {
         controller = new RectangleController(new File("P2test2.txt"));
+        controller.setSkipListLevels(new int[] { 1, 3, 1, 1 });
         controller.runAll();
-        assertFuzzyEquals("Point Inserted: (p_p, 1, 20)\n" + 
-            "Point Inserted: (p, 10, 30)\n" + 
-            "Point Inserted: (p_42, 1, 20)\n" + 
-            "Point Inserted: (far_point, 200, 200)\n" + 
-            "SkipList Dump:\n" + 
-            "level: 3 Value: null\n" + 
-            "level: 1 Value: (far_point, 200, 200)\n" + 
-            "level: 3 Value: (p, 10, 30)\n" + 
-            "level: 1 Value: (p_42, 1, 20)\n" + 
-            "level: 1 Value: (p_p, 1, 20)\n" + 
-            "The SkipList's size is: 4\n" + 
-            "QuadTree Dump:\n" + 
-            "Node at 0, 0, 1024: Internal\n" + 
-            "  Node at 0, 0, 512: Internal\n" + 
-            "    Node at 0, 0, 256: Internal\n" + 
-            "      Node at 0, 0, 128:\n" + 
-            "      (p_p, 1, 20)\n" + 
-            "      (p, 10, 30)\n" + 
-            "      (p_42, 1, 20)\n" + 
-            "      Node at 128, 0, 128: Empty\n" + 
-            "      Node at 0, 128, 128: Empty\n" + 
-            "      Node at 128, 128, 128:\n" + 
-            "      (far_point, 200, 200)\n" + 
-            "    Node at 256, 0, 256: Empty\n" + 
-            "    Node at 0, 256, 256: Empty\n" + 
-            "    Node at 256, 256, 256: Empty\n" + 
-            "  Node at 512, 0, 512: Empty\n" + 
-            "  Node at 0, 512, 512: Empty\n" + 
-            "  Node at 512, 512, 512: Empty\n" + 
-            "QuadTree Size: 13 QuadTree Nodes Printed.\n" + 
-            "Duplicate Points:\n" + 
-            "(1, 20)\n" + 
-            "Point Found (p_p, 1, 20)\n" + 
-            "Points intersecting region: (0, 0, 25, 25)\n" + 
-            "Point Found: (p_42, 1, 20)\n" + 
-            "Point Found: (p_p, 1, 20)\n" + 
-            "4 QuadTree Nodes Visited\n" + 
-            "Point (p_p, 1, 20) Removed\n" + 
-            "Point (p, 10, 30) Removed\n" + 
-            "Duplicate Points:\n" + 
-            "SkipList Dump:\n" + 
-            "level: 3 Value: null\n" + 
-            "level: 1 Value: (far_point, 200, 200)\n" + 
-            "level: 1 Value: (p_42, 1, 20)\n" + 
-            "The SkipList's size is: 2\n" + 
-            "QuadTree Dump:\n" + 
-            "Node at 0, 0, 1024:\n" + 
-            "(far_point, 200, 200)\n" + 
-            "(p_42, 1, 20)\n" + 
-            "QuadTree Size: 1 QuadTree Nodes Printed.", systemOut()
-            .getHistory());
+
+        assertFuzzyEquals("Point Inserted: (p_p, 1, 20)\n"
+            + "Point Inserted: (p, 10, 30)\n"
+            + "Point Inserted: (p_42, 1, 20)\n"
+            + "Point Inserted: (far_point, 200, 200)\n" + "SkipList Dump:\n"
+            + "level: 3 Value: null\n"
+            + "level: 1 Value: (far_point, 200, 200)\n"
+            + "level: 3 Value: (p, 10, 30)\n"
+            + "level: 1 Value: (p_42, 1, 20)\n"
+            + "level: 1 Value: (p_p, 1, 20)\n" + "The SkipList's size is: 4\n"
+            + "QuadTree Dump:\n" + "Node at 0, 0, 1024: Internal\n"
+            + "  Node at 0, 0, 512: Internal\n"
+            + "    Node at 0, 0, 256: Internal\n" + "      Node at 0, 0, 128:\n"
+            + "      (p_p, 1, 20)\n" + "      (p, 10, 30)\n"
+            + "      (p_42, 1, 20)\n" + "      Node at 128, 0, 128: Empty\n"
+            + "      Node at 0, 128, 128: Empty\n"
+            + "      Node at 128, 128, 128:\n" + "      (far_point, 200, 200)\n"
+            + "    Node at 256, 0, 256: Empty\n"
+            + "    Node at 0, 256, 256: Empty\n"
+            + "    Node at 256, 256, 256: Empty\n"
+            + "  Node at 512, 0, 512: Empty\n"
+            + "  Node at 0, 512, 512: Empty\n"
+            + "  Node at 512, 512, 512: Empty\n"
+            + "QuadTree Size: 13 QuadTree Nodes Printed.\n"
+            + "Duplicate Points:\n" + "(1, 20)\n" + "Point Found (p_p, 1, 20)\n"
+            + "Points intersecting region: (0, 0, 25, 25)\n"
+            + "Point Found: (p_42, 1, 20)\n" + "Point Found: (p_p, 1, 20)\n"
+            + "4 QuadTree Nodes Visited\n" + "Point (p_p, 1, 20) Removed\n"
+            + "Point (p, 10, 30) Removed\n" + "Duplicate Points:\n"
+            + "SkipList Dump:\n" + "level: 3 Value: null\n"
+            + "level: 1 Value: (far_point, 200, 200)\n"
+            + "level: 1 Value: (p_42, 1, 20)\n" + "The SkipList's size is: 2\n"
+            + "QuadTree Dump:\n" + "Node at 0, 0, 1024:\n"
+            + "(far_point, 200, 200)\n" + "(p_42, 1, 20)\n"
+            + "QuadTree Size: 1 QuadTree Nodes Printed.", systemOut()
+                .getHistory());
         systemOut().clearHistory();
         controller.close();
-        
-
-
 
         // JUnit can shut up about long methods
     }
@@ -121,26 +104,22 @@ public class RectangleControllerTest extends TestCase {
 
     public void testSecondInput() throws FileNotFoundException {
         controller = new RectangleController(new File("P2test1.txt"));
+
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
         controller.runAll();
-        assertFuzzyEquals("Point REJECTED: (p_p, -1, -20)\n" + 
-            "Point REJECTED: (p, 7, -8)\n" + 
-            "Duplicate Points:\n" + 
-            "SkipList Dump:\n" + 
-            "level: 1 Value: null\n" + 
-            "The SkipList's size is: 0\n" + 
-            "QuadTree Dump:\n" + 
-            "Node at 0, 0, 1024: Empty\n" + 
-            "QuadTree Size: 1 QuadTree Nodes Printed.\n" + 
-            "Point Not Found: p_p\n" + 
-            "point Not Removed: p_p\n" + 
-            "Point Rejected: (1, -1)\n" + 
-            "point Not Found:(1, 1)\n" + 
-            "Points intersecting region: (-5, -5, 20, 20)\n" + 
-            "1 QuadTree Nodes Visited\n" + 
-            "Rectangle Rejected: (5, 5, 4, -2):",
-            systemOut().getHistory());
+        assertFuzzyEquals("Point REJECTED: (p_p, -1, -20)\r\n"
+            + "Point REJECTED: (p, 7, -8)\r\n" + "Duplicate Points:\r\n"
+            + "SkipList Dump:\r\n" + "level: 1 Value: null\r\n"
+            + "The SkipList's Size is: 0\r\n" + "QuadTree Dump:\r\n"
+            + "Node at 0, 0, 1024: Empty\r\n"
+            + "QuadTree Size: 1 QuadTree Nodes Printed.\r\n"
+            + "Point Not Found: p_p\r\n" + "point Not Removed: p_p\r\n"
+            + "Point Rejected: (1, -1)\r\n" + "point Not Found: (1, 1)\r\n"
+            + "Points Intersecting Region: (-5, -5, 20, 20)\r\n"
+            + "1 QuadTree Nodes Visited\r\n"
+            + "Rectangle Rejected: (5, 5, 4, -2)\r\n" + "", systemOut()
+                .getHistory());
         systemOut().clearHistory();
         controller.close();
     }
@@ -167,57 +146,25 @@ public class RectangleControllerTest extends TestCase {
      * 
      */
     public void testMissedCoverage() throws FileNotFoundException {
+
+        // Tests more missed coverage
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
         systemOut().clearHistory();
-
-        controller = new RectangleController(new File(
-            "P1Coverage.txt"));
+        controller = new RectangleController(new File("testp2.txt"));
         controller.runAll();
+        assertFuzzyEquals("Point Inserted: (p_p, 1, 20)\r\n"
+            + "Point REJECTED: (p_p, 1, 20)\r\n"
+            + "Point REJECTED: (p_bad_length, 1)\r\n"
+            + "rectangle rejected (11, 11, 0, 0)\r\n"
+            + "Point REJECTED: (p_bad_toolargexy, 121212, 12313)\r\n"
+            + "Point REJECTED: (p_bad_toolargex, 121212, 13)\r\n"
+            + "Point REJECTED: (p_bad_toolargy, 122, 12313)\r\n"
+            + "An unknown command was ran\r\n"
+            + "rectangle rejected (11, 11, 0, 0)\r\n"
+            + "rectangle rejected (11, 11, -1, 1)\r\n"
+            + "rectangle rejected (11, 11, 1, -1)\r\n"
+            + "rectangle rejected (5, 5, 4, 2, 3)\r\n"
+            + "rectangle rejected (5, 5, 4, -2, 3)", systemOut().getHistory());
         controller.close();
-
-        assertFuzzyEquals("point inserted r2 15 15 5 5\n" + 
-            "point inserted r3 7 7 10 10\n" + 
-            "point inserted r4 20 25 7 9\n" + 
-            "point inserted r4 20 12 3 3\n" + 
-            "point inserted r5 6 7 11 9\n" + 
-            "an unknown command was ran\n" + 
-            "point not found69 420 69 420\n" + 
-            "point found r5 6 7 11 9\n" + 
-            "point not found r69420\n" + 
-            "point rejected r99 1 2 3 4 5\n" + 
-            "point rejected r99 1 2 3 4\n" + 
-            "point rejected r99 1 2 3 4\n" + 
-            "point rejected r99 1 2 3 4\n" + 
-            "point rejected r99 1 2 3 4", systemOut()
-            .getHistory());
-
-        // Tests dump
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
-
-        controller = new RectangleController(new File("P1Dump.txt"));
-        System.out.println(
-            "Should have empty dump, 5 definite inserts, then a dump");
-        controller.runAll();
-        controller.close();
-    }
-
-    /**
-     * Runs P2Test1 command file
-     * @throws FileNotFoundException 
-     */
-    public void testRunP2T1() throws FileNotFoundException {
-        TestableRandom.setNextInts(5, 10, 22, 13, 12, 47);
-        controller = new RectangleController(new File("P2test1.txt"));
-        controller.runAll();
-    }
-
-    /**
-     * Runs P2Test2 command file
-     * @throws FileNotFoundException 
-     */
-    public void testRunP2T2() throws FileNotFoundException {
-        TestableRandom.setNextInts(5, 10, 22, 13, 12, 47);
-        controller = new RectangleController(new File("P2test2.txt"));
-        controller.runAll();  
     }
 }
