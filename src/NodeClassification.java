@@ -33,5 +33,16 @@
  *
  */
 enum NodeClassification {
-    ParentNode, LeafNode, FlyweightNode;
+    /**
+     * parent Node
+     */
+    ParentNode, 
+    /**
+     * leaf Node
+     */
+    LeafNode, 
+    /**
+     * flyweight Node
+     */
+    FlyweightNode;
 }
