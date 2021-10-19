@@ -45,6 +45,8 @@ public class RectangleControllerTest extends TestCase {
 
     // Tests ------------------------------------------------------------------
 
+    
+    
 
     /**
      * Runs modified spec example input files and closes the controller
@@ -57,40 +59,55 @@ public class RectangleControllerTest extends TestCase {
         controller.setSkipListLevels(new int[] { 1, 3, 1, 1 });
         controller.runAll();
 
-        assertFuzzyEquals("Point Inserted: (p_p, 1, 20)\n"
-            + "Point Inserted: (p, 10, 30)\n"
-            + "Point Inserted: (p_42, 1, 20)\n"
-            + "Point Inserted: (far_point, 200, 200)\n" + "SkipList Dump:\n"
-            + "level: 3 Value: null\n"
-            + "level: 1 Value: (far_point, 200, 200)\n"
-            + "level: 3 Value: (p, 10, 30)\n"
-            + "level: 1 Value: (p_42, 1, 20)\n"
-            + "level: 1 Value: (p_p, 1, 20)\n" + "The SkipList's size is: 4\n"
-            + "QuadTree Dump:\n" + "Node at 0, 0, 1024: Internal\n"
-            + "  Node at 0, 0, 512: Internal\n"
-            + "    Node at 0, 0, 256: Internal\n" + "      Node at 0, 0, 128:\n"
-            + "      (p_p, 1, 20)\n" + "      (p, 10, 30)\n"
-            + "      (p_42, 1, 20)\n" + "      Node at 128, 0, 128: Empty\n"
-            + "      Node at 0, 128, 128: Empty\n"
-            + "      Node at 128, 128, 128:\n" + "      (far_point, 200, 200)\n"
-            + "    Node at 256, 0, 256: Empty\n"
-            + "    Node at 0, 256, 256: Empty\n"
-            + "    Node at 256, 256, 256: Empty\n"
-            + "  Node at 512, 0, 512: Empty\n"
-            + "  Node at 0, 512, 512: Empty\n"
-            + "  Node at 512, 512, 512: Empty\n"
-            + "QuadTree Size: 13 QuadTree Nodes Printed.\n"
-            + "Duplicate Points:\n" + "(1, 20)\n" + "Point Found (p_p, 1, 20)\n"
-            + "Points intersecting region: (0, 0, 25, 25)\n"
-            + "Point Found: (p_42, 1, 20)\n" + "Point Found: (p_p, 1, 20)\n"
-            + "4 QuadTree Nodes Visited\n" + "Point (p_p, 1, 20) Removed\n"
-            + "Point (p, 10, 30) Removed\n" + "Duplicate Points:\n"
-            + "SkipList Dump:\n" + "level: 3 Value: null\n"
-            + "level: 1 Value: (far_point, 200, 200)\n"
-            + "level: 1 Value: (p_42, 1, 20)\n" + "The SkipList's size is: 2\n"
-            + "QuadTree Dump:\n" + "Node at 0, 0, 1024:\n"
-            + "(far_point, 200, 200)\n" + "(p_42, 1, 20)\n"
-            + "QuadTree Size: 1 QuadTree Nodes Printed.", systemOut()
+        assertFuzzyEquals("Point Inserted: (p_p, 1, 20)\n" 
+            + "Point Inserted: (p, 10, 30)\n" 
+            + "Point Inserted: (p_42, 1, 20)\n" 
+            + "Point Inserted: (far_point, 200, 200)\n" 
+            + "SkipList Dump:\n" 
+            + "level: 3 Value: null\n" 
+            + "level: 1 Value: (far_point, 200, 200)\n" 
+            + "level: 3 Value: (p, 10, 30)\n" 
+            + "level: 1 Value: (p_42, 1, 20)\n" 
+            + "level: 1 Value: (p_p, 1, 20)\n" 
+            + "The SkipList's size is: 4\n" 
+            + "QuadTree Dump:\n" 
+            + "Node at 0, 0, 1024: Internal\n" 
+            + "  Node at 0, 0, 512: Internal\n" 
+            + "    Node at 0, 0, 256: Internal\n" 
+            + "      Node at 0, 0, 128:\n" 
+            + "      (p_p, 1, 20)\n" 
+            + "      (p, 10, 30)\n" 
+            + "      (p_42, 1, 20)\n" 
+            + "      Node at 128, 0, 128: Empty\n" 
+            + "      Node at 0, 128, 128: Empty\n" 
+            + "      Node at 128, 128, 128:\n" 
+            + "      (far_point, 200, 200)\n" 
+            + "    Node at 256, 0, 256: Empty\n" 
+            + "    Node at 0, 256, 256: Empty\n" 
+            + "    Node at 256, 256, 256: Empty\n" 
+            + "  Node at 512, 0, 512: Empty\n" 
+            + "  Node at 0, 512, 512: Empty\n" 
+            + "  Node at 512, 512, 512: Empty\n" 
+            + "QuadTree Size: 13 QuadTree Nodes Printed.\n" 
+            + "Duplicate Points:\n" + "(1, 20)\n" 
+            + "Point Found (p_p, 1, 20)\n" 
+            + "Points intersecting region: (0, 0, 25, 25)\n" 
+            + "Point Found: (p_42, 1, 20)\n" 
+            + "Point Found: (p_p, 1, 20)\n" 
+            + "4 QuadTree Nodes Visited\n" 
+            + "Point (p_p, 1, 20) Removed\n" 
+            + "Point (p, 10, 30) Removed\n" 
+            + "Duplicate Points:\n" + "SkipList Dump:\n" 
+            + "level: 3 Value: null\n" 
+            + "level: 1 Value: (far_point, 200, 200)\n" 
+            + "level: 1 Value: (p_42, 1, 20)\n" 
+            + "The SkipList's size is: 2\n" 
+            + "QuadTree Dump:\n" 
+            + "Node at 0, 0, 1024:\n" + "(far_point, 200, 200)\n"
+            + "(p_42, 1, 20)\n" 
+            + "QuadTree Size: 1 QuadTree Nodes Printed.\n" 
+            + "An unknown command was ran\n" 
+            + "Point REJECTED: (a, 1)", systemOut()
                 .getHistory());
         systemOut().clearHistory();
         controller.close();
@@ -257,4 +274,6 @@ public class RectangleControllerTest extends TestCase {
         controller = new RectangleController(new File("Large_insert.txt"));
         controller.runAll();
     }
+    
+    
 }

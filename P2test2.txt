@@ -15,3 +15,7 @@ remove 10 30
 duplicates
 dump
 
+jump
+
+insert a    1    "32"
+

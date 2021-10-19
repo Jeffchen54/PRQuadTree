@@ -293,7 +293,7 @@ public class RectangleController {
     private void regionSearch(int[] dimensions) {
         Integer[] ever = IntStream.of(dimensions).boxed().toArray(
             Integer[]::new);
-        // TODO let regionSearch print out values from tree, not skiplist
+        // to do let regionSearch print out values from tree, not skiplist
         if (validLengthWidth(dimensions)) {
             RegionSearchList<String, Integer> points = tree.regionSearch(ever);
             Iterator<PointNode<String, Integer>> iter = points.getIterator();
@@ -407,11 +407,13 @@ public class RectangleController {
         // if me met a leafNode, we need to print this
         if (base.getNodeClass() == NodeClassification.LeafNode) {
             System.out.println("Node at " + x + ", " + y + ", " + side + ":");
+            @SuppressWarnings("rawtypes")
             Iterator ite = ((LeafNode<String, Integer>)base).getPoints();
             while (ite.hasNext()) {
                 for (int space = 0; space < level; space++) {
                     System.out.print("  ");
                 }
+                @SuppressWarnings("unchecked")
                 PointNode<String, Integer> pNode =
                     (PointNode<String, Integer>)ite.next();
                 pNode.getKey();
