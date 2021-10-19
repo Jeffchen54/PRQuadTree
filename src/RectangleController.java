@@ -90,7 +90,7 @@ public class RectangleController {
                 System.out.println("QuadTree Dump:");
                 tree.resetCount();
                 dump(tree.getRt(), -1, 0, 0);
-                System.out.println("QuadTree Size: " + tree.getCount()
+                System.out.println(tree.getCount()
                     + " QuadTree Nodes Printed.");
                 break;
             case "regionsearch":

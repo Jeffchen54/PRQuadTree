@@ -88,7 +88,7 @@ public class RectangleControllerTest extends TestCase {
             + "  Node at 512, 0, 512: Empty\n" 
             + "  Node at 0, 512, 512: Empty\n" 
             + "  Node at 512, 512, 512: Empty\n" 
-            + "QuadTree Size: 13 QuadTree Nodes Printed.\n" 
+            + "13 QuadTree Nodes Printed.\n" 
             + "Duplicate Points:\n" + "(1, 20)\n" 
             + "Point Found (p_p, 1, 20)\n" 
             + "Points intersecting region: (0, 0, 25, 25)\n" 
@@ -105,7 +105,7 @@ public class RectangleControllerTest extends TestCase {
             + "QuadTree Dump:\n" 
             + "Node at 0, 0, 1024:\n" + "(far_point, 200, 200)\n"
             + "(p_42, 1, 20)\n" 
-            + "QuadTree Size: 1 QuadTree Nodes Printed.\n" 
+            + "1 QuadTree Nodes Printed.\n" 
             + "An unknown command was ran\n" 
             + "Point REJECTED: (a, 1)", systemOut()
                 .getHistory());
@@ -132,7 +132,7 @@ public class RectangleControllerTest extends TestCase {
             + "SkipList Dump:\r\n" + "level: 1 Value: null\r\n"
             + "The SkipList's Size is: 0\r\n" + "QuadTree Dump:\r\n"
             + "Node at 0, 0, 1024: Empty\r\n"
-            + "QuadTree Size: 1 QuadTree Nodes Printed.\r\n"
+            + "1 QuadTree Nodes Printed.\r\n"
             + "Point Not Found: p_p\r\n" + "point Not Removed: p_p\r\n"
             + "Point Rejected: (1, -1)\r\n" + "point Not Found: (1, 1)\r\n"
             + "Points Intersecting Region: (-5, -5, 20, 20)\r\n"
@@ -235,7 +235,7 @@ public class RectangleControllerTest extends TestCase {
         assertFuzzyEquals("SkipList Dump:\r\n" + "level: 1 Value: null\r\n"
             + "The SkipList's size is: 0\r\n" + "QuadTree Dump:\r\n"
             + "Node at 0, 0, 1024: Empty\r\n"
-            + "QuadTree Size: 1 QuadTree Nodes Printed.\r\n"
+            + "1 QuadTree Nodes Printed.\r\n"
             + "Point inserted: (a, 1, 1)\r\n" + "Point inserted: (b, 1, 1)\r\n"
             + "Point inserted: (a1, 2, 1)\r\n"
             + "Point inserted: (x, 257, 1)\r\n"
@@ -259,7 +259,7 @@ public class RectangleControllerTest extends TestCase {
             + "  (b2, 553, 1)\r\n" + "  (b1, 551, 1)\r\n"
             + "  Node at 0, 512, 512: Empty\r\n"
             + "  Node at 512, 512, 512: Empty\r\n"
-            + "QuadTree Size: 9 QuadTree Nodes Printed.\r\n", systemOut()
+            + "9 QuadTree Nodes Printed.\r\n", systemOut()
                 .getHistory());
         controller.close();
     }
