@@ -87,11 +87,7 @@ public class RectangleController {
         switch (tokens[0]) {
             case "dump": // Same for prj1 and 2 but also prints tree dump
                 dump();
-                System.out.println("QuadTree Dump:");
-                tree.resetCount();
-                dump(tree.getRt(), -1, 0, 0);
-                System.out.println("QuadTree Size: " + tree.getCount()
-                    + " QuadTree Nodes Printed.");
+                System.out.print(tree.toString());
                 break;
             case "regionsearch":
                 regionSearch(extractArr(tokens, 1)); // Same as prj1 but through

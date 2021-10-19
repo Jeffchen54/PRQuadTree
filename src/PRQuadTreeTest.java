@@ -194,6 +194,19 @@ public class PRQuadTreeTest extends TestCase {
         assertEquals("NW4", points.next().getKey());
         assertEquals("NW2", points.next().getKey());
         assertEquals("NW1", points.next().getKey());
+
+        // Quadrant boundary points
+        tree = new PRQuadTree(min, max);
+        tree.insert("NE", new Integer[] { 512, 0 });
+        tree.insert("SE", new Integer[] { 1024, 512 });
+        tree.insert("SE", new Integer[] { 512, 1024 });
+        tree.insert("SW", new Integer[] { 0, 512 });
+        tree.insert("SE", new Integer[] { 512, 512 });
+        tree.insert("WEB", new Integer[] { 512, 600 });
+        tree.insert("WEB", new Integer[] { 512, 650 });
+        tree.insert("WEB", new Integer[] { 512, 700 });
+        System.out.println(tree.toString());
+
     }
 
 

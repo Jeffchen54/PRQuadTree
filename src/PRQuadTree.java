@@ -539,21 +539,17 @@ public class PRQuadTree {
         Integer[] upper) {
 
         // Some arithmetic to simplify the problem a bit
-        int x = dest[0] - midpoint[0];
-        int y = dest[1] - midpoint[1];
-
-        if (x < 0) {
-            if (y < 0) {
-                return 0; // NW
+        if (dest[0] < midpoint[0]) {
+            if (dest[1] < midpoint[1]) {
+                return 0;
             }
-            return 3; // SW
-
+            return 3;
         }
 
-        if (y >= 0) {
-            return 2; // SE
+        if (dest[1] < midpoint[1]) {
+            return 1;
         }
-        return 1; // NE
+        return 2;
 
     }
 
@@ -721,7 +717,9 @@ public class PRQuadTree {
      * @return String view of the tree
      */
     public String toString() {
-        return this.getTree(rt);
+        count = 0;
+        return "QuadTree dump:\nNode at 0, 0, 1024: " + this.getTree(rt, min,
+            max, 0) + "QuadTree Size: " + count + " Quadtree Nodes Printed.\n";
 
     }
 
@@ -734,37 +732,75 @@ public class PRQuadTree {
      * @return Token of the string view, return entire string view on last
      *         return.
      */
-    private String getTree(BaseNode<String, Integer> curr) {
+    private String getTree(
+        BaseNode<String, Integer> curr,
+        Integer[] lower,
+        Integer[] upper,
+        int tabs) {
+        count++;
         // Flyweight
         if (curr.getNodeClass() == NodeClassification.FlyweightNode) {
-            return "Flyweight\n";
+            return "Empty\n";
         }
 
         // Child
         if (curr.getNodeClass() == NodeClassification.LeafNode) {
             Iterator<PointNode<String, Integer>> iter =
                 ((LeafNode<String, Integer>)curr).getPoints();
-            String keys = "Leaf-";
+            String keys = "\n";
             while (iter.hasNext()) {
-                keys += iter.next().getKey() + ", ";
+                PointNode<String, Integer> point = iter.next();
+                keys += getTabs(tabs - 1) + "(" + point.getKey() + ", " + point
+                    .getValue()[0] + ", " + point.getValue()[1] + ")\n";
             }
-            keys += "\n";
             return keys;
         }
-        String build = "Parent\n";
+        String build = "Internal\n";
 
         // Parent
+        Integer[] mid = this.midpoint(lower, upper);
 
-        build += "\tNW-" + (this.getTree(((ParentNode<String, Integer>)curr)
-            .getChild(0)));
-        build += "\tNE-" + (this.getTree(((ParentNode<String, Integer>)curr)
-            .getChild(1)));
-        build += "\tSE-" + (this.getTree(((ParentNode<String, Integer>)curr)
-            .getChild(2)));
-        build += "\tSW-" + (this.getTree(((ParentNode<String, Integer>)curr)
-            .getChild(3)));
+        String bounds = lower[0] + ", " + lower[1] + ", " + (mid[0] - lower[0])
+            + ": ";
+        build += this.getTabs(tabs) + "Node at " + bounds + (this.getTree(
+            ((ParentNode<String, Integer>)curr).getChild(0), lower, mid, tabs
+                + 1));
+
+        bounds = mid[0] + ", " + lower[1] + ", " + (upper[0] - mid[0]) + ": ";
+        build += this.getTabs(tabs) + "Node at " + bounds + (this.getTree(
+            ((ParentNode<String, Integer>)curr).getChild(1), new Integer[] {
+                mid[0], lower[1] }, new Integer[] { upper[0], mid[0] }, tabs
+                    + 1));
+
+        bounds = lower[0] + ", " + mid[1] + ", " + (mid[0] - lower[0]) + ": ";
+        build += this.getTabs(tabs) + "Node at " + bounds + (this.getTree(
+            ((ParentNode<String, Integer>)curr).getChild(3), new Integer[] {
+                lower[0], mid[1] }, new Integer[] { mid[0], upper[1] }, tabs
+                    + 1));
+
+        bounds = mid[0] + ", " + mid[1] + ", " + (upper[0] - mid[0]) + ": ";
+        build += this.getTabs(tabs) + "Node at " + bounds + (this.getTree(
+            ((ParentNode<String, Integer>)curr).getChild(2), mid, upper, tabs
+                + 1));
 
         return build;
+    }
+
+
+    /**
+     * Returns tabs according to number of tabs
+     * A tab is two spaces.
+     * 
+     * @param tabs
+     *            Number of tabs
+     * @return tabs
+     */
+    public String getTabs(int tabs) {
+        String space = "";
+        for (int i = 0; i < tabs; i++) {
+            space += "  ";
+        }
+        return space;
     }
 
 }
