@@ -198,19 +198,20 @@ public class RectangleController {
             System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
                 .getArr()) + ")");
         }
+        
+        // check condition for tree  see if there is identical point
         else {
-            list.insert(name, dimensions);
-            
-            
-            // this is for sync
-            
             int x = dimensions.getArr()[0];
             int y = dimensions.getArr()[1];
-            if (tree.insert(name, new Integer[] { x , y })) {
-                
+            if (!tree.insert(name, new Integer[] { x , y })) {
+                System.out.println("Point REJECTED: (" + shapeInfo(name, dimensions
+                    .getArr()) + ")");
             }
-            System.out.println("Point Inserted: (" + shapeInfo(name,
-                dimensions.getArr()) + ")");
+            else {
+                list.insert(name, dimensions); 
+                System.out.println("Point Inserted: (" + shapeInfo(name,
+                    dimensions.getArr()) + ")");
+            }
         }
     }
 
